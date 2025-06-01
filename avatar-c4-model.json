@@ -1,0 +1,698 @@
+{
+  "configuration" : { },
+  "description" : "Component analysis for Avatar Connector System",
+  "documentation" : { },
+  "id" : 0,
+  "model" : {
+    "people" : [ {
+      "description" : "Uses the Avatar system to access healthcare data",
+      "id" : "1",
+      "location" : "Unspecified",
+      "name" : "Client User",
+      "relationships" : [ {
+        "description" : "Makes data requests through",
+        "destinationId" : "2",
+        "id" : "3",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Sends requests to",
+        "destinationId" : "6",
+        "id" : "12",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "components" : [ {
+          "description" : "Base interface providing metadata about connectors",
+          "documentation" : { },
+          "id" : "15",
+          "name" : "AvatarConnectorInfo",
+          "tags" : "Element,Component,API",
+          "technology" : "Java Interface"
+        }, {
+          "description" : "Main service interface for connector implementations",
+          "documentation" : { },
+          "id" : "16",
+          "name" : "AvatarConnector",
+          "relationships" : [ {
+            "description" : "extends",
+            "destinationId" : "15",
+            "id" : "17",
+            "sourceId" : "16",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,API",
+          "technology" : "Java Interface"
+        } ],
+        "description" : "Defines the core contract for connectors",
+        "documentation" : { },
+        "id" : "4",
+        "name" : "Connector API",
+        "tags" : "Element,Container",
+        "technology" : "Java/OSGi"
+      }, {
+        "components" : [ {
+          "documentation" : { },
+          "id" : "20",
+          "name" : "Api Factory",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.ApiFactory"
+          },
+          "tags" : "Element,Component,Factory",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "21",
+          "name" : "Api Package",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.ApiPackage"
+          },
+          "tags" : "Element,Component,Package",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "22",
+          "name" : "Avatar Connector",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.AvatarConnector"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "23",
+          "name" : "Avatar Connector Info",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.AvatarConnectorInfo"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "24",
+          "name" : "Request Parameter",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RequestParameter"
+          },
+          "tags" : "Element,Component,Parameter",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "25",
+          "name" : "Rsa Factory",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaFactory"
+          },
+          "tags" : "Element,Component,Factory",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "26",
+          "name" : "Rsa Object",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaObject"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "27",
+          "name" : "Rsa Object Type",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaObjectType"
+          },
+          "tags" : "Element,Component,Type",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "28",
+          "name" : "Rsa Package",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaPackage"
+          },
+          "tags" : "Element,Component,Package",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "29",
+          "name" : "Rsa Request",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaRequest"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "30",
+          "name" : "Rsa Response",
+          "properties" : {
+            "component.type" : "de.avatar.connector.model.rsa.RsaResponse"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "31",
+          "name" : "A Connector Factory",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.AConnectorFactory"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "32",
+          "name" : "A Connector Package",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.AConnectorPackage"
+          },
+          "tags" : "Element,Component,Package",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "33",
+          "name" : "Connector Endpoint",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ConnectorEndpoint"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "34",
+          "name" : "Connector Info",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ConnectorInfo"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "35",
+          "name" : "Connector Metric",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ConnectorMetric"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "36",
+          "name" : "Dry Run Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.DryRunResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "37",
+          "name" : "Ecore Parameter",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.EcoreParameter"
+          },
+          "tags" : "Element,Component,Parameter",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "38",
+          "name" : "Ecore Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.EcoreResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "39",
+          "name" : "Endpoint Request",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.EndpointRequest"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "40",
+          "name" : "Endpoint Response",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.EndpointResponse"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "41",
+          "name" : "Error Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ErrorResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "42",
+          "name" : "Java Parameter",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.JavaParameter"
+          },
+          "tags" : "Element,Component,Parameter",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "43",
+          "name" : "Java Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.JavaResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "44",
+          "name" : "Parameter",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.Parameter"
+          },
+          "tags" : "Element,Component,Parameter",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "45",
+          "name" : "Protocol Type",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ProtocolType"
+          },
+          "tags" : "Element,Component,Type",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "46",
+          "name" : "Response Code",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ResponseCode"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "47",
+          "name" : "Response Meta Data",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ResponseMetaData"
+          },
+          "tags" : "Element,Component",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "48",
+          "name" : "Response Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.ResponseResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "49",
+          "name" : "Simple Result",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.SimpleResult"
+          },
+          "tags" : "Element,Component,Result",
+          "technology" : "EMF Model"
+        }, {
+          "documentation" : { },
+          "id" : "50",
+          "name" : "Status Type",
+          "properties" : {
+            "component.type" : "de.avatar.model.connector.StatusType"
+          },
+          "tags" : "Element,Component,Type",
+          "technology" : "EMF Model"
+        } ],
+        "description" : "EMF-based data models",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Connector Model",
+        "tags" : "Element,Container",
+        "technology" : "Java/EMF"
+      }, {
+        "components" : [ {
+          "description" : "Implementation for the ISMA HIMSA protocol",
+          "documentation" : { },
+          "id" : "18",
+          "name" : "ISMA Connector Impl",
+          "properties" : {
+            "component.type" : "de.avatar.connector.isma.ISMAConnectorImpl"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "Java/OSGi"
+        }, {
+          "documentation" : { },
+          "id" : "19",
+          "name" : "Other Connector Impl",
+          "properties" : {
+            "component.type" : "de.avatar.connector.other.OtherConnectorImpl"
+          },
+          "tags" : "Element,Component,Implementation",
+          "technology" : "Java/OSGi"
+        } ],
+        "description" : "Implementations of the API for different protocols",
+        "documentation" : { },
+        "id" : "6",
+        "name" : "Connector Implementations",
+        "relationships" : [ {
+          "description" : "Implements",
+          "destinationId" : "4",
+          "id" : "8",
+          "sourceId" : "6",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "5",
+          "id" : "9",
+          "sourceId" : "6",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Java/OSGi"
+      }, {
+        "components" : [ {
+          "description" : "Implements the OSGi whiteboard pattern for tracking connector services",
+          "documentation" : { },
+          "id" : "13",
+          "name" : "ConnectorWhiteboard",
+          "tags" : "Element,Component,Infrastructure",
+          "technology" : "Java/OSGi"
+        }, {
+          "description" : "Performs serialization/deserialization of EMF objects",
+          "documentation" : { },
+          "id" : "14",
+          "name" : "EcoreSerializer",
+          "tags" : "Element,Component,Infrastructure",
+          "technology" : "Java/OSGi"
+        } ],
+        "description" : "Supporting components and services",
+        "documentation" : { },
+        "id" : "7",
+        "name" : "Infrastructure",
+        "relationships" : [ {
+          "description" : "Supports",
+          "destinationId" : "4",
+          "id" : "10",
+          "sourceId" : "7",
+          "tags" : "Relationship"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "5",
+          "id" : "11",
+          "sourceId" : "7",
+          "tags" : "Relationship"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Java/OSGi"
+      } ],
+      "description" : "Connector-based system for healthcare data exchange",
+      "documentation" : { },
+      "id" : "2",
+      "location" : "Unspecified",
+      "name" : "Avatar System",
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Avatar C4 Model",
+  "views" : {
+    "componentViews" : [ {
+      "containerId" : "5",
+      "description" : "Connector Model Components",
+      "elements" : [ {
+        "id" : "20",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "22",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "23",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "24",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "26",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "27",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "28",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "29",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "30",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "31",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "32",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "33",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "34",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "35",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "36",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "37",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "38",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "39",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "40",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "41",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "42",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "43",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "44",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "45",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "46",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "47",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "48",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "49",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "50",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "model-components",
+      "order" : 2
+    }, {
+      "containerId" : "4",
+      "description" : "Connector API Components",
+      "elements" : [ {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "api-components",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "17"
+      } ]
+    }, {
+      "containerId" : "6",
+      "description" : "Connector Implementation Components",
+      "elements" : [ {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "19",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "implementation-components",
+      "order" : 4
+    }, {
+      "containerId" : "7",
+      "description" : "Infrastructure Components",
+      "elements" : [ {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "infrastructure-components",
+      "order" : 5
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "styles" : {
+        "elements" : [ {
+          "background" : "#08427b",
+          "color" : "#ffffff",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#438dd5",
+          "color" : "#ffffff",
+          "tag" : "Container"
+        }, {
+          "background" : "#85bb65",
+          "color" : "#ffffff",
+          "tag" : "Info"
+        }, {
+          "background" : "#7560ba",
+          "color" : "#ffffff",
+          "tag" : "Request"
+        }, {
+          "background" : "#e6bd56",
+          "color" : "#000000",
+          "tag" : "Response"
+        }, {
+          "background" : "#b86950",
+          "color" : "#ffffff",
+          "tag" : "Result"
+        }, {
+          "background" : "#60aa9f",
+          "color" : "#ffffff",
+          "tag" : "Endpoint"
+        }, {
+          "background" : "#4b79cc",
+          "color" : "#ffffff",
+          "tag" : "API"
+        }, {
+          "background" : "#f5da55",
+          "color" : "#000000",
+          "tag" : "Implementation"
+        }, {
+          "background" : "#b86950",
+          "color" : "#ffffff",
+          "tag" : "Infrastructure"
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "description" : "Container View",
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "containers",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "11"
+      }, {
+        "id" : "12"
+      }, {
+        "id" : "8"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "2"
+    } ]
+  }
+}
