@@ -10,6 +10,7 @@ import com.structurizr.component.ComponentFinderBuilder;
 import com.structurizr.component.ComponentFinderStrategyBuilder;
 import com.structurizr.component.matcher.AnnotationTypeMatcher;
 import com.structurizr.component.matcher.NameSuffixTypeMatcher;
+import com.structurizr.component.matcher.RegexTypeMatcher;
 import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
@@ -52,19 +53,18 @@ public class AvatarC4ModelGenerator {
 
 		// Define base path to your Avatar project code
 		// Set this to your actual project path or a folder that exists
-		String basePath = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
-		String basePathOther = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.isma";
-		String basePathIsma = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.other";
+		String basePathModel = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.model";
+		String basePathPorject = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
 
-		// Since we may not have the actual source code, let's manually create
-		// the components based on the documentation
 
-		createImplComponents(connectorImplementations, connectorApi, connectorModel);
+
+
+		//createImplComponents(connectorImplementations, connectorApi, connectorModel);
 		createInfraComponents(connectorInfrastructure, connectorModel);
 		createApiComponents(connectorApi);
 
-
-		tryScanningForComponents(connectorImplementations ,connectorImplementations , connectorModel,basePath, basePathOther, basePathIsma);
+		//scanning for components in the specified base path
+		tryScanningForComponents(connectorImplementations ,connectorImplementations ,basePathModel , basePathPorject);
 
 
 
@@ -111,7 +111,6 @@ public class AvatarC4ModelGenerator {
 		}
 	}
 
-	// Method to manually create model components based on documentation
 
 
 	// Method to manually create API components based on documentation
@@ -128,8 +127,8 @@ public class AvatarC4ModelGenerator {
 	}
 
 	// Method to manually create implementation components
-	private static void createImplComponents(Container container, Container api, Container model) {
-		/*Component ismaConnector = container.addComponent("ISMAConnector",
+	/*private static void createImplComponents(Container container, Container api, Container model) {
+		Component ismaConnector = container.addComponent("ISMAConnector",
 			"Implementation for the ISMA HIMSA protocol", "Java/OSGi");
 		ismaConnector.addTags("Implementation");
 
@@ -140,11 +139,11 @@ public class AvatarC4ModelGenerator {
 		//ismaConnector.uses(api.getComponentWithName("AvatarConnector"), "implements");
 		//hl7Connector.uses(api.getComponentWithName("AvatarConnector"), "implements");
 
-	/*	ismaConnector.uses(model.getComponentWithName("Endpoint Request"), "processes");
+		ismaConnector.uses(model.getComponentWithName("Endpoint Request"), "processes");
 		ismaConnector.uses(model.getComponentWithName("Endpoint Response"), "creates");
 		hl7Connector.uses(model.getComponentWithName("Endpoint Request"), "processes");
-		hl7Connector.uses(model.getComponentWithName("Endpoint Response"), "creates");*/
-	}
+		hl7Connector.uses(model.getComponentWithName("Endpoint Response"), "creates");
+	}*/
 
 	// Method to manually create infrastructure components
 	private static void createInfraComponents(Container container, Container model) {
@@ -161,10 +160,9 @@ public class AvatarC4ModelGenerator {
 
 
 	// Able to find all components in the specified base path
-	private static void tryScanningForComponents(Container container1, Container container2 , Container container3 ,String basePath ,String basePathOther , String basePathIsma) {
+	private static void tryScanningForComponents(Container container1, Container container3 ,String basePath , String basePath2 ) {
 		File path = new File(basePath);
-		File pathOther = new File(basePathOther);
-		File pathIsma = new File(basePathIsma);
+		File path2 = new File(basePath2);
 		if (!path.exists()) {
 			System.out.println("Warning: Path " + basePath + " doesn't exist. Skipping component scanning.");
 			return;
@@ -173,15 +171,7 @@ public class AvatarC4ModelGenerator {
 		try {
 			System.out.println("Attempting to scan for components in: " + basePath);
 
-			/*Find components by suffix
-			List<String> suffixes = List.of("Info", "Request", "Response", "Result", "Endpoint" , "Whiteboard", "Serializer", "Connector", "Implementation", "Infrastructure");
-			for (String suffix : suffixes) {
-				tryScanningBySuffix(container, path, suffix);
-			}*/
-
-			// Find OSGi components by annotation
-			tryScanningConnectorByOsgiComponentAnnotation(container1, pathOther);
-			tryScanningConnectorByOsgiComponentAnnotation(container2, pathIsma);
+			tryScanningConnectorByOsgiComponentAnnotation(container1, path2);
 			tryScanningByOSGiFindAllModel(container3, path);
 
 
@@ -190,8 +180,7 @@ public class AvatarC4ModelGenerator {
 			System.out.println("Component scanning failed: " + e.getMessage());
 		}
 	}
-	//possible way is to search after classes suffixes like "Info", "Request", "Response", "Result", "Endpoint" , "Whiteboard", "Serializer", "Connector", "Implementation", "Infrastructure"
-	// this way we can find all components that are in the model
+
 	private static void tryScanningBySuffix(Container container, File path, String suffix) {
 		try {
 			ComponentFinder finder = new ComponentFinderBuilder()
@@ -216,64 +205,44 @@ public class AvatarC4ModelGenerator {
 		}
 	}
 
-	//idea: we can scan the bundle to get connectors. one way to make it automatic is to scan for an bundle then
-	// find the OSGi components by the @Component annotation with the property "connector" set to true
-	// this way we can find all connectors in the bundle -> dont know if this is possible
-	// a workaround is just to scan the bundle not the whole src folder
-	// and then find the OSGi components by the @Component
+
 
 	private static void tryScanningConnectorByOsgiComponentAnnotation(Container container, File path) {
 		try {
-			// Find components with @Component annotation (OSGi DS annotation)
+
 			ComponentFinder finder = new ComponentFinderBuilder()
-				.forContainer(container)
-				.fromClasses(path)
-				.withStrategy(
-					new ComponentFinderStrategyBuilder()
-						.matchedBy(
-							new AnnotationTypeMatcher(
-								"org.osgi.service.component.annotations.Component"
-							)
-						)
-						.withTechnology("OSGi Component")
-						.forEach(component -> {
-							component.addTags("Implementation");
-							component.setTechnology("Java/OSGi");
-							if(component.getName().contains("ISMA")) {
-								component.setDescription("Implementation for the ISMA HIMSA protocol");
+					.forContainer(container)
+					.fromClasses(path)
 
-							}else if(component.getName().contains("HL7")) {
-								component.setDescription("Implementation for the HL7 healthcare standard");
 
-							}
-							System.out.println(
-								"Found OSGi component: " + component.getName()
-							);
-						})
-						.build()
-				)
-				.build();
+					.withStrategy(
+							new ComponentFinderStrategyBuilder()
+									.matchedBy(new NameSuffixTypeMatcher("ConnectorImpl"))
+									.withTechnology("NameSuffix ConnectorImpl")
+									.forEach(component -> {
+										System.out.println("→ (STRAT 2) Found .*ConnectorImpl.*: " + component.getName());
+									})
+									.build()
+					)
+
+					.build();
+
+
+
 
 			finder.run();
-
-
-			System.out.println("Successfully found OSGi components");
+			System.out.println("Successfully found OSGi ConnectorImpl components");
 		} catch (Exception e) {
-			System.out.println("No OSGi components found - " + e.getMessage());
+			System.out.println("No matching OSGi components found — " + e.getMessage());
 		}
 	}
 
 
 
 
-	// Function to find all components in the model using OSGi annotations
-	// we can also do so we find only the reuslt by using regex matcher
-	// problem is that we also get models that we dont need it like Rsa factory, etc. thats belongs to the emf model
-	// good side is that we find every model in that package
-	// this stratgegy works because only the model has the @ProviderType annotation -> so based on thiis every new component should have this annoation
+
 	private static void tryScanningByOSGiFindAllModel(Container container, File path) {
 		try {
-			// Find components with @Component annotation (OSGi DS annotation)
 			ComponentFinder finder = new ComponentFinderBuilder()
 				.forContainer(container)
 				.fromClasses(path)                       // • path → directory/JAR of compiled classes
@@ -291,7 +260,6 @@ public class AvatarC4ModelGenerator {
 								component.addTags("Info");
 							} else if(component.getName().contains("EndpointRequest")) {
 								component.addTags("Request");
-
 							} else if(component.getName().contains("EndpointResponse")) {
 								component.addTags("Response");
 							} else if(component.getName().contains("DryRunResult") || component.getName().contains("ErrorResult")) {
