@@ -1,42 +1,42 @@
 {
   "componentMapper": {
-    "ConnectorInfo": {
+    "Connector Info": {
       "container": "connectorModel",
       "tags": "Info",
       "technology": "EMF Model",
       "description": "Contains metadata about a connector",
       "relations": [
         {
-          "target": "ConnectorEndpoint",
+          "target": "Connector Endpoint",
           "type": "uses"
         }
       ]
     },
-    "EndpointRequest": {
+    "Endpoint Request": {
       "container": "connectorModel",
       "tags": "Request",
       "technology": "EMF Model",
       "description": "Represents a request sent to an endpoint"
     },
-    "EndpointResponse": {
+    "Endpoint Response": {
       "container": "connectorModel",
       "tags": "Response",
       "technology": "EMF Model",
       "description": "Represents a response returned from an endpoint"
     },
-    "DryRunResult": {
+    "DryRun Result": {
       "container": "connectorModel",
       "tags": "Result",
       "technology": "EMF Model",
       "description": "Represents the outcome of a dry-run operation"
     },
-    "ErrorResult": {
+    "Error Result": {
       "container": "connectorModel",
       "tags": "Result",
       "technology": "EMF Model",
       "description": "Represents an error outcome from an operation"
     },
-    "ConnectorEndpoint": {
+    "Connector Endpoint": {
       "container": "connectorModel",
       "tags": "Endpoint",
       "technology": "EMF Model",

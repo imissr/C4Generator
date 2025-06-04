@@ -34,7 +34,6 @@
                     "description": "The kind of relationship (e.g., 'dependsOn', 'uses', 'wrappedBy' , extends, etc.)"
                   }
                 },
-                "required": ["target", "type"],
                 "additionalProperties": false
               },
               "description": "List of outbound relationships from this component"

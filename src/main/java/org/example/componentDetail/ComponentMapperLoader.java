@@ -17,6 +17,7 @@ public class ComponentMapperLoader {
         if (!mapperNode.isObject()) {
             throw new IllegalStateException("Missing or invalid 'componentMapper' node");
         }
+
         return mapper.convertValue(
                 mapperNode,
                 new TypeReference<Map<String, ComponentDetail>>() {}
