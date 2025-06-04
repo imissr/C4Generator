@@ -1,0 +1,94 @@
+{
+  "componentMapper": {
+    "ConnectorInfo": {
+      "container": "connectorModel",
+      "tags": "Info",
+      "technology": "EMF Model",
+      "description": "Contains metadata about a connector"
+    },
+    "EndpointRequest": {
+      "container": "connectorModel",
+      "tags": "Request",
+      "technology": "EMF Model",
+      "description": "Represents a request sent to an endpoint"
+    },
+    "EndpointResponse": {
+      "container": "connectorModel",
+      "tags": "Response",
+      "technology": "EMF Model",
+      "description": "Represents a response returned from an endpoint"
+    },
+    "DryRunResult": {
+      "container": "connectorModel",
+      "tags": "Result",
+      "technology": "EMF Model",
+      "description": "Represents the outcome of a dry-run operation"
+    },
+    "ErrorResult": {
+      "container": "connectorModel",
+      "tags": "Result",
+      "technology": "EMF Model",
+      "description": "Represents an error outcome from an operation"
+    },
+    "ConnectorEndpoint": {
+      "container": "connectorModel",
+      "tags": "Endpoint",
+      "technology": "EMF Model",
+      "description": "Defines a connector’s endpoint"
+    },
+    "Package": {
+      "container": "connectorModel",
+      "tags": "Package",
+      "technology": "EMF Model",
+      "description": "Represents a package in the model"
+    },
+    "Serializer": {
+      "container": "connectorModel",
+      "tags": "Infrastructure",
+      "technology": "EMF Model",
+      "description": "Handles serialization and deserialization of data"
+    },
+    "Connector": {
+      "container": "connectorModel",
+      "tags": "Implementation",
+      "technology": "EMF Model",
+      "description": "Represents a concrete implementation of a connector"
+    },
+    "Parameter": {
+      "container": "connectorModel",
+      "tags": "Parameter",
+      "technology": "EMF Model",
+      "description": "Defines a parameter for connector operations"
+    },
+    "Result": {
+      "container": "connectorModel",
+      "tags": "Result",
+      "technology": "EMF Model",
+      "description": "Represents a generic result from an operation"
+    },
+    "Factory": {
+      "container": "connectorModel",
+      "tags": "Factory",
+      "technology": "EMF Model",
+      "description": "Provides factory methods for creating instances"
+    },
+    "Metric": {
+      "container": "connectorModel",
+      "tags": "Metric",
+      "technology": "EMF Model",
+      "description": "Represents a metric used for measurement or monitoring"
+    },
+    "Type": {
+      "container": "connectorModel",
+      "tags": "Type",
+      "technology": "EMF Model",
+      "description": "Defines a data type or schema element"
+    },
+    "Helper": {
+      "container": "connectorModel",
+      "tags": "Helper",
+      "technology": "EMF Model",
+      "description": "Provides utility methods and helper functions"
+    }
+  }
+}

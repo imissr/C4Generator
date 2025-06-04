@@ -3,6 +3,7 @@ package org.example.c4;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.util.Map;
 
 import com.structurizr.Workspace;
 import com.structurizr.component.ComponentFinder;
@@ -15,6 +16,8 @@ import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
 import com.structurizr.view.*;
+import org.example.componentDetail.ComponentDetail;
+import org.example.componentDetail.ComponentMapperLoader;
 
 
 public class AvatarC4ModelGenerator {
@@ -53,8 +56,12 @@ public class AvatarC4ModelGenerator {
 
 		// Define base path to your Avatar project code
 		// Set this to your actual project path or a folder that exists
-		String basePathModel = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.model";
-		String basePathPorject = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
+		String basePathModel = "/home/mohamad-khaled-minawe/Desktop/project/avatar-dataspaces-demo/de.avatar.connector.model";
+		String basePathPorject = "/home/mohamad-khaled-minawe/Desktop/project/avatar-dataspaces-demo/";
+		String jsonPath = "src/main/java/org/example/json/componentMapper.json";
+		Map<String, ComponentDetail> componentMap = ComponentMapperLoader.loadComponentMap(jsonPath);
+
+
 
 
 
@@ -64,7 +71,7 @@ public class AvatarC4ModelGenerator {
 		createApiComponents(connectorApi);
 
 		//scanning for components in the specified base path
-		tryScanningForComponents(connectorImplementations ,connectorImplementations ,basePathModel , basePathPorject);
+		tryScanningForComponents(connectorImplementations , connectorModel , basePathModel , basePathPorject,componentMap);
 
 
 
@@ -160,7 +167,7 @@ public class AvatarC4ModelGenerator {
 
 
 	// Able to find all components in the specified base path
-	private static void tryScanningForComponents(Container container1, Container container3 ,String basePath , String basePath2 ) {
+	private static void tryScanningForComponents(Container container1, Container container2 ,String basePath , String basePath2  , Map<String, ComponentDetail> componentMap) {
 		File path = new File(basePath);
 		File path2 = new File(basePath2);
 		if (!path.exists()) {
@@ -172,7 +179,7 @@ public class AvatarC4ModelGenerator {
 			System.out.println("Attempting to scan for components in: " + basePath);
 
 			tryScanningConnectorByOsgiComponentAnnotation(container1, path2);
-			tryScanningByOSGiFindAllModel(container3, path);
+			tryScanningByOSGiFindAllModel(container2, path,componentMap);
 
 
 
@@ -241,71 +248,58 @@ public class AvatarC4ModelGenerator {
 
 
 
-	private static void tryScanningByOSGiFindAllModel(Container container, File path) {
+	/**
+	 * @param container   the OSGi container
+	 * @param path        directory or JAR of compiled classes
+	 * @param componentMap   pre‐loaded Map<String, ComponentDetail>
+	 */
+	public static void tryScanningByOSGiFindAllModel(
+			Container container,
+			File path,
+			Map<String, ComponentDetail> componentMap
+	) {
 		try {
 			ComponentFinder finder = new ComponentFinderBuilder()
-				.forContainer(container)
-				.fromClasses(path)                       // • path → directory/JAR of compiled classes
-				.withStrategy(
-					new ComponentFinderStrategyBuilder()
-						.matchedBy(
-							new AnnotationTypeMatcher(
-								"org.osgi.annotation.versioning.ProviderType"
-							)
-						)
-						.withTechnology("OSGi Component")
-						.forEach(component -> {
-							component.setTechnology("EMF Model");
-							if(component.getName().contains("ConnectorInfo")) {
-								component.addTags("Info");
-							} else if(component.getName().contains("EndpointRequest")) {
-								component.addTags("Request");
-							} else if(component.getName().contains("EndpointResponse")) {
-								component.addTags("Response");
-							} else if(component.getName().contains("DryRunResult") || component.getName().contains("ErrorResult")) {
-								component.addTags("Result");
-							} else if(component.getName().contains("ConnectorEndpoint")) {
-								component.addTags("Endpoint");
-							} else if(component.getName().contains("Package")) {
-								component.addTags("Package");
-							} else if(component.getName().contains("Serializer")) {
-								component.addTags("Infrastructure");
-							} else if(component.getName().contains("Connector")) {
-								component.addTags("Implementation");
-							}else if(component.getName().contains("Parameter")) {
-								component.addTags("Parameter");
-							} else if(component.getName().contains("Result")) {
-								component.addTags("Result");
-							} else if(component.getName().contains("Factory")) {
-								component.addTags("Factory");
-							} else if(component.getName().contains("Metric")) {
-								component.addTags("Metric");
-							}else if (component.getName().contains("Type")){
-								component.addTags("Type");
-							}else if (component.getName().contains("Helper")) {
-								component.addTags("Helper");
-							}
-							 else {
-								System.out.println(
-									"Component " + component.getName() + " does not match any known tags"
-								);
+					.forContainer(container)
+					.fromClasses(path)
+					.withStrategy(
+							new ComponentFinderStrategyBuilder()
+									.matchedBy(
+											new AnnotationTypeMatcher(
+													"org.osgi.annotation.versioning.ProviderType"
+											)
+									)
+									.withTechnology("OSGi Component")
+									.forEach(component -> {
+										boolean matchedAnything = false;
+										for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
+											String keySubstring = entry.getKey();
+											ComponentDetail detail = entry.getValue();
 
-							}
+											if (component.getName().contains(keySubstring)) {
+												component.setTechnology(detail.getTechnology());
+												component.addTags(detail.getTags());
+												matchedAnything = true;
+												break;
+											}
+										}
 
-							System.out.println(
-								"Found OSGi component: " + component.getName()
-							);
-						})
-						.build()
-				)
-				.build();
+										if (!matchedAnything) {
+											System.out.println(
+													"Component " + component.getName() + " does not match any known tags"
+											);
+										}
+
+										System.out.println("Found OSGi component: " + component.getName());
+									})
+									.build()
+					)
+					.build();
 
 			finder.run();
-
-
 			System.out.println("Successfully found OSGi components");
 		} catch (Exception e) {
-			System.out.println("No OSGi components found - " + e.getMessage());
+			System.out.println("No OSGi components found – " + e.getMessage());
 		}
 	}
 
