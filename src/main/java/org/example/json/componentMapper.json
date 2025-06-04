@@ -4,7 +4,13 @@
       "container": "connectorModel",
       "tags": "Info",
       "technology": "EMF Model",
-      "description": "Contains metadata about a connector"
+      "description": "Contains metadata about a connector",
+      "relations": [
+        {
+          "target": "ConnectorEndpoint",
+          "type": "uses"
+        }
+      ]
     },
     "EndpointRequest": {
       "container": "connectorModel",

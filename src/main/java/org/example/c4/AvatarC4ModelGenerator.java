@@ -235,8 +235,6 @@ public class AvatarC4ModelGenerator {
 					.build();
 
 
-
-
 			finder.run();
 			System.out.println("Successfully found OSGi ConnectorImpl components");
 		} catch (Exception e) {
@@ -279,11 +277,11 @@ public class AvatarC4ModelGenerator {
 											if (component.getName().contains(keySubstring)) {
 												component.setTechnology(detail.getTechnology());
 												component.addTags(detail.getTags());
+												component.setDescription(detail.getDescription());
 												matchedAnything = true;
 												break;
 											}
 										}
-
 										if (!matchedAnything) {
 											System.out.println(
 													"Component " + component.getName() + " does not match any known tags"

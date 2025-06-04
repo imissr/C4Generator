@@ -19,6 +19,25 @@
             },
             "container": {
               "type": "string"
+            },
+            "relations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "description": "The key/name of the component this one relates to"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "The kind of relationship (e.g., 'dependsOn', 'uses', 'wrappedBy' , extends, etc.)"
+                  }
+                },
+                "required": ["target", "type"],
+                "additionalProperties": false
+              },
+              "description": "List of outbound relationships from this component"
             }
           },
           "required": ["tags", "technology", "description"],

@@ -25,7 +25,8 @@ public class ComponentDetail {
      * @param description Description of the component.
      */
     @JsonCreator
-    public ComponentDetail(@JsonProperty("tags") String tags, @JsonProperty("technology") String technology, @JsonProperty("description") String description , @JsonProperty("container") String container) {
+    public ComponentDetail(@JsonProperty("tags") String tags, @JsonProperty("technology") String technology,
+                           @JsonProperty("description") String description , @JsonProperty("container") String container) {
         this.tags = tags;
         this.technology = technology;
         this.description = description;
