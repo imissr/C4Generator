@@ -17,9 +17,7 @@ import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
 import com.structurizr.view.*;
-import org.example.componentDetail.ComponentDetail;
-import org.example.componentDetail.ComponentMapperLoader;
-import org.example.componentDetail.Relations;
+import org.example.componentDetail.*;
 
 
 public class AvatarC4ModelGenerator {
@@ -56,19 +54,27 @@ public class AvatarC4ModelGenerator {
         connectorInfrastructure.uses(connectorModel, "Uses");
         clientUser.uses(connectorImplementations, "Sends requests to");
 
-        // Define base path to your Avatar project code
-        // Set this to your actual project path or a folder that exists
+
         String basePathModel = "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.model";
         String basePathPorject = "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo";
-        String jsonPath = "src/main/java/org/example/json/componentMapper.json";
-        Map<String, ComponentDetail> componentMap = ComponentMapperLoader.loadComponentMap(jsonPath);
+        File json = new File("src/main/java/org/example/json/componentMapper.json");
+
+        ContainerConfig config = ContainerConfig.loadFromFile(json);
+        Map<String, ContainerDetail> allContainers = config.getContainerMap();
+        Map<String, ComponentDetail> componentMap = null;
+        ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
 
 
-        //createImplComponents(connectorImplementations, connectorApi, connectorModel);
+
+        if (connectorModelDetail != null) {
+            componentMap = connectorModelDetail.getComponentMap();
+        }
+
+
+
         createInfraComponents(connectorInfrastructure, connectorModel);
         createApiComponents(connectorApi);
 
-        //scanning for components in the specified base path
         tryScanningForComponents(connectorImplementations, connectorModel, basePathModel, basePathPorject, componentMap);
 
 

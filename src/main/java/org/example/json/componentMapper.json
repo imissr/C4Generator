@@ -1,100 +1,226 @@
 {
-  "componentMapper": {
-    "Connector Info": {
-      "container": "connectorModel",
-      "tags": "Info",
-      "technology": "EMF Model",
-      "description": "Contains metadata about a connector",
-      "relations": [
-        {
-          "target": "Connector Endpoint",
-          "type": "uses"
-        }
-      ]
-    },
-    "Endpoint Request": {
-      "container": "connectorModel",
-      "tags": "Request",
-      "technology": "EMF Model",
-      "description": "Represents a request sent to an endpoint"
-    },
-    "Endpoint Response": {
-      "container": "connectorModel",
-      "tags": "Response",
-      "technology": "EMF Model",
-      "description": "Represents a response returned from an endpoint"
-    },
-    "DryRun Result": {
-      "container": "connectorModel",
-      "tags": "Result",
-      "technology": "EMF Model",
-      "description": "Represents the outcome of a dry-run operation"
-    },
-    "Error Result": {
-      "container": "connectorModel",
-      "tags": "Result",
-      "technology": "EMF Model",
-      "description": "Represents an error outcome from an operation"
-    },
-    "Connector Endpoint": {
-      "container": "connectorModel",
-      "tags": "Endpoint",
-      "technology": "EMF Model",
-      "description": "Defines a connector’s endpoint"
-    },
-    "Package": {
-      "container": "connectorModel",
-      "tags": "Package",
-      "technology": "EMF Model",
-      "description": "Represents a package in the model"
-    },
-    "Serializer": {
-      "container": "connectorModel",
-      "tags": "Infrastructure",
-      "technology": "EMF Model",
-      "description": "Handles serialization and deserialization of data"
-    },
-    "Connector": {
-      "container": "connectorModel",
-      "tags": "Implementation",
-      "technology": "EMF Model",
-      "description": "Represents a concrete implementation of a connector"
-    },
-    "Parameter": {
-      "container": "connectorModel",
-      "tags": "Parameter",
-      "technology": "EMF Model",
-      "description": "Defines a parameter for connector operations"
-    },
-    "Result": {
-      "container": "connectorModel",
-      "tags": "Result",
-      "technology": "EMF Model",
-      "description": "Represents a generic result from an operation"
-    },
-    "Factory": {
-      "container": "connectorModel",
-      "tags": "Factory",
-      "technology": "EMF Model",
-      "description": "Provides factory methods for creating instances"
-    },
-    "Metric": {
-      "container": "connectorModel",
-      "tags": "Metric",
-      "technology": "EMF Model",
-      "description": "Represents a metric used for measurement or monitoring"
-    },
-    "Type": {
-      "container": "connectorModel",
-      "tags": "Type",
-      "technology": "EMF Model",
-      "description": "Defines a data type or schema element"
-    },
-    "Helper": {
-      "container": "connectorModel",
-      "tags": "Helper",
-      "technology": "EMF Model",
-      "description": "Provides utility methods and helper functions"
+  "container": [
+    {
+      "connectorModel": {
+        "objectMapper": [
+          {
+            "componentName": "Connector Info",
+            "tags": "Info",
+            "technology": "EMF Model",
+            "description": "Contains metadata about a connector including id, name, provider, version",
+            "relations": [
+              {
+                "target": "Connector Endpoint",
+                "type": "uses"
+              },
+              {
+                "target": "Connector Metric",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Connector Endpoint",
+            "tags": "Endpoint",
+            "technology": "EMF Model",
+            "description": "Defines a connector's endpoint with URI, method, protocol, and media type"
+          },
+          {
+            "componentName": "Connector Metric",
+            "tags": "Metric",
+            "technology": "EMF Model",
+            "description": "Tracks connector performance metrics including timestamp, status, and uptime"
+          },
+          {
+            "componentName": "Endpoint Request",
+            "tags": "Request",
+            "technology": "EMF Model",
+            "description": "Represents a request sent to an endpoint with parameters and timestamp",
+            "relations": [
+              {
+                "target": "Connector Endpoint",
+                "type": "uses"
+              },
+              {
+                "target": "Parameter",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Endpoint Response",
+            "tags": "Response",
+            "technology": "EMF Model",
+            "description": "Represents a response returned from an endpoint with result and timestamp",
+            "relations": [
+              {
+                "target": "Endpoint Request",
+                "type": "responds-to"
+              },
+              {
+                "target": "Response Result",
+                "type": "contains"
+              }
+            ]
+          },
+          {
+            "componentName": "Parameter",
+            "tags": "Parameter",
+            "technology": "EMF Model",
+            "description": "Abstract base class for defining parameters with name and number"
+          },
+          {
+            "componentName": "Java Parameter",
+            "tags": "Parameter",
+            "technology": "EMF Model",
+            "description": "Java-specific parameter implementation with type string and value",
+            "relations": [
+              {
+                "target": "Parameter",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Ecore Parameter",
+            "tags": "Parameter",
+            "technology": "EMF Model",
+            "description": "EMF Ecore-specific parameter implementation",
+            "relations": [
+              {
+                "target": "Parameter",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Response Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "Abstract base class for all response results with metadata",
+            "relations": [
+              {
+                "target": "Response Meta Data",
+                "type": "contains"
+              }
+            ]
+          },
+          {
+            "componentName": "Response Meta Data",
+            "tags": "Meta Data",
+            "technology": "EMF Model",
+            "description": "Contains metadata about a response including hash information"
+          },
+          {
+            "componentName": "Dry Run Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "Represents the outcome of a dry-run operation with result count and estimated runtime",
+            "relations": [
+              {
+                "target": "Response Result",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Error Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "Represents an error outcome from an operation with error details and throwable",
+            "relations": [
+              {
+                "target": "Response Result",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Ecore Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "EMF Ecore-specific result implementation",
+            "relations": [
+              {
+                "target": "Response Result",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Java Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "Java-specific result implementation with type string and value",
+            "relations": [
+              {
+                "target": "Response Result",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "Simple Result",
+            "tags": "Result",
+            "technology": "EMF Model",
+            "description": "Simple result implementation containing a string value",
+            "relations": [
+              {
+                "target": "Response Result",
+                "type": "extends"
+              }
+            ]
+          },
+          {
+            "componentName": "A Connector Factory",
+            "tags": "Factory",
+            "technology": "EMF Model",
+            "description": "Factory for creating connector model instances",
+            "relations": [
+              {
+                "target": "Connector Info",
+                "type": "creates"
+              },
+              {
+                "target": "Connector Endpoint",
+                "type": "creates"
+              },
+              {
+                "target": "Endpoint Request",
+                "type": "creates"
+              },
+              {
+                "target": "Endpoint Response",
+                "type": "creates"
+              }
+            ]
+          },
+          {
+            "componentName": "A Connector Package",
+            "tags": "Package",
+            "technology": "EMF Model",
+            "description": "The main EMF package containing all connector model metadata and class definitions"
+          },
+          {
+            "componentName": "Protocol Type",
+            "tags": "Enum",
+            "technology": "EMF Model",
+            "description": "Enumeration defining supported protocol types (HTTP, HTTPS, etc.)"
+          },
+          {
+            "componentName": "Status Type",
+            "tags": "Enum",
+            "technology": "EMF Model",
+            "description": "Enumeration defining connector status types (ONLINE, OFFLINE, etc.)"
+          },
+          {
+            "componentName": "Response Code",
+            "tags": "Enum",
+            "technology": "EMF Model",
+            "description": "Enumeration defining HTTP response codes and connector-specific response codes"
+          }
+        ]
+      }
     }
-  }
+  ]
 }

@@ -2,50 +2,73 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "componentMapper": {
-      "type": "object",
-      "patternProperties": {
-        "^[A-Za-z_$][A-Za-z0-9_$]*$": {
-          "type": "object",
-          "properties": {
-            "tags": {
-              "type": "string"
-            },
-            "technology": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "container": {
-              "type": "string"
-            },
-            "relations": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "target": {
-                    "type": "string",
-                    "description": "The key/name of the component this one relates to"
+    "container": {
+      "type": "array",
+      "description": "Array of containers, each keyed by a name matching the pattern",
+      "items": {
+        "type": "object",
+        "description": "An object whose single key is the container name, and whose value holds an array of component definitions",
+        "patternProperties": {
+          "^[A-Za-z_$][A-Za-z0-9_ $]*$": {
+            "type": "object",
+            "description": "Container object. The property name is the container name.",
+            "properties": {
+              "objectMapper": {
+                "type": "array",
+                "description": "Array of component definitions inside this container",
+                "items": {
+                  "type": "object",
+                  "description": "A single component definition",
+                  "properties": {
+                    "componentName": {
+                      "type": "string",
+                      "description": "The name of this component (must be unique within its container)"
+                    },
+                    "tags": {
+                      "type": "string",
+                      "description": "Comma-separated list of tags or a single tag"
+                    },
+                    "technology": {
+                      "type": "string",
+                      "description": "Technology used by this component"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Human-readable description of this component"
+                    },
+                    "relations": {
+                      "type": "array",
+                      "description": "Outbound relationships from this component",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "target": {
+                            "type": "string",
+                            "description": "The name of the component this one relates to"
+                          },
+                          "type": {
+                            "type": "string",
+                            "description": "The kind of relationship (e.g., 'dependsOn', 'uses', 'wrappedBy', 'extends', etc.)"
+                          }
+                        },
+                        "required": ["target", "type"],
+                        "additionalProperties": false
+                      }
+                    }
                   },
-                  "type": {
-                    "type": "string",
-                    "description": "The kind of relationship (e.g., 'dependsOn', 'uses', 'wrappedBy' , extends, etc.)"
-                  }
-                },
-                "additionalProperties": false
-              },
-              "description": "List of outbound relationships from this component"
-            }
-          },
-          "required": ["tags", "technology", "description"],
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
+                  "required": ["componentName", "tags", "technology", "description"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["objectMapper"],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
     }
   },
-  "required": ["componentMapper"],
+  "required": ["container"],
   "additionalProperties": false
 }

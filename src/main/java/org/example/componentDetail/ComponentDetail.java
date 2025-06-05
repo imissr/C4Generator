@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.management.relation.Relation;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class ComponentDetail {
     private String tags;
     private String technology;
     private String description;
-    private String container;
+    private String componentName;
 
     // NEW: List of outgoing relations from this component
     private List<Relations> relations;
@@ -30,21 +31,20 @@ public class ComponentDetail {
      * @param tags        Tags associated with the component.
      * @param technology  Technology used in the component.
      * @param description Description of the component.
-     * @param container   (optional) Container reference, if any.
      * @param relations   (optional) List of relations from this component to others.
      */
     @JsonCreator
     public ComponentDetail(
+            @JsonProperty("componentName") String componentName,
             @JsonProperty("tags") String tags,
             @JsonProperty("technology") String technology,
             @JsonProperty("description") String description,
-            @JsonProperty("container") String container,
             @JsonProperty("relations") List<Relations> relations
     ) {
         this.tags = tags;
         this.technology = technology;
         this.description = description;
-        this.container = container;
+        this.componentName = componentName;
         this.relations = relations;
     }
 }
