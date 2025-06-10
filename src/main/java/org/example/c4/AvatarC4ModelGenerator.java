@@ -55,19 +55,22 @@ public class AvatarC4ModelGenerator {
         clientUser.uses(connectorImplementations, "Sends requests to");
 
 
-        String basePathModel = "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.model";
-        String basePathPorject = "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo";
+        String basePathModel = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.model";
+        String basePathPorject = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
         File json = new File("src/main/java/org/example/json/componentMapper.json");
 
         ContainerConfig config = ContainerConfig.loadFromFile(json);
         Map<String, ContainerDetail> allContainers = config.getContainerMap();
         Map<String, ComponentDetail> componentMap = null;
+        Map<String, ComponentDetail> componentConnectorMap = null;
         ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
+        ContainerDetail connectorImplementationDetail = allContainers.get("connectorImplementations");
 
 
 
         if (connectorModelDetail != null) {
             componentMap = connectorModelDetail.getComponentMap();
+            componentConnectorMap = connectorImplementationDetail.getComponentMap();
         }
 
 
@@ -75,7 +78,7 @@ public class AvatarC4ModelGenerator {
         createInfraComponents(connectorInfrastructure, connectorModel);
         createApiComponents(connectorApi);
 
-        tryScanningForComponents(connectorImplementations, connectorModel, basePathModel, basePathPorject, componentMap);
+        tryScanningForComponents(connectorImplementations, connectorModel, basePathModel, basePathPorject, componentMap , componentConnectorMap);
 
 
         // Create container view
@@ -135,24 +138,6 @@ public class AvatarC4ModelGenerator {
         avatarConnector.uses(avatarConnectorInfo, "extends");
     }
 
-    // Method to manually create implementation components
-	/*private static void createImplComponents(Container container, Container api, Container model) {
-		Component ismaConnector = container.addComponent("ISMAConnector",
-			"Implementation for the ISMA HIMSA protocol", "Java/OSGi");
-		ismaConnector.addTags("Implementation");
-
-		Component hl7Connector = container.addComponent("HL7Connector",
-			"Implementation for the HL7 healthcare standard", "Java/OSGi");
-		hl7Connector.addTags("Implementation");
-
-		//ismaConnector.uses(api.getComponentWithName("AvatarConnector"), "implements");
-		//hl7Connector.uses(api.getComponentWithName("AvatarConnector"), "implements");
-
-		ismaConnector.uses(model.getComponentWithName("Endpoint Request"), "processes");
-		ismaConnector.uses(model.getComponentWithName("Endpoint Response"), "creates");
-		hl7Connector.uses(model.getComponentWithName("Endpoint Request"), "processes");
-		hl7Connector.uses(model.getComponentWithName("Endpoint Response"), "creates");
-	}*/
 
     // Method to manually create infrastructure components
     private static void createInfraComponents(Container container, Container model) {
@@ -164,23 +149,20 @@ public class AvatarC4ModelGenerator {
                 "Performs serialization/deserialization of EMF objects", "Java/OSGi");
         serializer.addTags("Infrastructure");
 
-        //serializer.uses(model.getComponentWithName("EcoreResult"), "serializes/deserializes");
     }
 
 
-    // Able to find all components in the specified base path
-    private static void tryScanningForComponents(Container container1, Container container2, String basePath, String basePath2, Map<String, ComponentDetail> componentMap) {
+    private static void tryScanningForComponents(Container container1, Container container2, String basePath, String basePath2, Map<String, ComponentDetail> componentMap , Map<String, ComponentDetail> componentConnectorMap) {
         File path = new File(basePath);
         File path2 = new File(basePath2);
         if (!path.exists()) {
             System.out.println("Warning: Path " + basePath + " doesn't exist. Skipping component scanning.");
             return;
         }
-
         try {
             System.out.println("Attempting to scan for components in: " + basePath);
 
-            tryScanningConnectorByOsgiComponentAnnotation(container1, path2);
+            tryScanningConnectorByOsgiComponentAnnotation(container1, path2,componentConnectorMap);
             tryScanningByOSGiFindAllModel(container2, path, componentMap);
 
 
@@ -189,55 +171,31 @@ public class AvatarC4ModelGenerator {
         }
     }
 
-    private static void tryScanningBySuffix(Container container, File path, String suffix) {
+
+
+    private static void tryScanningConnectorByOsgiComponentAnnotation(Container container, File path ,  Map<String, ComponentDetail> componentMap) {
         try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    .matchedBy(new NameSuffixTypeMatcher(suffix))
-                                    .withTechnology("EMF Model")
-                                    .forEach(component -> {
-                                        component.addTags(suffix);
-                                        System.out.println("Found component by suffix: " + component.getName());
-                                    })
-                                    .build()
-                    )
-                    .build();
-
-            finder.run();
-            System.out.println("Successfully found components with suffix: " + suffix);
-        } catch (Exception e) {
-            System.out.println("No components found with suffix: " + suffix + " - " + e.getMessage());
-        }
-    }
-
-
-    private static void tryScanningConnectorByOsgiComponentAnnotation(Container container, File path) {
-        try {
-
             ComponentFinder finder = new ComponentFinderBuilder()
                     .forContainer(container)
                     .fromClasses(path)
                     .withStrategy(
                             new ComponentFinderStrategyBuilder()
                                     .matchedBy(new NameSuffixTypeMatcher("ConnectorImpl"))
-                                    .withTechnology("NameSuffix ConnectorImpl")
+                                    .withTechnology("OSGi Connector")
                                     .forEach(component -> {
-                                        System.out.println("→ (STRAT 2) Found .*ConnectorImpl.*: " + component.getName());
+                                        System.out.println("Found OSGi component: " + component.getName());
                                     })
                                     .build()
                     )
-
                     .build();
-
-
             finder.run();
-            System.out.println("Successfully found OSGi ConnectorImpl components");
+            assignRealtionFromJson(container, componentMap);
+
+            System.out.println("Successfully found OSGi components");
         } catch (Exception e) {
-            System.out.println("No matching OSGi components found — " + e.getMessage());
+            System.out.println("No OSGi components found – " + e.getMessage());
         }
+
     }
 
 
@@ -264,68 +222,47 @@ public class AvatarC4ModelGenerator {
                                     )
                                     .withTechnology("OSGi Component")
                                     .forEach(component -> {
-                                        boolean matchedAnything = false;
-                                        for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
-                                            String keySubstring = entry.getKey();
-                                            ComponentDetail detail = entry.getValue();
-
-                                            if (component.getName().contains(keySubstring)) {
-                                                component.setTechnology(detail.getTechnology());
-                                                component.addTags(detail.getTags());
-                                                component.setDescription(detail.getDescription());
-
-                                                matchedAnything = true;
-                                                break;
-                                            }
-                                        }
-                                        if (!matchedAnything) {
-                                            System.out.println(
-                                                    "Component " + component.getName() + " does not match any known tags"
-                                            );
-                                        }
-
                                         System.out.println("Found OSGi component: " + component.getName());
                                     })
                                     .build()
                     )
                     .build();
-
             finder.run();
-
-            for (Component component : container.getComponents()) {
-                for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
-                    String keySubstring = entry.getKey();
-                    ComponentDetail detail = entry.getValue();
-
-                    if (component.getName().contains(keySubstring)) {
-                        component.setTechnology(detail.getTechnology());
-                        component.addTags(detail.getTags());
-                        component.setDescription(detail.getDescription());
-
-                        // Check if the component has relations and print them
-                        List<Relations> relations = detail.getRelations();
-                        System.out.println(keySubstring + " " + relations);
-                        if (relations != null && !relations.isEmpty()) {
-                            for (Relations relation : relations) {
-                                System.out.println("Relation: " + relation.getType() + " to " + relation.getTarget());
-                                Component targetComponent = container.getComponentWithName(relation.getTarget());
-                                if (targetComponent != null) {
-                                    component.uses(targetComponent, relation.getType());
-                                    System.out.println("Added relation from " + component.getName() + " to " + targetComponent.getName() + " of type " + relation.getType());
-                                } else {
-                                    System.out.println("Target component " + relation.getTarget() + " not found for relation in " + component.getName());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            assignRealtionFromJson(container, componentMap);
             System.out.println("Successfully found OSGi components");
         } catch (Exception e) {
             System.out.println("No OSGi components found – " + e.getMessage());
         }
     }
 
+    public static void assignRealtionFromJson(Container container, Map<String, ComponentDetail> componentMap) {
+        for (Component component : container.getComponents()) {
+            for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
+                String keySubstring = entry.getKey();
+                ComponentDetail detail = entry.getValue();
+
+                if (component.getName().contains(keySubstring)) {
+                    component.setTechnology(detail.getTechnology());
+                    component.addTags(detail.getTags());
+                    component.setDescription(detail.getDescription());
+
+                    List<Relations> relations = detail.getRelations();
+                    System.out.println(keySubstring + " " + relations);
+                    if (relations != null && !relations.isEmpty()) {
+                        for (Relations relation : relations) {
+                            System.out.println("Relation: " + relation.getType() + " to " + relation.getTarget());
+                            Component targetComponent = container.getComponentWithName(relation.getTarget());
+                            if (targetComponent != null) {
+                                component.uses(targetComponent, relation.getType());
+                                System.out.println("Added relation from " + component.getName() + " to " + targetComponent.getName() + " of type " + relation.getType());
+                            } else {
+                                System.out.println("Target component " + relation.getTarget() + " not found for relation in " + component.getName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

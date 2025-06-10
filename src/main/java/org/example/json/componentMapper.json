@@ -220,6 +220,58 @@
             "description": "Enumeration defining HTTP response codes and connector-specific response codes"
           }
         ]
+      },
+      "connectorImplementations": {
+        "objectMapper": [
+          {
+            "componentName": "ISMA Connector Impl",
+            "tags": "Implementation",
+            "technology": "Java/OSGi",
+            "description": "Implementation for the ISMA HIMSA protocol",
+            "relations": [
+              {
+                "target": "AvatarConnector",
+                "type": "implements"
+              },
+              {
+                "target": "Connector Info",
+                "type": "uses"
+              },
+              {
+                "target": "Endpoint Request",
+                "type": "creates"
+              },
+              {
+                "target": "Endpoint Response",
+                "type": "returns"
+              }
+            ]
+          },
+          {
+            "componentName": "Other Connector Impl",
+            "tags": "Implementation",
+            "technology": "Java/OSGi",
+            "description": "Implementation for the HL7 healthcare standard",
+            "relations": [
+              {
+                "target": "AvatarConnector",
+                "type": "implements"
+              },
+              {
+                "target": "Connector Info",
+                "type": "uses"
+              },
+              {
+                "target": "Endpoint Request",
+                "type": "creates"
+              },
+              {
+                "target": "Endpoint Response",
+                "type": "returns"
+              }
+            ]
+          }
+        ]
       }
     }
   ]
