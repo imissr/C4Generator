@@ -29,7 +29,8 @@ import com.structurizr.component.Type;
  * @version 1.0
  * @since 2025-06-15
  */
-public class NewComponentStratgy implements TypeMatcher {    /** The target annotation type in internal JVM format (e.g., "Lorg/osgi/service/component/annotations/Component;") */
+public class NewComponentStratgy implements TypeMatcher {
+    /** The target annotation type in internal JVM format (e.g., "Lorg/osgi/service/component/annotations/Component;") */
     private final String annotationType;
     
     /** The property name to search for within the annotation (e.g., "connector") */

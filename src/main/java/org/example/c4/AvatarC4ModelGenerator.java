@@ -210,8 +210,8 @@ public class AvatarC4ModelGenerator {
             System.out.println("Attempting to scan for components in: " + basePath);
 
             //tryScanningConnectorByOsgiComponentAnnotation(container1, path2,componentConnectorMap  );
-            //tryScanningByOSGiFindAllModel(container2, path, componentMap);
-            //findInfrastructureComponents(container3,path2,componentInfrastructureMap);
+            tryScanningByOSGiFindAllModel(container2, path, componentMap);
+            findInfrastructureComponents(container3,path2,componentInfrastructureMap);
 
             tryScanningByOSGiFindAllModelNew(container1, path2, componentConnectorMap);
 
