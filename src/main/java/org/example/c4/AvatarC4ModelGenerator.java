@@ -19,8 +19,39 @@ import com.structurizr.model.Component;
 import com.structurizr.view.*;
 import org.example.componentDetail.*;
 
-
+/**
+ * Avatar C4 Model Generator - Main application for generating C4 architecture models.
+ * 
+ * This class generates a comprehensive C4 model for the Avatar Connector System,
+ * which is a connector-based system for healthcare data exchange. The model includes:
+ * - System context views showing users and external systems
+ * - Container views showing the main architectural containers
+ * - Component views showing internal components within each container
+ * - Automated component discovery using OSGi annotations
+ * - Component relationships and dependencies
+ * 
+ * The generated model is exported as a JSON file compatible with Structurizr for
+ * visualization and documentation purposes.
+ * 
+ * @author Generated Documentation
+ * @version 1.0
+ * @since 2025-06-15
+ */
 public class AvatarC4ModelGenerator {
+    /**
+     * Main entry point for the Avatar C4 Model Generator application.
+     * 
+     * This method orchestrates the entire C4 model generation process:
+     * 1. Creates a Structurizr workspace for the Avatar system
+     * 2. Defines users, systems, and containers
+     * 3. Loads component configurations from JSON files
+     * 4. Performs automated component discovery
+     * 5. Creates container and component views
+     * 6. Applies styling and exports the model to JSON
+     * 
+     * @param args Command line arguments (currently unused)
+     * @throws Exception If model generation fails due to file I/O or component scanning errors
+     */
     public static void main(String[] args) throws Exception {
         // Create workspace
         Workspace workspace = new Workspace("Avatar C4 Model", "Component analysis for Avatar Connector System");
@@ -127,8 +158,16 @@ public class AvatarC4ModelGenerator {
             System.out.println("Avatar C4 model exported to avatar-c4-model.json");
         }
     }
-
-
+    /**
+     * Creates manual API components for the connector API container.
+     * 
+     * This method manually defines the core API interfaces that form the
+     * contract for all connector implementations in the Avatar system.
+     * These components represent the fundamental interfaces that all
+     * connector implementations must adhere to.
+     * 
+     * @param container The connector API container to add components to
+     */
     // Method to manually create API components based on documentation
     private static void createApiComponents(Container container) {
         Component avatarConnectorInfo = container.addComponent("AvatarConnectorInfo",
@@ -142,8 +181,23 @@ public class AvatarC4ModelGenerator {
         avatarConnector.uses(avatarConnectorInfo, "extends");
     }
 
-
-
+    /**
+     * Attempts to scan for components in the specified directories using OSGi annotations.
+     * 
+     * This method coordinates the component discovery process across multiple containers
+     * by scanning the compiled classes in the specified base paths. It uses the component
+     * mappings loaded from JSON configuration files to enrich the discovered components
+     * with metadata and relationship information.
+     * 
+     * @param container1 The connector implementations container
+     * @param container2 The connector model container  
+     * @param container3 The infrastructure container
+     * @param basePath Base path for the connector model classes
+     * @param basePath2 Base path for the broader project structure
+     * @param componentMap Component details for the model container
+     * @param componentConnectorMap Component details for the connector implementations
+     * @param componentInfrastructureMap Component details for the infrastructure container
+     */
     private static void tryScanningForComponents(Container container1, Container container2,Container container3, String basePath, String basePath2, Map<String, ComponentDetail> componentMap
             , Map<String, ComponentDetail> componentConnectorMap , Map<String, ComponentDetail> componentInfrastructureMap) {
         File path = new File(basePath);
@@ -315,12 +369,18 @@ public class AvatarC4ModelGenerator {
             System.out.println("No OSGi components found – " + e.getMessage());
         }
     }
-
-
     /**
-     * @param container    the OSGi container
-     * @param path         directory or JAR of compiled classes
-     * @param componentMap pre‐loaded Map<String, ComponentDetail>
+     * Scans for OSGi components using the ProviderType annotation and applies
+     * component details from the provided configuration map.
+     * 
+     * This method uses the Structurizr ComponentFinder to automatically discover
+     * OSGi components marked with the @ProviderType annotation. After discovery,
+     * it enriches the found components with detailed metadata (technology, tags,
+     * descriptions, and relationships) from the pre-loaded component configuration.
+     * 
+     * @param container The OSGi container to scan for components
+     * @param path Directory or JAR file containing compiled classes to scan
+     * @param componentMap Pre-loaded map of component names to their detailed configurations
      */
     public static void tryScanningByOSGiFindAllModel(
             Container container,
@@ -353,6 +413,20 @@ public class AvatarC4ModelGenerator {
         }
     }
 
+    /**
+     * Assigns component metadata and relationships from JSON configuration to discovered components.
+     * 
+     * This method iterates through all components in the container and matches them with
+     * their corresponding configuration entries in the component map. When a match is found
+     * (based on component name substring matching), it applies the metadata (technology,
+     * tags, description) and establishes relationships to other components.
+     * 
+     * The relationship establishment includes validation to ensure target components exist
+     * before creating the relationship links.
+     * 
+     * @param container The container whose components need to be enriched
+     * @param componentMap Map of component identifiers to their detailed configurations
+     */
     public static void assignRealtionFromJson(Container container, Map<String, ComponentDetail> componentMap) {
         for (Component component : container.getComponents()) {
             for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
