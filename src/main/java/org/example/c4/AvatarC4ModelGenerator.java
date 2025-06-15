@@ -57,28 +57,32 @@ public class AvatarC4ModelGenerator {
 
         String basePathModel = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.model";
         String basePathPorject = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
+
+
         File json = new File("src/main/java/org/example/json/componentMapper.json");
 
         ContainerConfig config = ContainerConfig.loadFromFile(json);
         Map<String, ContainerDetail> allContainers = config.getContainerMap();
         Map<String, ComponentDetail> componentMap = null;
         Map<String, ComponentDetail> componentConnectorMap = null;
+        Map<String, ComponentDetail> componentInfrastructureMap = null;
         ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
         ContainerDetail connectorImplementationDetail = allContainers.get("connectorImplementations");
+        ContainerDetail connectorInfrastructureDetail = allContainers.get("connectorInfrastructure");
 
 
 
         if (connectorModelDetail != null) {
             componentMap = connectorModelDetail.getComponentMap();
             componentConnectorMap = connectorImplementationDetail.getComponentMap();
+            componentInfrastructureMap = connectorInfrastructureDetail.getComponentMap();
         }
 
 
 
-        createInfraComponents(connectorInfrastructure, connectorModel);
         createApiComponents(connectorApi);
 
-        tryScanningForComponents(connectorImplementations, connectorModel, basePathModel, basePathPorject, componentMap , componentConnectorMap);
+        tryScanningForComponents(connectorImplementations, connectorModel,connectorInfrastructure, basePathModel, basePathPorject, componentMap , componentConnectorMap , componentInfrastructureMap);
 
 
         // Create container view
@@ -139,20 +143,9 @@ public class AvatarC4ModelGenerator {
     }
 
 
-    // Method to manually create infrastructure components
-    private static void createInfraComponents(Container container, Container model) {
-        Component whiteboard = container.addComponent("ConnectorWhiteboard",
-                "Implements the OSGi whiteboard pattern for tracking connector services", "Java/OSGi");
-        whiteboard.addTags("Infrastructure");
 
-        Component serializer = container.addComponent("EcoreSerializer",
-                "Performs serialization/deserialization of EMF objects", "Java/OSGi");
-        serializer.addTags("Infrastructure");
-
-    }
-
-
-    private static void tryScanningForComponents(Container container1, Container container2, String basePath, String basePath2, Map<String, ComponentDetail> componentMap , Map<String, ComponentDetail> componentConnectorMap) {
+    private static void tryScanningForComponents(Container container1, Container container2,Container container3, String basePath, String basePath2, Map<String, ComponentDetail> componentMap
+            , Map<String, ComponentDetail> componentConnectorMap , Map<String, ComponentDetail> componentInfrastructureMap) {
         File path = new File(basePath);
         File path2 = new File(basePath2);
         if (!path.exists()) {
@@ -162,12 +155,99 @@ public class AvatarC4ModelGenerator {
         try {
             System.out.println("Attempting to scan for components in: " + basePath);
 
-            tryScanningConnectorByOsgiComponentAnnotation(container1, path2,componentConnectorMap);
-            tryScanningByOSGiFindAllModel(container2, path, componentMap);
+            //tryScanningConnectorByOsgiComponentAnnotation(container1, path2,componentConnectorMap  );
+            //tryScanningByOSGiFindAllModel(container2, path, componentMap);
+            //findInfrastructureComponents(container3,path2,componentInfrastructureMap);
+
+            tryScanningByOSGiFindAllModelNew(container1, path2, componentConnectorMap);
 
 
         } catch (Exception e) {
             System.out.println("Component scanning failed: " + e.getMessage());
+        }
+    }
+
+
+
+    /*private static void findInfrastructureComponents(Container container, File path) {
+
+
+        try {
+            ComponentFinder finder = new ComponentFinderBuilder()
+                    .forContainer(container)
+                    .fromClasses(path)
+                    // Use only ONE strategy to avoid duplicates
+                    .withStrategy(
+                            new ComponentFinderStrategyBuilder()
+                                    .matchedBy(new RegexTypeMatcher(".*(?:Whiteboard|Serializer|Factory).*"))
+                                    .withTechnology("Java/OSGi")
+                                    .forEach(component -> {
+                                        System.out.println("Found infrastructure component: " + component.getName());
+                                        String canonicalName = component.getCanonicalName();
+
+                                        // Only process infrastructure-related packages
+                                        if (canonicalName.contains("de.avatar.connector.emf") ||
+                                                canonicalName.contains("de.avatar.connector.whiteboard")) {
+
+                                            component.addTags("Infrastructure");
+
+                                            if (canonicalName.contains("Ecore Serializer") || canonicalName.contains("Serializer")) {
+                                                component.setDescription("Performs serialization/deserialization of EMF objects");
+                                            } else if (canonicalName.contains("Whiteboard")) {
+                                                component.setDescription("Implements the OSGi whiteboard pattern for tracking connector services");
+                                            } else if (canonicalName.contains("Factory")) {
+                                                component.setDescription("Factory component for creating infrastructure services");
+                                            }
+
+                                            System.out.println("Found infrastructure component: " + component.getName());
+                                        }
+                                    })
+                                    .build()
+                    )
+                    .build();
+
+            finder.run();
+            System.out.println("Successfully found infrastructure components");
+
+        } catch (Exception e) {
+            System.out.println("Infrastructure component scanning failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }*/
+
+    private static void findInfrastructureComponents(Container container, File path , Map<String, ComponentDetail> componentMap) {
+        try {
+            ComponentFinder finder = new ComponentFinderBuilder()
+                    .forContainer(container)
+                    .fromClasses(path)
+                    .withStrategy(
+                            new ComponentFinderStrategyBuilder()
+                                    // More specific regex that excludes inner/anonymous classes
+                                    .matchedBy(new RegexTypeMatcher("^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"))
+                                    .withTechnology("Java/OSGi")
+                                    .forEach(component -> {
+                                        String canonicalName = component.getCanonicalName();
+
+                                        // Skip inner classes and anonymous classes
+                                        if (canonicalName.contains("$")) {
+                                            return;
+                                        }
+
+
+                                        System.out.println("Found infrastructure component: " + component.getName());
+                                    })
+                                    .build()
+                    )
+                    .build();
+
+            finder.run();
+
+            assignRealtionFromJson(container , componentMap);
+            System.out.println("Successfully found infrastructure components");
+
+        } catch (Exception e) {
+            System.out.println("Infrastructure component scanning failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -196,6 +276,44 @@ public class AvatarC4ModelGenerator {
             System.out.println("No OSGi components found – " + e.getMessage());
         }
 
+    }
+
+
+    public static void tryScanningByOSGiFindAllModelNew(
+            Container container,
+            File path,
+            Map<String, ComponentDetail> componentMap
+    ) {
+        try {
+            ComponentFinder finder = new ComponentFinderBuilder()
+                    .forContainer(container)
+                    .fromClasses(path)
+                    .withStrategy(
+                            new ComponentFinderStrategyBuilder()
+                                    // ← here we use YOUR strategy instead of AnnotationTypeMatcher
+                                    .matchedBy(
+                                            // look for @Component and require a "connector" property
+                                            new NewComponentStratgy(
+
+                                                    "org.osgi.service.component.annotations.Component" ,
+                                                    "connector"
+                                                    ,"property"
+                                            )
+                                    )
+                                    .withTechnology("OSGi Component")
+                                    .forEach(component -> {
+                                        System.out.println("Found OSGi component: " + component.getName());
+                                    })
+                                    .build()
+                    )
+                    .build();
+
+            finder.run();
+            assignRealtionFromJson(container, componentMap);
+            System.out.println("Successfully found OSGi components");
+        } catch (Exception e) {
+            System.out.println("No OSGi components found – " + e.getMessage());
+        }
     }
 
 

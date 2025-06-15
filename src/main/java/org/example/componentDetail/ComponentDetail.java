@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @ToString
-
 public class ComponentDetail {
 
     private String tags;

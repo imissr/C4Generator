@@ -247,6 +247,7 @@
               }
             ]
           },
+
           {
             "componentName": "Other Connector Impl",
             "tags": "Implementation",
@@ -272,7 +273,58 @@
             ]
           }
         ]
+      },
+      "connectorInfrastructure": {
+        "objectMapper": [
+          {
+            "componentName": "Connector Whiteboard Impl",
+            "tags": "Infrastructure",
+            "technology": "Java/OSGi",
+            "description": "Whiteboard implementation for managing connector lifecycle and interactions",
+            "relations": [
+            ]
+          },
+          {
+              "componentName": "Connector Whiteboard",
+              "tags": "Infrastructure",
+              "technology": "Java/OSGi",
+              "description": "Whiteboard interface for connector management",
+              "relations": [
+              ]
+          },
+            {
+                "componentName": "Ecore Serializer Factory Provider",
+                "tags": "Infrastructure",
+                "technology": "Java/OSGi",
+                "description": "Provides Ecore serializer factory for connector model serialization",
+                "relations": [
+                    {
+                        "target": "Ecore Serializer Factory",
+                        "type": "provides"
+                    }
+                ]
+            },
+            {
+                "componentName": "Ecore Serializer Factory",
+                "tags": "Infrastructure",
+                "technology": "Java/OSGi",
+                "description": "Factory for creating Ecore serializers for connector model instances",
+                "relations": [
+                    {
+                        "target": "Ecore Serializer",
+                        "type": "creates"
+                    }
+                ]
+            },
+            {
+                "componentName": "Ecore Serializer",
+                "tags": "Infrastructure",
+                "technology": "Java/OSGi",
+                "description": "Serializer for converting connector model instances to/from Ecore format"
+            }
+        ]
       }
+
     }
   ]
 }
