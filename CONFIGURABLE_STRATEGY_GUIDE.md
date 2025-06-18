@@ -21,12 +21,11 @@ Discovers components marked with specific annotations.
 {
   "name": "Provider Type Strategy",
   "type": "ANNOTATION",
-  "description": "Discovers EMF model interfaces marked with @ProviderType",
   "config": {
     "annotationType": "org.osgi.annotation.versioning.ProviderType"
   },
-  "containerMapping": "connectorModel",
-  "technology": "EMF Model"
+  "containerMapping": "connectorModel"
+
 }
 ```
 
@@ -41,8 +40,7 @@ Discovers components using regular expression patterns.
   "config": {
     "pattern": "^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"
   },
-  "containerMapping": "connectorInfrastructure", 
-  "technology": "Java/OSGi"
+  "containerMapping": "connectorInfrastructure"
 }
 ```
 
@@ -57,8 +55,7 @@ Discovers components based on naming conventions.
   "config": {
     "suffix": "ConnectorImpl"
   },
-  "containerMapping": "connectorImplementations",
-  "technology": "OSGi Connector"
+  "containerMapping": "connectorImplementations"
 }
 ```
 
@@ -75,8 +72,7 @@ Discovers components using custom annotation property matching.
     "propertyName": "connector",
     "annotationProperty": "property"
   },
-  "containerMapping": "connectorImplementations",
-  "technology": "OSGi Component"
+  "containerMapping": "connectorImplementations"
 }
 ```
 
@@ -116,7 +112,8 @@ Create or modify `src/main/java/org/example/json/strategyConfig.json`:
 Modify the `basePaths` in `globalConfig` to point to your project directories:
 
 ```json
-"basePaths": {
+
+"basePaths":{
   "connectorModel": "/your/project/path/model",
   "connectorImplementations": "/your/project/path",
   "connectorInfrastructure": "/your/project/path",

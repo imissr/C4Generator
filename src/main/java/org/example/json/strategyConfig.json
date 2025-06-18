@@ -35,12 +35,6 @@
       "connectorImplementations": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
       "connectorInfrastructure": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
       "connectorApi": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.api"
-    },
-    "defaultTechnologies": {
-      "connectorModel": "EMF Model",
-      "connectorImplementations": "OSGi Component",
-      "connectorInfrastructure": "Java/OSGi",
-      "connectorApi": "Java API"
     }
   }
 }

@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.structurizr.Workspace;
 import com.structurizr.component.ComponentFinder;
@@ -124,7 +125,7 @@ public class AvatarC4ModelGenerator {
         scanner.scanContainer(connectorModel, "connectorModel", componentMap);
         scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
         scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
-        scanner.scanContainer(connectorApi, "connectorApi", null);
+        //scanner.scanContainer(connectorApi, "connectorApi", null);
 
 
         // Create container view
@@ -218,10 +219,16 @@ public class AvatarC4ModelGenerator {
 
         for (Component component : container.getComponents()) {
             for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
-                String keySubstring = entry.getKey();
+                if(Objects.equals(entry.getKey(), "Ecore Serializer Factory")) {
+
+
+                }
+                String keySubstring = entry.getKey().toLowerCase().trim();
                 ComponentDetail detail = entry.getValue();
 
-                if (component.getName().contains(keySubstring)) {
+                String componentName = component.getName().toLowerCase().trim();
+
+                if (componentName.equals(keySubstring)) {
                     // Apply metadata
                     if (detail.getTechnology() != null) {
                         component.setTechnology(detail.getTechnology());
@@ -236,6 +243,7 @@ public class AvatarC4ModelGenerator {
                     // Apply relationships
                     List<Relations> relations = detail.getRelations();
                     if (relations != null && !relations.isEmpty()) {
+
                         for (Relations relation : relations) {
                             System.out.println("Processing relation: " + relation.getType() + " to " + relation.getTarget());
                             Component targetComponent = container.getComponentWithName(relation.getTarget());
