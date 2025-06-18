@@ -1,0 +1,92 @@
+{
+  "strategies": [
+    {
+      "name": "Spring Boot Controllers",
+      "type": "ANNOTATION",
+      "description": "Discovers Spring Boot REST controllers",
+      "config": {
+        "annotationType": "org.springframework.web.bind.annotation.RestController"
+      },
+      "containerMapping": "webLayer",
+      "technology": "Spring Boot",
+      "enabled": true
+    },
+    {
+      "name": "JPA Repositories",
+      "type": "ANNOTATION", 
+      "description": "Discovers Spring Data JPA repositories",
+      "config": {
+        "annotationType": "org.springframework.data.jpa.repository.JpaRepository"
+      },
+      "containerMapping": "dataLayer",
+      "technology": "Spring Data JPA",
+      "enabled": true
+    },
+    {
+      "name": "Service Implementations",
+      "type": "NAME_SUFFIX",
+      "description": "Discovers service implementation classes",
+      "config": {
+        "suffix": "ServiceImpl"
+      },
+      "containerMapping": "serviceLayer",
+      "technology": "Java",
+      "enabled": true
+    },
+    {
+      "name": "Configuration Classes",
+      "type": "ANNOTATION",
+      "description": "Discovers Spring configuration classes",
+      "config": {
+        "annotationType": "org.springframework.context.annotation.Configuration"
+      },
+      "containerMapping": "configLayer",
+      "technology": "Spring Configuration",
+      "enabled": true
+    },
+    {
+      "name": "Utility Classes",
+      "type": "REGEX",
+      "description": "Discovers utility and helper classes",
+      "config": {
+        "pattern": ".*(?:Util|Utils|Helper|Manager)$"
+      },
+      "containerMapping": "utilityLayer",
+      "technology": "Java",
+      "enabled": true
+    },
+    {
+      "name": "Custom Component Annotation",
+      "type": "CUSTOM_ANNOTATION",
+      "description": "Discovers components with custom properties",
+      "config": {
+        "annotationType": "org.springframework.stereotype.Component",
+        "propertyName": "profile",
+        "annotationProperty": "value"
+      },
+      "containerMapping": "customComponents",
+      "technology": "Spring Component",
+      "enabled": false
+    }
+  ],
+  "globalConfig": {
+    "excludeInnerClasses": true,
+    "excludeTestClasses": true,
+    "basePaths": {
+      "webLayer": "/path/to/your/project/src/main/java",
+      "dataLayer": "/path/to/your/project/src/main/java", 
+      "serviceLayer": "/path/to/your/project/src/main/java",
+      "configLayer": "/path/to/your/project/src/main/java",
+      "utilityLayer": "/path/to/your/project/src/main/java",
+      "customComponents": "/path/to/your/project/src/main/java"
+    },
+    "defaultTechnologies": {
+      "webLayer": "Spring MVC",
+      "dataLayer": "JPA",
+      "serviceLayer": "Java",
+      "configLayer": "Spring Configuration",
+      "utilityLayer": "Java Utility",
+      "customComponents": "Spring Component"
+    }
+  }
+}

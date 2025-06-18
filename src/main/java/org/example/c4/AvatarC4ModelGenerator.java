@@ -86,34 +86,45 @@ public class AvatarC4ModelGenerator {
         clientUser.uses(connectorImplementations, "Sends requests to");
 
 
-        String basePathModel = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\de.avatar.connector.model";
-        String basePathPorject = "C:\\Users\\khale\\IdeaProjects\\avatar-dataspaces-demo\\";
-
-
-        File json = new File("src/main/java/org/example/json/componentMapper.json");
-
-        ContainerConfig config = ContainerConfig.loadFromFile(json);
-        Map<String, ContainerDetail> allContainers = config.getContainerMap();
+        // Load component mapper configuration for enrichment
+        File componentMapperJson = new File("src/main/java/org/example/json/componentMapper.json");
+        ContainerConfig componentConfig = ContainerConfig.loadFromFile(componentMapperJson);
+        Map<String, ContainerDetail> allContainers = componentConfig.getContainerMap();
+        
+        // Extract component maps for enrichment
         Map<String, ComponentDetail> componentMap = null;
         Map<String, ComponentDetail> componentConnectorMap = null;
         Map<String, ComponentDetail> componentInfrastructureMap = null;
+        
         ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
         ContainerDetail connectorImplementationDetail = allContainers.get("connectorImplementations");
         ContainerDetail connectorInfrastructureDetail = allContainers.get("connectorInfrastructure");
 
-
-
         if (connectorModelDetail != null) {
             componentMap = connectorModelDetail.getComponentMap();
+        }
+        if (connectorImplementationDetail != null) {
             componentConnectorMap = connectorImplementationDetail.getComponentMap();
+        }
+        if (connectorInfrastructureDetail != null) {
             componentInfrastructureMap = connectorInfrastructureDetail.getComponentMap();
         }
 
+        // Load strategy configuration
+        File strategyConfigJson = new File("src/main/java/org/example/json/strategyConfig.json");
+        StrategyConfiguration strategyConfig = StrategyConfiguration.loadFromFile(strategyConfigJson);
+        
+        // Create configurable component scanner
+        ConfigurableComponentScanner scanner = new ConfigurableComponentScanner(strategyConfig);
 
-
+        // Create API components manually (could also be configured)
         createApiComponents(connectorApi);
 
-        tryScanningForComponents(connectorImplementations, connectorModel,connectorInfrastructure, basePathModel, basePathPorject, componentMap , componentConnectorMap , componentInfrastructureMap);
+        // Scan containers using configured strategies
+        scanner.scanContainer(connectorModel, "connectorModel", componentMap);
+        scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
+        scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
+        scanner.scanContainer(connectorApi, "connectorApi", null);
 
 
         // Create container view
@@ -181,268 +192,52 @@ public class AvatarC4ModelGenerator {
         avatarConnector.uses(avatarConnectorInfo, "extends");
     }
 
-    /**
-     * Attempts to scan for components in the specified directories using OSGi annotations.
-     * 
-     * This method coordinates the component discovery process across multiple containers
-     * by scanning the compiled classes in the specified base paths. It uses the component
-     * mappings loaded from JSON configuration files to enrich the discovered components
-     * with metadata and relationship information.
-     * 
-     * @param container1 The connector implementations container
-     * @param container2 The connector model container  
-     * @param container3 The infrastructure container
-     * @param basePath Base path for the connector model classes
-     * @param basePath2 Base path for the broader project structure
-     * @param componentMap Component details for the model container
-     * @param componentConnectorMap Component details for the connector implementations
-     * @param componentInfrastructureMap Component details for the infrastructure container
-     */
-    private static void tryScanningForComponents(Container container1, Container container2,Container container3, String basePath, String basePath2, Map<String, ComponentDetail> componentMap
-            , Map<String, ComponentDetail> componentConnectorMap , Map<String, ComponentDetail> componentInfrastructureMap) {
-        File path = new File(basePath);
-        File path2 = new File(basePath2);
-        if (!path.exists()) {
-            System.out.println("Warning: Path " + basePath + " doesn't exist. Skipping component scanning.");
-            return;
-        }
-        try {
-            System.out.println("Attempting to scan for components in: " + basePath);
-
-            //tryScanningConnectorByOsgiComponentAnnotation(container1, path2,componentConnectorMap  );
-            tryScanningByOSGiFindAllModel(container2, path, componentMap);
-            findInfrastructureComponents(container3,path2,componentInfrastructureMap);
-
-            tryScanningByOSGiFindAllModelNew(container1, path2, componentConnectorMap);
-
-
-        } catch (Exception e) {
-            System.out.println("Component scanning failed: " + e.getMessage());
-        }
-    }
 
 
 
-    /*private static void findInfrastructureComponents(Container container, File path) {
 
-
-        try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    // Use only ONE strategy to avoid duplicates
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    .matchedBy(new RegexTypeMatcher(".*(?:Whiteboard|Serializer|Factory).*"))
-                                    .withTechnology("Java/OSGi")
-                                    .forEach(component -> {
-                                        System.out.println("Found infrastructure component: " + component.getName());
-                                        String canonicalName = component.getCanonicalName();
-
-                                        // Only process infrastructure-related packages
-                                        if (canonicalName.contains("de.avatar.connector.emf") ||
-                                                canonicalName.contains("de.avatar.connector.whiteboard")) {
-
-                                            component.addTags("Infrastructure");
-
-                                            if (canonicalName.contains("Ecore Serializer") || canonicalName.contains("Serializer")) {
-                                                component.setDescription("Performs serialization/deserialization of EMF objects");
-                                            } else if (canonicalName.contains("Whiteboard")) {
-                                                component.setDescription("Implements the OSGi whiteboard pattern for tracking connector services");
-                                            } else if (canonicalName.contains("Factory")) {
-                                                component.setDescription("Factory component for creating infrastructure services");
-                                            }
-
-                                            System.out.println("Found infrastructure component: " + component.getName());
-                                        }
-                                    })
-                                    .build()
-                    )
-                    .build();
-
-            finder.run();
-            System.out.println("Successfully found infrastructure components");
-
-        } catch (Exception e) {
-            System.out.println("Infrastructure component scanning failed: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }*/
-
-    private static void findInfrastructureComponents(Container container, File path , Map<String, ComponentDetail> componentMap) {
-        try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    // More specific regex that excludes inner/anonymous classes
-                                    .matchedBy(new RegexTypeMatcher("^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"))
-                                    .withTechnology("Java/OSGi")
-                                    .forEach(component -> {
-                                        String canonicalName = component.getCanonicalName();
-
-                                        // Skip inner classes and anonymous classes
-                                        if (canonicalName.contains("$")) {
-                                            return;
-                                        }
-
-
-                                        System.out.println("Found infrastructure component: " + component.getName());
-                                    })
-                                    .build()
-                    )
-                    .build();
-
-            finder.run();
-
-            assignRealtionFromJson(container , componentMap);
-            System.out.println("Successfully found infrastructure components");
-
-        } catch (Exception e) {
-            System.out.println("Infrastructure component scanning failed: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
-
-    private static void tryScanningConnectorByOsgiComponentAnnotation(Container container, File path ,  Map<String, ComponentDetail> componentMap) {
-        try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    .matchedBy(new NameSuffixTypeMatcher("ConnectorImpl"))
-                                    .withTechnology("OSGi Connector")
-                                    .forEach(component -> {
-                                        System.out.println("Found OSGi component: " + component.getName());
-                                    })
-                                    .build()
-                    )
-                    .build();
-            finder.run();
-            assignRealtionFromJson(container, componentMap);
-
-            System.out.println("Successfully found OSGi components");
-        } catch (Exception e) {
-            System.out.println("No OSGi components found – " + e.getMessage());
-        }
-
-    }
-
-
-    public static void tryScanningByOSGiFindAllModelNew(
-            Container container,
-            File path,
-            Map<String, ComponentDetail> componentMap
-    ) {
-        try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    // ← here we use YOUR strategy instead of AnnotationTypeMatcher
-                                    .matchedBy(
-                                            // look for @Component and require a "connector" property
-                                            new NewComponentStratgy(
-
-                                                    "org.osgi.service.component.annotations.Component" ,
-                                                    "connector"
-                                                    ,"property"
-                                            )
-                                    )
-                                    .withTechnology("OSGi Component")
-                                    .forEach(component -> {
-                                        System.out.println("Found OSGi component: " + component.getName());
-                                    })
-                                    .build()
-                    )
-                    .build();
-
-            finder.run();
-            assignRealtionFromJson(container, componentMap);
-            System.out.println("Successfully found OSGi components");
-        } catch (Exception e) {
-            System.out.println("No OSGi components found – " + e.getMessage());
-        }
-    }
-    /**
-     * Scans for OSGi components using the ProviderType annotation and applies
-     * component details from the provided configuration map.
-     * 
-     * This method uses the Structurizr ComponentFinder to automatically discover
-     * OSGi components marked with the @ProviderType annotation. After discovery,
-     * it enriches the found components with detailed metadata (technology, tags,
-     * descriptions, and relationships) from the pre-loaded component configuration.
-     * 
-     * @param container The OSGi container to scan for components
-     * @param path Directory or JAR file containing compiled classes to scan
-     * @param componentMap Pre-loaded map of component names to their detailed configurations
-     */
-    public static void tryScanningByOSGiFindAllModel(
-            Container container,
-            File path,
-            Map<String, ComponentDetail> componentMap
-    ) {
-        try {
-            ComponentFinder finder = new ComponentFinderBuilder()
-                    .forContainer(container)
-                    .fromClasses(path)
-                    .withStrategy(
-                            new ComponentFinderStrategyBuilder()
-                                    .matchedBy(
-                                            new AnnotationTypeMatcher(
-                                                    "org.osgi.annotation.versioning.ProviderType"
-                                            )
-                                    )
-                                    .withTechnology("OSGi Component")
-                                    .forEach(component -> {
-                                        System.out.println("Found OSGi component: " + component.getName());
-                                    })
-                                    .build()
-                    )
-                    .build();
-            finder.run();
-            assignRealtionFromJson(container, componentMap);
-            System.out.println("Successfully found OSGi components");
-        } catch (Exception e) {
-            System.out.println("No OSGi components found – " + e.getMessage());
-        }
-    }
 
     /**
      * Assigns component metadata and relationships from JSON configuration to discovered components.
-     * 
+     *
      * This method iterates through all components in the container and matches them with
      * their corresponding configuration entries in the component map. When a match is found
      * (based on component name substring matching), it applies the metadata (technology,
      * tags, description) and establishes relationships to other components.
-     * 
+     *
      * The relationship establishment includes validation to ensure target components exist
      * before creating the relationship links.
-     * 
+     *
      * @param container The container whose components need to be enriched
      * @param componentMap Map of component identifiers to their detailed configurations
      */
     public static void assignRealtionFromJson(Container container, Map<String, ComponentDetail> componentMap) {
+        if (componentMap == null || componentMap.isEmpty()) {
+            return;
+        }
+
         for (Component component : container.getComponents()) {
             for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
                 String keySubstring = entry.getKey();
                 ComponentDetail detail = entry.getValue();
 
                 if (component.getName().contains(keySubstring)) {
-                    component.setTechnology(detail.getTechnology());
-                    component.addTags(detail.getTags());
-                    component.setDescription(detail.getDescription());
+                    // Apply metadata
+                    if (detail.getTechnology() != null) {
+                        component.setTechnology(detail.getTechnology());
+                    }
+                    if (detail.getTags() != null) {
+                        component.addTags(detail.getTags());
+                    }
+                    if (detail.getDescription() != null) {
+                        component.setDescription(detail.getDescription());
+                    }
 
+                    // Apply relationships
                     List<Relations> relations = detail.getRelations();
-                    System.out.println(keySubstring + " " + relations);
                     if (relations != null && !relations.isEmpty()) {
                         for (Relations relation : relations) {
-                            System.out.println("Relation: " + relation.getType() + " to " + relation.getTarget());
+                            System.out.println("Processing relation: " + relation.getType() + " to " + relation.getTarget());
                             Component targetComponent = container.getComponentWithName(relation.getTarget());
                             if (targetComponent != null) {
                                 component.uses(targetComponent, relation.getType());
@@ -452,6 +247,7 @@ public class AvatarC4ModelGenerator {
                             }
                         }
                     }
+                    break; // Found a match, no need to continue checking other entries
                 }
             }
         }
