@@ -32,12 +32,6 @@ public class StrategyConfig {
     private StrategyType type;
     
     /**
-     * Description of what this strategy discovers
-     */
-    @JsonProperty("description")
-    private String description;
-    
-    /**
      * Configuration parameters specific to the strategy type
      */
     @JsonProperty("config")
@@ -48,12 +42,6 @@ public class StrategyConfig {
      */
     @JsonProperty("containerMapping")
     private String containerMapping;
-    
-    /**
-     * Technology tag to apply to discovered components
-     */
-    @JsonProperty("technology")
-    private String technology;
     
     /**
      * Whether this strategy is enabled

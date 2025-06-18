@@ -3,34 +3,28 @@
     {
       "name": "OSGi Component Strategy",
       "type": "CUSTOM_ANNOTATION",
-      "description": "Discovers OSGi components with specific connector properties",
       "config": {
         "annotationType": "org.osgi.service.component.annotations.Component",
         "propertyName": "connector",
         "annotationProperty": "property"
       },
-      "containerMapping": "connectorImplementations",
-      "technology": "OSGi Component"
+      "containerMapping": "connectorImplementations"
     },
     {
       "name": "Provider Type Strategy", 
       "type": "ANNOTATION",
-      "description": "Discovers EMF model interfaces marked with @ProviderType",
       "config": {
         "annotationType": "org.osgi.annotation.versioning.ProviderType"
       },
-      "containerMapping": "connectorModel",
-      "technology": "EMF Model"
+      "containerMapping": "connectorModel"
     },
     {
       "name": "Infrastructure Components Strategy",
       "type": "REGEX",
-      "description": "Discovers infrastructure components using package and naming patterns",
       "config": {
         "pattern": "^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"
       },
-      "containerMapping": "connectorInfrastructure", 
-      "technology": "Java/OSGi"
+      "containerMapping": "connectorInfrastructure"
     }
   ],
   "globalConfig": {
@@ -41,6 +35,12 @@
       "connectorImplementations": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
       "connectorInfrastructure": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
       "connectorApi": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.api"
+    },
+    "defaultTechnologies": {
+      "connectorModel": "EMF Model",
+      "connectorImplementations": "OSGi Component",
+      "connectorInfrastructure": "Java/OSGi",
+      "connectorApi": "Java API"
     }
   }
 }

@@ -84,11 +84,8 @@ public class ConfigurableComponentScanner {
         // Create TypeMatcher from configuration
         TypeMatcher matcher = StrategyFactory.createMatcher(strategyConfig);
         
-        // Determine technology
-        String technology = strategyConfig.getTechnology();
-        if (technology == null) {
-            technology = strategyConfiguration.getGlobalConfig().getDefaultTechnology(strategyConfig.getContainerMapping());
-        }
+        // Determine technology from global config or fallback
+        String technology = strategyConfiguration.getGlobalConfig().getDefaultTechnology(strategyConfig.getContainerMapping());
         if (technology == null) {
             technology = "Java"; // fallback
         }
@@ -150,9 +147,8 @@ public class ConfigurableComponentScanner {
         String name = component.getName();
         String canonicalName = component.getCanonicalName();
         
-        // Use strategy description as base
-        String baseDescription = strategyConfig.getDescription() != null ? 
-                strategyConfig.getDescription() : "Component discovered by " + strategyConfig.getName();
+        // Generate base description based on strategy name
+        String baseDescription = "Component discovered by " + strategyConfig.getName();
         
         // Add specific details based on naming patterns
         if (canonicalName.contains("Factory")) {
