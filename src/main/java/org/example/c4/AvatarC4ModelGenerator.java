@@ -114,81 +114,17 @@ public class AvatarC4ModelGenerator {
         System.out.println("Total containers created: " + containers.size());
 
         // Establish person relationships
-        System.out.println("\n=== ESTABLISHING PERSON RELATIONSHIPS ===");
-        int personRelationCount = 0;
-        for (PersonDetail personConfig : c4Config.getPersons()) {
-            Person person = persons.get(personConfig.getName());
-            if (personConfig.getRelations() != null) {
-                for (Relations relation : personConfig.getRelations()) {
-                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
-                    Container targetContainer = containers.get(relation.getTarget());
-                    
-                    if (targetSystem != null) {
-                        person.uses(targetSystem, relation.getType());
-                        System.out.println("✓ Person-System Relationship: " + person.getName() + 
-                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
-                        personRelationCount++;
-                    } else if (targetContainer != null) {
-                        person.uses(targetContainer, relation.getType());
-                        System.out.println("✓ Person-Container Relationship: " + person.getName() + 
-                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
-                        personRelationCount++;
-                    } else {
-                        System.out.println("⚠ Warning: Target not found for person relation: " + 
-                                         person.getName() + " -> " + relation.getTarget());
-                    }
-                }
-            }
-        }
-        System.out.println("Total person relationships established: " + personRelationCount);
+        establishPersonRelationships(c4Config, persons, softwareSystems, containers);
 
         // Establish additional person-container relationships from configuration
         System.out.println("\n=== ESTABLISHING ADDITIONAL PERSON-CONTAINER RELATIONSHIPS ===");
         establishPersonContainerRelationships(c4Config, persons, containers);
 
         // Establish software system relationships
-        System.out.println("\n=== ESTABLISHING SOFTWARE SYSTEM RELATIONSHIPS ===");
-        int systemRelationCount = 0;
-        for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
-            SoftwareSystem system = softwareSystems.get(systemConfig.getName());
-            if (systemConfig.getRelations() != null) {
-                for (Relations relation : systemConfig.getRelations()) {
-                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
-                    if (targetSystem != null) {
-                        system.uses(targetSystem, relation.getType());
-                        System.out.println("✓ System-System Relationship: " + system.getName() + 
-                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
-                        systemRelationCount++;
-                    } else {
-                        System.out.println("⚠ Warning: Target system not found for relation: " + 
-                                         system.getName() + " -> " + relation.getTarget());
-                    }
-                }
-            }
-        }
-        System.out.println("Total software system relationships established: " + systemRelationCount);
+        establishSoftwareSystemRelationships(c4Config, softwareSystems);
 
         // Establish container relationships
-        System.out.println("\n=== ESTABLISHING CONTAINER RELATIONSHIPS ===");
-        int containerRelationCount = 0;
-        for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
-            Container container = containers.get(containerConfig.getName());
-            if (containerConfig.getRelations() != null) {
-                for (Relations relation : containerConfig.getRelations()) {
-                    Container targetContainer = containers.get(relation.getTarget());
-                    if (targetContainer != null) {
-                        container.uses(targetContainer, relation.getType());
-                        System.out.println("✓ Container-Container Relationship: " + container.getName() + 
-                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
-                        containerRelationCount++;
-                    } else {
-                        System.out.println("⚠ Warning: Target container not found for relation: " + 
-                                         container.getName() + " -> " + relation.getTarget());
-                    }
-                }
-            }
-        }
-        System.out.println("Total container relationships established: " + containerRelationCount);
+        establishContainerRelationships(c4Config, containers);
 
 
         // Load component mapper configuration for enrichment (automated from config)
@@ -236,21 +172,6 @@ public class AvatarC4ModelGenerator {
             }
         }
         
-        System.out.println("Total containers available for scanning: " + containersForScanning.size());
-
-        // Create API components automatically for containers marked as API
-        System.out.println("\n=== CREATING API COMPONENTS ===");
-        for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
-            String containerName = entry.getKey();
-            Container container = entry.getValue();
-            
-            // Check if this container should have manual API components created
-            // This could be made configurable in the future
-            if (containerName.toLowerCase().contains("api")) {
-                createApiComponents(container);
-                System.out.println("✓ API components created for: " + container.getName());
-            }
-        }
 
         // Scan all containers automatically using configured strategies
         System.out.println("\n=== SCANNING CONTAINERS FOR COMPONENTS ===");
@@ -345,36 +266,7 @@ public class AvatarC4ModelGenerator {
         System.out.println("Component Views: " + componentViewCount);
         System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");
     }
-    /**
-     * Creates manual API components for the connector API container.
-     * 
-     * This method manually defines the core API interfaces that form the
-     * contract for all connector implementations in the Avatar system.
-     * These components represent the fundamental interfaces that all
-     * connector implementations must adhere to.
-     * 
-     * @param container The connector API container to add components to
-     */
-    // Method to manually create API components based on documentation
-    private static void createApiComponents(Container container) {
-        System.out.println("Creating API components for container: " + container.getName());
-        
-        Component avatarConnectorInfo = container.addComponent("AvatarConnectorInfo",
-                "Base interface providing metadata about connectors", "Java Interface");
-        avatarConnectorInfo.addTags("API");
-        System.out.println("✓ API Component created: " + avatarConnectorInfo.getName() + " - " + avatarConnectorInfo.getDescription());
 
-        Component avatarConnector = container.addComponent("AvatarConnector",
-                "Main service interface for connector implementations", "Java Interface");
-        avatarConnector.addTags("API");
-        System.out.println("✓ API Component created: " + avatarConnector.getName() + " - " + avatarConnector.getDescription());
-
-        avatarConnector.uses(avatarConnectorInfo, "extends");
-        System.out.println("✓ API Component Relationship: " + avatarConnector.getName() + 
-                         " -> " + avatarConnectorInfo.getName() + " (extends)");
-        
-        System.out.println("Total API components created: " + container.getComponents().size());
-    }
 
     /**
      * Establishes additional person-container relationships that may not be directly configured.
@@ -475,35 +367,81 @@ public class AvatarC4ModelGenerator {
 
     /**
      * Finds the corresponding container key in the component configuration for a given container name.
-     * This method handles the mapping between container display names and their configuration keys.
+     * This method uses automated matching strategies to work with any project configuration.
      * 
      * @param containerName The display name of the container
      * @param allContainers Map of all container configurations
      * @return The configuration key for the container, or null if not found
      */
     private static String findContainerKeyInConfig(String containerName, Map<String, ContainerDetail> allContainers) {
-        // Direct mapping for known containers
-        Map<String, String> containerNameToKeyMapping = new HashMap<>();
-        containerNameToKeyMapping.put("Connector Model", "connectorModel");
-        containerNameToKeyMapping.put("Connector API", "connectorApi");
-        containerNameToKeyMapping.put("Connector Implementations", "connectorImplementations");
-        containerNameToKeyMapping.put("Infrastructure", "connectorInfrastructure");
-        
-        String directKey = containerNameToKeyMapping.get(containerName);
-        if (directKey != null && allContainers.containsKey(directKey)) {
-            return directKey;
+        if (containerName == null || allContainers == null || allContainers.isEmpty()) {
+            return null;
         }
         
-        // Fallback: try to find by partial name matching
-        String lowerContainerName = containerName.toLowerCase();
+        String normalizedContainerName = containerName.toLowerCase().trim();
+        
+        // Strategy 1: Exact match (case-insensitive)
         for (String key : allContainers.keySet()) {
-            if (key.toLowerCase().contains(lowerContainerName.replace(" ", "").toLowerCase()) ||
-                lowerContainerName.replace(" ", "").toLowerCase().contains(key.toLowerCase())) {
+            if (key.toLowerCase().trim().equals(normalizedContainerName)) {
+                System.out.println("✓ Found exact match: " + containerName + " -> " + key);
+                return key;
+            }
+        }
+        
+        // Strategy 2: Exact match without spaces and special characters
+        String cleanContainerName = normalizedContainerName.replaceAll("[\\s\\-_]", "");
+        for (String key : allContainers.keySet()) {
+            String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
+            if (cleanKey.equals(cleanContainerName)) {
+                System.out.println("✓ Found normalized match: " + containerName + " -> " + key);
+                return key;
+            }
+        }
+        
+        // Strategy 3: Key contains container name (without spaces)
+        for (String key : allContainers.keySet()) {
+            String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
+            if (cleanKey.contains(cleanContainerName)) {
+                System.out.println("✓ Found key containing container name: " + containerName + " -> " + key);
+                return key;
+            }
+        }
+        
+        // Strategy 4: Container name contains key (without spaces)
+        for (String key : allContainers.keySet()) {
+            String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
+            if (cleanContainerName.contains(cleanKey)) {
+                System.out.println("✓ Found container name containing key: " + containerName + " -> " + key);
+                return key;
+            }
+        }
+        
+        // Strategy 5: Partial word matching (split by spaces/dashes/underscores)
+        String[] containerWords = normalizedContainerName.split("[\\s\\-_]+");
+        for (String key : allContainers.keySet()) {
+            String[] keyWords = key.toLowerCase().split("[\\s\\-_]+");
+            
+            // Check if any container word matches any key word
+            for (String containerWord : containerWords) {
+                for (String keyWord : keyWords) {
+                    if (containerWord.equals(keyWord) && containerWord.length() > 2) // Avoid matching very short words
+                        System.out.println("✓ Found word match: " + containerName + " -> " + key + " (matched word: " + containerWord + ")");
+                    return key;
+                }
+            }
+        }
+        
+        // Strategy 6: Fuzzy matching - check if key is a substring of container name or vice versa
+        for (String key : allContainers.keySet()) {
+            String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
+            if (cleanKey.length() > 3 && (cleanContainerName.contains(cleanKey) || cleanKey.contains(cleanContainerName))) {
+                System.out.println("✓ Found fuzzy match: " + containerName + " -> " + key);
                 return key;
             }
         }
         
         System.out.println("⚠ Warning: No configuration key found for container: " + containerName);
+        System.out.println("Available keys: " + allContainers.keySet());
         return null;
     }
     
@@ -521,4 +459,122 @@ public class AvatarC4ModelGenerator {
                 + "-components";
     }
 
+    /**
+     * Establishes person relationships from configuration.
+     * 
+     * This method creates relationships between persons and their target systems or containers
+     * as defined in the configuration file.
+     * 
+     * @param c4Config The complete C4 model configuration
+     * @param persons Map of person names to Person objects
+     * @param softwareSystems Map of software system names to SoftwareSystem objects
+     * @param containers Map of container names to Container objects
+     */
+    private static void establishPersonRelationships(
+            C4ModelConfig c4Config,
+            Map<String, Person> persons,
+            Map<String, SoftwareSystem> softwareSystems,
+            Map<String, Container> containers) {
+        
+        System.out.println("\n=== ESTABLISHING PERSON RELATIONSHIPS ===");
+        int personRelationCount = 0;
+        
+        for (PersonDetail personConfig : c4Config.getPersons()) {
+            Person person = persons.get(personConfig.getName());
+            if (personConfig.getRelations() != null) {
+                for (Relations relation : personConfig.getRelations()) {
+                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
+                    Container targetContainer = containers.get(relation.getTarget());
+                    
+                    if (targetSystem != null) {
+                        person.uses(targetSystem, relation.getType());
+                        System.out.println("✓ Person-System Relationship: " + person.getName() + 
+                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        personRelationCount++;
+                    } else if (targetContainer != null) {
+                        person.uses(targetContainer, relation.getType());
+                        System.out.println("✓ Person-Container Relationship: " + person.getName() + 
+                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        personRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target not found for person relation: " + 
+                                         person.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total person relationships established: " + personRelationCount);
+    }
+
+    /**
+     * Establishes software system relationships from configuration.
+     * 
+     * This method creates relationships between software systems as defined in the configuration file.
+     * 
+     * @param c4Config The complete C4 model configuration
+     * @param softwareSystems Map of software system names to SoftwareSystem objects
+     */
+    private static void establishSoftwareSystemRelationships(
+            C4ModelConfig c4Config,
+            Map<String, SoftwareSystem> softwareSystems) {
+        
+        System.out.println("\n=== ESTABLISHING SOFTWARE SYSTEM RELATIONSHIPS ===");
+        int systemRelationCount = 0;
+        
+        for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
+            SoftwareSystem system = softwareSystems.get(systemConfig.getName());
+            if (systemConfig.getRelations() != null) {
+                for (Relations relation : systemConfig.getRelations()) {
+                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
+                    if (targetSystem != null) {
+                        system.uses(targetSystem, relation.getType());
+                        System.out.println("✓ System-System Relationship: " + system.getName() + 
+                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        systemRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target system not found for relation: " + 
+                                         system.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total software system relationships established: " + systemRelationCount);
+    }
+
+    /**
+     * Establishes container relationships from configuration.
+     * 
+     * This method creates relationships between containers as defined in the configuration file.
+     * 
+     * @param c4Config The complete C4 model configuration
+     * @param containers Map of container names to Container objects
+     */
+    private static void establishContainerRelationships(
+            C4ModelConfig c4Config,
+            Map<String, Container> containers) {
+        
+        System.out.println("\n=== ESTABLISHING CONTAINER RELATIONSHIPS ===");
+        int containerRelationCount = 0;
+        
+        for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
+            Container container = containers.get(containerConfig.getName());
+            if (containerConfig.getRelations() != null) {
+                for (Relations relation : containerConfig.getRelations()) {
+                    Container targetContainer = containers.get(relation.getTarget());
+                    if (targetContainer != null) {
+                        container.uses(targetContainer, relation.getType());
+                        System.out.println("✓ Container-Container Relationship: " + container.getName() + 
+                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        containerRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target container not found for relation: " + 
+                                         container.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total container relationships established: " + containerRelationCount);
+    }
+
+    // ...existing code...
 }
