@@ -266,6 +266,10 @@ public class AvatarC4ModelGenerator {
             System.out.println("Scanning container: " + connectorInfrastructure.getName());
             scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
             System.out.println("✓ Completed scanning: " + connectorInfrastructure.getName() + " (" + connectorInfrastructure.getComponents().size() + " components)");
+        }if(connectorApi != null) {
+            System.out.println("Scanning container: " + connectorApi.getName());
+            scanner.scanContainer(connectorApi, "connectorApi", null); // No specific component map for API
+            System.out.println("✓ Completed scanning: " + connectorApi.getName() + " (" + connectorApi.getComponents().size() + " components)");
         }
 
         // Create container view

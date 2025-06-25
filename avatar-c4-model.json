@@ -12,13 +12,13 @@
       "relationships" : [ {
         "description" : "Makes data requests through",
         "destinationId" : "2",
-        "id" : "3",
+        "id" : "7",
         "sourceId" : "1",
         "tags" : "Relationship"
       }, {
         "description" : "Sends requests to",
-        "destinationId" : "6",
-        "id" : "12",
+        "destinationId" : "5",
+        "id" : "8",
         "sourceId" : "1",
         "tags" : "Relationship"
       } ],
@@ -47,93 +47,94 @@
           } ],
           "tags" : "Element,Component,API",
           "technology" : "Java Interface"
+        }, {
+          "description" : "Factory component for creating api  instances",
+          "documentation" : { },
+          "id" : "47",
+          "name" : "Api Factory",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.ApiFactory"
+          },
+          "tags" : "Element,Component,Annotated,Factory,Connector",
+          "technology" : "Java"
+        }, {
+          "description" : "Component discovered by API Components Strategy",
+          "documentation" : { },
+          "id" : "48",
+          "name" : "Avatar Connector",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.AvatarConnector"
+          },
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
+        }, {
+          "description" : "Component discovered by API Components Strategy",
+          "documentation" : { },
+          "id" : "49",
+          "name" : "Api Package",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.ApiPackage"
+          },
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
+        }, {
+          "description" : "Component discovered by API Components Strategy",
+          "documentation" : { },
+          "id" : "50",
+          "name" : "Avatar Connector Info",
+          "properties" : {
+            "component.type" : "de.avatar.connector.api.AvatarConnectorInfo"
+          },
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         } ],
         "description" : "Defines the core contract for connectors",
         "documentation" : { },
-        "id" : "4",
+        "id" : "3",
         "name" : "Connector API",
         "tags" : "Element,Container",
         "technology" : "Java/OSGi"
       }, {
         "components" : [ {
-          "description" : "Java-specific result implementation with type string and value",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "16",
           "name" : "Java Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.JavaResult"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "34",
-            "id" : "36",
-            "sourceId" : "16",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Factory for creating connector model instances",
+          "description" : "Factory component for creating a connector  instances",
           "documentation" : { },
           "id" : "17",
           "name" : "A Connector Factory",
           "properties" : {
             "component.type" : "de.avatar.model.connector.AConnectorFactory"
           },
-          "relationships" : [ {
-            "description" : "creates",
-            "destinationId" : "20",
-            "id" : "37",
-            "sourceId" : "17",
-            "tags" : "Relationship"
-          }, {
-            "description" : "creates",
-            "destinationId" : "30",
-            "id" : "38",
-            "sourceId" : "17",
-            "tags" : "Relationship"
-          }, {
-            "description" : "creates",
-            "destinationId" : "24",
-            "id" : "39",
-            "sourceId" : "17",
-            "tags" : "Relationship"
-          }, {
-            "description" : "creates",
-            "destinationId" : "21",
-            "id" : "40",
-            "sourceId" : "17",
-            "tags" : "Relationship"
-          } ],
           "tags" : "Element,Component,Annotated,Factory,Connector",
-          "technology" : "EMF Model"
+          "technology" : "Java"
         }, {
-          "description" : "Enumeration defining HTTP response codes and connector-specific response codes",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "18",
           "name" : "Response Code",
           "properties" : {
             "component.type" : "de.avatar.model.connector.ResponseCode"
           },
-          "tags" : "Element,Component,Annotated,Connector,Enum",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Java-specific parameter implementation with type string and value",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "19",
           "name" : "Java Parameter",
           "properties" : {
             "component.type" : "de.avatar.model.connector.JavaParameter"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "28",
-            "id" : "41",
-            "sourceId" : "19",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Parameter",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
           "description" : "Contains metadata about a connector including id, name, provider, version",
           "documentation" : { },
@@ -145,162 +146,108 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "30",
-            "id" : "42",
+            "id" : "36",
             "sourceId" : "20",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
             "destinationId" : "35",
-            "id" : "43",
+            "id" : "37",
             "sourceId" : "20",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Connector,Info",
           "technology" : "EMF Model"
         }, {
-          "description" : "Represents a response returned from an endpoint with result and timestamp",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "21",
           "name" : "Endpoint Response",
           "properties" : {
             "component.type" : "de.avatar.model.connector.EndpointResponse"
           },
-          "relationships" : [ {
-            "description" : "responds-to",
-            "destinationId" : "24",
-            "id" : "44",
-            "sourceId" : "21",
-            "tags" : "Relationship"
-          }, {
-            "description" : "contains",
-            "destinationId" : "34",
-            "id" : "45",
-            "sourceId" : "21",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Response",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Simple result implementation containing a string value",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "22",
           "name" : "Simple Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.SimpleResult"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "34",
-            "id" : "46",
-            "sourceId" : "22",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "EMF Ecore-specific result implementation",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "23",
           "name" : "Ecore Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.EcoreResult"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "34",
-            "id" : "47",
-            "sourceId" : "23",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Represents a request sent to an endpoint with parameters and timestamp",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "24",
           "name" : "Endpoint Request",
           "properties" : {
             "component.type" : "de.avatar.model.connector.EndpointRequest"
           },
-          "relationships" : [ {
-            "description" : "uses",
-            "destinationId" : "30",
-            "id" : "48",
-            "sourceId" : "24",
-            "tags" : "Relationship"
-          }, {
-            "description" : "uses",
-            "destinationId" : "28",
-            "id" : "49",
-            "sourceId" : "24",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Request",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Enumeration defining connector status types (ONLINE, OFFLINE, etc.)",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "25",
           "name" : "Status Type",
           "properties" : {
             "component.type" : "de.avatar.model.connector.StatusType"
           },
-          "tags" : "Element,Component,Annotated,Connector,Enum",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "EMF Ecore-specific parameter implementation",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "26",
           "name" : "Ecore Parameter",
           "properties" : {
             "component.type" : "de.avatar.model.connector.EcoreParameter"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "28",
-            "id" : "50",
-            "sourceId" : "26",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Parameter",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "The main EMF package containing all connector model metadata and class definitions",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "27",
           "name" : "A Connector Package",
           "properties" : {
             "component.type" : "de.avatar.model.connector.AConnectorPackage"
           },
-          "tags" : "Element,Component,Annotated,Connector,Package",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Abstract base class for defining parameters with name and number",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "28",
           "name" : "Parameter",
           "properties" : {
             "component.type" : "de.avatar.model.connector.Parameter"
           },
-          "tags" : "Element,Component,Annotated,Connector,Parameter",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Represents the outcome of a dry-run operation with result count and estimated runtime",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "29",
           "name" : "Dry Run Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.DryRunResult"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "34",
-            "id" : "51",
-            "sourceId" : "29",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
           "description" : "Defines a connector's endpoint with URI, method, protocol, and media type",
           "documentation" : { },
@@ -312,59 +259,45 @@
           "tags" : "Element,Component,Annotated,Connector,Endpoint",
           "technology" : "EMF Model"
         }, {
-          "description" : "Enumeration defining supported protocol types (HTTP, HTTPS, etc.)",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "31",
           "name" : "Protocol Type",
           "properties" : {
             "component.type" : "de.avatar.model.connector.ProtocolType"
           },
-          "tags" : "Element,Component,Annotated,Connector,Enum",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Contains metadata about a response including hash information",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "32",
           "name" : "Response Meta Data",
           "properties" : {
             "component.type" : "de.avatar.model.connector.ResponseMetaData"
           },
-          "tags" : "Element,Component,Annotated,Connector,Meta Data",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Represents an error outcome from an operation with error details and throwable",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "33",
           "name" : "Error Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.ErrorResult"
           },
-          "relationships" : [ {
-            "description" : "extends",
-            "destinationId" : "34",
-            "id" : "52",
-            "sourceId" : "33",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Abstract base class for all response results with metadata",
+          "description" : "Component discovered by Provider Type Strategy",
           "documentation" : { },
           "id" : "34",
           "name" : "Response Result",
           "properties" : {
             "component.type" : "de.avatar.model.connector.ResponseResult"
           },
-          "relationships" : [ {
-            "description" : "contains",
-            "destinationId" : "32",
-            "id" : "53",
-            "sourceId" : "34",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Connector,Result",
-          "technology" : "EMF Model"
+          "tags" : "Element,Component,Annotated,Connector",
+          "technology" : "Java"
         }, {
           "description" : "Tracks connector performance metrics including timestamp, status, and uptime",
           "documentation" : { },
@@ -378,136 +311,130 @@
         } ],
         "description" : "EMF-based data models",
         "documentation" : { },
-        "id" : "5",
+        "id" : "4",
         "name" : "Connector Model",
         "tags" : "Element,Container",
         "technology" : "Java/EMF"
       }, {
         "components" : [ {
-          "description" : "Implementation for the ISMA HIMSA protocol",
+          "description" : "Implementation of ISMA Connector  interface",
           "documentation" : { },
-          "id" : "54",
+          "id" : "38",
           "name" : "ISMA Connector Impl",
           "properties" : {
             "component.type" : "de.avatar.connector.isma.ISMAConnectorImpl"
           },
           "tags" : "Element,Component,Annotated,Implementation,Connector",
-          "technology" : "Java/OSGi"
+          "technology" : "Java"
         }, {
-          "description" : "Implementation for the HL7 healthcare standard",
+          "description" : "Implementation of Other Connector  interface",
           "documentation" : { },
-          "id" : "55",
+          "id" : "39",
           "name" : "Other Connector Impl",
           "properties" : {
             "component.type" : "de.avatar.connector.other.OtherConnectorImpl"
           },
           "tags" : "Element,Component,Annotated,Implementation,Connector",
-          "technology" : "Java/OSGi"
+          "technology" : "Java"
         } ],
         "description" : "Implementations of the API for different protocols",
         "documentation" : { },
-        "id" : "6",
+        "id" : "5",
         "name" : "Connector Implementations",
         "relationships" : [ {
           "description" : "Implements",
-          "destinationId" : "4",
-          "id" : "8",
-          "sourceId" : "6",
+          "destinationId" : "3",
+          "id" : "9",
+          "sourceId" : "5",
           "tags" : "Relationship"
         }, {
           "description" : "Uses",
-          "destinationId" : "5",
-          "id" : "9",
-          "sourceId" : "6",
+          "destinationId" : "4",
+          "id" : "10",
+          "sourceId" : "5",
           "tags" : "Relationship"
         } ],
         "tags" : "Element,Container",
         "technology" : "Java/OSGi"
       }, {
         "components" : [ {
-          "description" : "Whiteboard interface for connector management",
+          "description" : "Implementation of Connector Whiteboard  interface",
           "documentation" : { },
-          "id" : "56",
+          "id" : "40",
           "name" : "Connector Whiteboard Impl",
           "properties" : {
             "component.type" : "de.avatar.connector.whiteboard.ConnectorWhiteboardImpl"
           },
-          "tags" : "Element,Component,Pattern-Matched,Implementation,Whiteboard,Connector,Infrastructure",
-          "technology" : "Java/OSGi"
+          "tags" : "Element,Component,Pattern-Matched,Implementation,Whiteboard,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Whiteboard interface for connector management",
+          "description" : "OSGi whiteboard pattern implementation for connector ",
           "documentation" : { },
-          "id" : "57",
+          "id" : "41",
           "name" : "Connector Whiteboard",
           "properties" : {
             "component.type" : "de.avatar.connector.whiteboard.ConnectorWhiteboard"
           },
-          "tags" : "Element,Component,Pattern-Matched,Whiteboard,Connector,Infrastructure",
-          "technology" : "Java/OSGi"
+          "tags" : "Element,Component,Pattern-Matched,Whiteboard,Connector",
+          "technology" : "Java"
         }, {
-          "description" : "Serializer for converting connector model instances to/from Ecore format",
+          "description" : "Serialization component for ecore ",
           "documentation" : { },
-          "id" : "58",
+          "id" : "42",
           "name" : "Ecore Serializer",
           "properties" : {
             "component.type" : "de.avatar.connector.emf.EcoreSerializer"
           },
-          "tags" : "Element,Component,Pattern-Matched,Serializer,Infrastructure",
-          "technology" : "Java/OSGi"
+          "tags" : "Element,Component,Pattern-Matched,Serializer",
+          "technology" : "Java"
         }, {
-          "description" : "Provides Ecore serializer factory for connector model serialization",
+          "description" : "Factory component for creating ecore serializer  provider instances",
           "documentation" : { },
-          "id" : "59",
+          "id" : "43",
           "name" : "Ecore Serializer Factory Provider",
           "properties" : {
             "component.type" : "de.avatar.connector.emf.EcoreSerializerFactoryProvider"
           },
           "relationships" : [ {
-            "destinationId" : "60",
-            "id" : "61",
-            "sourceId" : "59",
-            "tags" : "Relationship"
-          }, {
-            "description" : "provides",
-            "destinationId" : "60",
-            "id" : "63",
-            "sourceId" : "59",
+            "destinationId" : "44",
+            "id" : "45",
+            "sourceId" : "43",
             "tags" : "Relationship"
           } ],
-          "tags" : "Element,Component,Pattern-Matched,Factory,Serializer,Infrastructure",
-          "technology" : "Java/OSGi"
+          "tags" : "Element,Component,Pattern-Matched,Factory,Serializer",
+          "technology" : "Java"
         }, {
-          "description" : "Serializer for converting connector model instances to/from Ecore format",
+          "description" : "Factory component for creating ecore serializer  instances",
           "documentation" : { },
-          "id" : "60",
+          "id" : "44",
           "name" : "Ecore Serializer Factory",
           "properties" : {
             "component.type" : "de.avatar.connector.emf.EcoreSerializerFactory"
           },
           "relationships" : [ {
-            "destinationId" : "58",
-            "id" : "62",
-            "sourceId" : "60",
+            "destinationId" : "42",
+            "id" : "46",
+            "sourceId" : "44",
             "tags" : "Relationship"
           } ],
-          "tags" : "Element,Component,Pattern-Matched,Factory,Serializer,Infrastructure",
-          "technology" : "Java/OSGi"
+          "tags" : "Element,Component,Pattern-Matched,Factory,Serializer",
+          "technology" : "Java"
         } ],
         "description" : "Supporting components and services",
         "documentation" : { },
-        "id" : "7",
+        "id" : "6",
         "name" : "Infrastructure",
         "relationships" : [ {
           "description" : "Supports",
-          "destinationId" : "4",
-          "id" : "10",
-          "sourceId" : "7",
+          "destinationId" : "3",
+          "id" : "11",
+          "sourceId" : "6",
           "tags" : "Relationship"
         }, {
           "description" : "Uses",
-          "destinationId" : "5",
-          "id" : "11",
-          "sourceId" : "7",
+          "destinationId" : "4",
+          "id" : "12",
+          "sourceId" : "6",
           "tags" : "Relationship"
         } ],
         "tags" : "Element,Container",
@@ -524,7 +451,7 @@
   "name" : "Avatar C4 Model",
   "views" : {
     "componentViews" : [ {
-      "containerId" : "5",
+      "containerId" : "4",
       "description" : "Connector Model Components",
       "elements" : [ {
         "id" : "16",
@@ -614,41 +541,9 @@
         "id" : "36"
       }, {
         "id" : "37"
-      }, {
-        "id" : "38"
-      }, {
-        "id" : "39"
-      }, {
-        "id" : "40"
-      }, {
-        "id" : "41"
-      }, {
-        "id" : "42"
-      }, {
-        "id" : "43"
-      }, {
-        "id" : "44"
-      }, {
-        "id" : "45"
-      }, {
-        "id" : "46"
-      }, {
-        "id" : "47"
-      }, {
-        "id" : "48"
-      }, {
-        "id" : "49"
-      }, {
-        "id" : "50"
-      }, {
-        "id" : "51"
-      }, {
-        "id" : "52"
-      }, {
-        "id" : "53"
       } ]
     }, {
-      "containerId" : "4",
+      "containerId" : "3",
       "description" : "Connector API Components",
       "elements" : [ {
         "id" : "13",
@@ -656,6 +551,22 @@
         "y" : 0
       }, {
         "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "47",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "48",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "49",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "50",
         "x" : 0,
         "y" : 0
       } ],
@@ -666,14 +577,14 @@
         "id" : "15"
       } ]
     }, {
-      "containerId" : "6",
+      "containerId" : "5",
       "description" : "Connector Implementation Components",
       "elements" : [ {
-        "id" : "54",
+        "id" : "38",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "55",
+        "id" : "39",
         "x" : 0,
         "y" : 0
       } ],
@@ -681,26 +592,26 @@
       "key" : "implementation-components",
       "order" : 4
     }, {
-      "containerId" : "7",
+      "containerId" : "6",
       "description" : "Infrastructure Components",
       "elements" : [ {
-        "id" : "56",
+        "id" : "40",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "57",
+        "id" : "41",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "58",
+        "id" : "42",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "59",
+        "id" : "43",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "60",
+        "id" : "44",
         "x" : 0,
         "y" : 0
       } ],
@@ -708,11 +619,9 @@
       "key" : "infrastructure-components",
       "order" : 5,
       "relationships" : [ {
-        "id" : "61"
+        "id" : "45"
       }, {
-        "id" : "62"
-      }, {
-        "id" : "63"
+        "id" : "46"
       } ]
     } ],
     "configuration" : {
@@ -770,6 +679,10 @@
         "x" : 0,
         "y" : 0
       }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      }, {
         "id" : "4",
         "x" : 0,
         "y" : 0
@@ -779,10 +692,6 @@
         "y" : 0
       }, {
         "id" : "6",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "7",
         "x" : 0,
         "y" : 0
       } ],
