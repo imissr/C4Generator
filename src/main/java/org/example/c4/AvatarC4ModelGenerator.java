@@ -191,31 +191,24 @@ public class AvatarC4ModelGenerator {
         System.out.println("Total container relationships established: " + containerRelationCount);
 
 
-        // Load component mapper configuration for enrichment (backward compatibility)
+        // Load component mapper configuration for enrichment (automated from config)
         System.out.println("\n=== LOADING COMPONENT CONFIGURATIONS ===");
         Map<String, ContainerDetail> allContainers = c4Config.getContainerMap();
         System.out.println("✓ Component mapper configurations loaded: " + allContainers.size() + " containers");
         
-        // Extract component maps for enrichment
-        Map<String, ComponentDetail> componentMap = null;
-        Map<String, ComponentDetail> componentConnectorMap = null;
-        Map<String, ComponentDetail> componentInfrastructureMap = null;
+        // Dynamically extract component maps for all containers in config
+        Map<String, Map<String, ComponentDetail>> containerComponentMaps = new HashMap<>();
         
-        ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
-        ContainerDetail connectorImplementationDetail = allContainers.get("connectorImplementations");
-        ContainerDetail connectorInfrastructureDetail = allContainers.get("connectorInfrastructure");
-
-        if (connectorModelDetail != null) {
-            componentMap = connectorModelDetail.getComponentMap();
-            System.out.println("✓ Connector Model component config loaded: " + componentMap.size() + " components");
-        }
-        if (connectorImplementationDetail != null) {
-            componentConnectorMap = connectorImplementationDetail.getComponentMap();
-            System.out.println("✓ Connector Implementation component config loaded: " + componentConnectorMap.size() + " components");
-        }
-        if (connectorInfrastructureDetail != null) {
-            componentInfrastructureMap = connectorInfrastructureDetail.getComponentMap();
-            System.out.println("✓ Connector Infrastructure component config loaded: " + componentInfrastructureMap.size() + " components");
+        for (Map.Entry<String, ContainerDetail> entry : allContainers.entrySet()) {
+            String containerKey = entry.getKey();
+            ContainerDetail containerDetail = entry.getValue();
+            
+            if (containerDetail != null) {
+                Map<String, ComponentDetail> componentMap = containerDetail.getComponentMap();
+                containerComponentMaps.put(containerKey, componentMap);
+                System.out.println("✓ " + containerKey + " component config loaded: " + 
+                                 (componentMap != null ? componentMap.size() : 0) + " components");
+            }
         }
 
         // Load strategy configuration
@@ -228,48 +221,53 @@ public class AvatarC4ModelGenerator {
         ConfigurableComponentScanner scanner = new ConfigurableComponentScanner(strategyConfig);
         System.out.println("✓ Component scanner initialized");
 
-        // Get containers by name for component scanning
+        // Get containers dynamically from configuration for component scanning
         System.out.println("\n=== PREPARING CONTAINERS FOR COMPONENT SCANNING ===");
-        Container connectorApi = containers.get("Connector API");
-        Container connectorModel = containers.get("Connector Model");
-        Container connectorImplementations = containers.get("Connector Implementations");
-        Container connectorInfrastructure = containers.get("Infrastructure");
+        Map<String, Container> containersForScanning = new HashMap<>();
+        
+        // Map container names from config to actual containers
+        for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
+            Container container = containers.get(containerConfig.getName());
+            if (container != null) {
+                containersForScanning.put(containerConfig.getName(), container);
+                System.out.println("- " + containerConfig.getName() + ": ✓");
+            } else {
+                System.out.println("- " + containerConfig.getName() + ": ✗ (not found)");
+            }
+        }
+        
+        System.out.println("Total containers available for scanning: " + containersForScanning.size());
 
-        System.out.println("Available containers for scanning:");
-        System.out.println("- Connector API: " + (connectorApi != null ? "✓" : "✗"));
-        System.out.println("- Connector Model: " + (connectorModel != null ? "✓" : "✗"));
-        System.out.println("- Connector Implementations: " + (connectorImplementations != null ? "✓" : "✗"));
-        System.out.println("- Infrastructure: " + (connectorInfrastructure != null ? "✓" : "✗"));
-
-        // Create API components manually (could also be configured)
+        // Create API components automatically for containers marked as API
         System.out.println("\n=== CREATING API COMPONENTS ===");
-        if (connectorApi != null) {
-            createApiComponents(connectorApi);
-            System.out.println("✓ API components created for: " + connectorApi.getName());
-        } else {
-            System.out.println("⚠ Warning: Connector API container not found, skipping API component creation");
+        for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
+            String containerName = entry.getKey();
+            Container container = entry.getValue();
+            
+            // Check if this container should have manual API components created
+            // This could be made configurable in the future
+            if (containerName.toLowerCase().contains("api")) {
+                createApiComponents(container);
+                System.out.println("✓ API components created for: " + container.getName());
+            }
         }
 
-        // Scan containers using configured strategies
+        // Scan all containers automatically using configured strategies
         System.out.println("\n=== SCANNING CONTAINERS FOR COMPONENTS ===");
-        if (connectorModel != null) {
-            System.out.println("Scanning container: " + connectorModel.getName());
-            scanner.scanContainer(connectorModel, "connectorModel", componentMap);
-            System.out.println("✓ Completed scanning: " + connectorModel.getName() + " (" + connectorModel.getComponents().size() + " components)");
-        }
-        if (connectorImplementations != null) {
-            System.out.println("Scanning container: " + connectorImplementations.getName());
-            scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
-            System.out.println("✓ Completed scanning: " + connectorImplementations.getName() + " (" + connectorImplementations.getComponents().size() + " components)");
-        }
-        if (connectorInfrastructure != null) {
-            System.out.println("Scanning container: " + connectorInfrastructure.getName());
-            scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
-            System.out.println("✓ Completed scanning: " + connectorInfrastructure.getName() + " (" + connectorInfrastructure.getComponents().size() + " components)");
-        }if(connectorApi != null) {
-            System.out.println("Scanning container: " + connectorApi.getName());
-            scanner.scanContainer(connectorApi, "connectorApi", null); // No specific component map for API
-            System.out.println("✓ Completed scanning: " + connectorApi.getName() + " (" + connectorApi.getComponents().size() + " components)");
+        for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
+            String containerName = entry.getKey();
+            Container container = entry.getValue();
+            
+            // Find corresponding container key in the component configuration
+            String containerKey = findContainerKeyInConfig(containerName, allContainers);
+            Map<String, ComponentDetail> componentMap = containerComponentMaps.get(containerKey);
+            
+            System.out.println("Scanning container: " + container.getName() + 
+                             " (config key: " + containerKey + ")");
+            
+            scanner.scanContainer(container, containerKey, componentMap);
+            System.out.println("✓ Completed scanning: " + container.getName() + 
+                             " (" + container.getComponents().size() + " components)");
         }
 
         // Create container view
@@ -285,43 +283,28 @@ public class AvatarC4ModelGenerator {
         }
         System.out.println("✓ Added " + persons.size() + " persons to container view");
 
-        // Create component views for each container
+        // Create component views automatically for all scanned containers
         int componentViewCount = 0;
-        if (connectorModel != null) {
-            ComponentView modelComponentView = views.createComponentView(connectorModel,
-                    "model-components", "Connector Model Components");
-            modelComponentView.addAllComponents();
-            System.out.println("✓ Component view created for: " + connectorModel.getName() + 
-                              " (" + connectorModel.getComponents().size() + " components)");
-            componentViewCount++;
+        for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
+            String containerName = entry.getKey();
+            Container container = entry.getValue();
+            
+            if (container.getComponents().size() > 0) {
+                String viewKey = generateViewKey(containerName);
+                String viewTitle = containerName + " Components";
+                
+                ComponentView componentView = views.createComponentView(container, viewKey, viewTitle);
+                componentView.addAllComponents();
+                
+                System.out.println("✓ Component view created for: " + container.getName() + 
+                                 " (" + container.getComponents().size() + " components)");
+                componentViewCount++;
+            } else {
+                System.out.println("⚠ Skipping component view for " + container.getName() + 
+                                 " (no components found)");
+            }
         }
-
-        if (connectorApi != null) {
-            ComponentView apiComponentView = views.createComponentView(connectorApi,
-                    "api-components", "Connector API Components");
-            apiComponentView.addAllComponents();
-            System.out.println("✓ Component view created for: " + connectorApi.getName() + 
-                              " (" + connectorApi.getComponents().size() + " components)");
-            componentViewCount++;
-        }
-
-        if (connectorImplementations != null) {
-            ComponentView implComponentView = views.createComponentView(connectorImplementations,
-                    "implementation-components", "Connector Implementation Components");
-            implComponentView.addAllComponents();
-            System.out.println("✓ Component view created for: " + connectorImplementations.getName() + 
-                              " (" + connectorImplementations.getComponents().size() + " components)");
-            componentViewCount++;
-        }
-
-        if (connectorInfrastructure != null) {
-            ComponentView infraComponentView = views.createComponentView(connectorInfrastructure,
-                    "infrastructure-components", "Infrastructure Components");
-            infraComponentView.addAllComponents();
-            System.out.println("✓ Component view created for: " + connectorInfrastructure.getName() + 
-                              " (" + connectorInfrastructure.getComponents().size() + " components)");
-            componentViewCount++;
-        }
+        System.out.println("Total component views created: " + componentViewCount);
         System.out.println("Total component views created: " + componentViewCount);
 
         // Add styles
@@ -488,6 +471,54 @@ public class AvatarC4ModelGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Finds the corresponding container key in the component configuration for a given container name.
+     * This method handles the mapping between container display names and their configuration keys.
+     * 
+     * @param containerName The display name of the container
+     * @param allContainers Map of all container configurations
+     * @return The configuration key for the container, or null if not found
+     */
+    private static String findContainerKeyInConfig(String containerName, Map<String, ContainerDetail> allContainers) {
+        // Direct mapping for known containers
+        Map<String, String> containerNameToKeyMapping = new HashMap<>();
+        containerNameToKeyMapping.put("Connector Model", "connectorModel");
+        containerNameToKeyMapping.put("Connector API", "connectorApi");
+        containerNameToKeyMapping.put("Connector Implementations", "connectorImplementations");
+        containerNameToKeyMapping.put("Infrastructure", "connectorInfrastructure");
+        
+        String directKey = containerNameToKeyMapping.get(containerName);
+        if (directKey != null && allContainers.containsKey(directKey)) {
+            return directKey;
+        }
+        
+        // Fallback: try to find by partial name matching
+        String lowerContainerName = containerName.toLowerCase();
+        for (String key : allContainers.keySet()) {
+            if (key.toLowerCase().contains(lowerContainerName.replace(" ", "").toLowerCase()) ||
+                lowerContainerName.replace(" ", "").toLowerCase().contains(key.toLowerCase())) {
+                return key;
+            }
+        }
+        
+        System.out.println("⚠ Warning: No configuration key found for container: " + containerName);
+        return null;
+    }
+    
+    /**
+     * Generates a unique view key from a container name for component views.
+     * 
+     * @param containerName The name of the container
+     * @return A sanitized view key suitable for Structurizr
+     */
+    private static String generateViewKey(String containerName) {
+        return containerName.toLowerCase()
+                .replace(" ", "-")
+                .replace("_", "-")
+                .replaceAll("[^a-z0-9-]", "")
+                + "-components";
     }
 
 }
