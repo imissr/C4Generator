@@ -1,0 +1,157 @@
+{
+  "workspace": {
+    "name": "Avatar C4 Model",
+    "description": "Component analysis for Avatar Connector System"
+  },
+  "persons": [
+    {
+      "name": "Client User",
+      "description": "Uses the Avatar system to access healthcare data",
+      "relations": [
+        {
+          "target": "Avatar System",
+          "type": "Makes data requests through"
+        },
+        {
+          "target": "Connector Implementations",
+          "type": "Sends requests to"
+        }
+      ]
+    }
+  ],
+  "softwareSystems": [
+    {
+      "name": "Avatar System",
+      "description": "Connector-based system for healthcare data exchange",
+      "relations": []
+    }
+  ],
+  "containers": [
+    {
+      "name": "Connector API",
+      "description": "Defines the core contract for connectors",
+      "technology": "Java/OSGi",
+      "relations": []
+    },
+    {
+      "name": "Connector Model",
+      "description": "EMF-based data models",
+      "technology": "Java/EMF",
+      "relations": []
+    },
+    {
+      "name": "Connector Implementations",
+      "description": "Implementations of the API for different protocols",
+      "technology": "Java/OSGi",
+      "relations": [
+        {
+          "target": "Connector API",
+          "type": "Implements"
+        },
+        {
+          "target": "Connector Model",
+          "type": "Uses"
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure",
+      "description": "Supporting components and services",
+      "technology": "Java/OSGi",
+      "relations": [
+        {
+          "target": "Connector API",
+          "type": "Supports"
+        },
+        {
+          "target": "Connector Model",
+          "type": "Uses"
+        }
+      ]
+    }
+  ],
+  "container": [
+    {
+      "connectorModel": {
+        "objectMapper": [
+          {
+            "componentName": "Connector Info",
+            "tags": "Info",
+            "technology": "EMF Model",
+            "description": "Contains metadata about a connector including id, name, provider, version",
+            "relations": [
+              {
+                "target": "Connector Endpoint",
+                "type": "uses"
+              },
+              {
+                "target": "Connector Metric",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Connector Endpoint",
+            "tags": "Endpoint",
+            "technology": "EMF Model",
+            "description": "Defines a connector's endpoint with URI, method, protocol, and media type"
+          },
+          {
+            "componentName": "Connector Metric",
+            "tags": "Metric",
+            "technology": "EMF Model",
+            "description": "Tracks connector performance metrics including timestamp, status, and uptime"
+          }
+        ]
+      }
+    },
+    {
+      "connectorImplementations": {
+        "objectMapper": [
+          {
+            "componentName": "HTTP Connector",
+            "tags": "Implementation",
+            "technology": "Java/HTTP",
+            "description": "HTTP protocol implementation of the connector interface",
+            "relations": [
+              {
+                "target": "REST Client",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "REST Client",
+            "tags": "Implementation",
+            "technology": "Java/REST",
+            "description": "REST client for making HTTP requests"
+          }
+        ]
+      }
+    },
+    {
+      "connectorInfrastructure": {
+        "objectMapper": [
+          {
+            "componentName": "Configuration Manager",
+            "tags": "Infrastructure",
+            "technology": "Java/OSGi",
+            "description": "Manages system configuration and settings",
+            "relations": [
+              {
+                "target": "Security Manager",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Security Manager",
+            "tags": "Infrastructure",
+            "technology": "Java/Security",
+            "description": "Handles authentication and authorization"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -3,6 +3,7 @@ package org.example.c4;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,54 +44,157 @@ public class AvatarC4ModelGenerator {
      * Main entry point for the Avatar C4 Model Generator application.
      * 
      * This method orchestrates the entire C4 model generation process:
-     * 1. Creates a Structurizr workspace for the Avatar system
-     * 2. Defines users, systems, and containers
-     * 3. Loads component configurations from JSON files
-     * 4. Performs automated component discovery
-     * 5. Creates container and component views
-     * 6. Applies styling and exports the model to JSON
+     * 1. Loads complete C4 model configuration from JSON file
+     * 2. Creates a Structurizr workspace with configured metadata
+     * 3. Automatically creates users, systems, and containers from configuration
+     * 4. Establishes relationships as defined in configuration
+     * 5. Performs automated component discovery
+     * 6. Creates container and component views
+     * 7. Applies styling and exports the model to JSON
      * 
      * @param args Command line arguments (currently unused)
      * @throws Exception If model generation fails due to file I/O or component scanning errors
      */
     public static void main(String[] args) throws Exception {
-        // Create workspace
-        Workspace workspace = new Workspace("Avatar C4 Model", "Component analysis for Avatar Connector System");
+        System.out.println("=== Starting Avatar C4 Model Generation ===");
+        
+        // Load complete C4 model configuration from JSON
+        File c4ConfigJson = new File("src/main/java/org/example/json/c4ModelConfig.json");
+        System.out.println("Loading C4 configuration from: " + c4ConfigJson.getAbsolutePath());
+        C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson);
+        System.out.println("✓ C4 configuration loaded successfully");
+        
+        // Create workspace with configured metadata
+        WorkspaceDetail workspaceConfig = c4Config.getWorkspace();
+        Workspace workspace = new Workspace(workspaceConfig.getName(), workspaceConfig.getDescription());
         Model model = workspace.getModel();
         ViewSet views = workspace.getViews();
+        
+        System.out.println("\n=== WORKSPACE CREATED ===");
+        System.out.println("Name: " + workspaceConfig.getName());
+        System.out.println("Description: " + workspaceConfig.getDescription());
 
-        // Define users and external systems
-        Person clientUser = model.addPerson("Client User", "Uses the Avatar system to access healthcare data");
+        // Create persons from configuration
+        System.out.println("\n=== CREATING PERSONS ===");
+        Map<String, Person> persons = new HashMap<>();
+        for (PersonDetail personConfig : c4Config.getPersons()) {
+            Person person = model.addPerson(personConfig.getName(), personConfig.getDescription());
+            persons.put(personConfig.getName(), person);
+            System.out.println("✓ Person created: " + personConfig.getName() + " - " + personConfig.getDescription());
+        }
+        System.out.println("Total persons created: " + persons.size());
 
-        // Define the main software system
-        SoftwareSystem avatarSystem = model.addSoftwareSystem("Avatar System", "Connector-based system for healthcare data exchange");
-        clientUser.uses(avatarSystem, "Makes data requests through");
+        // Create software systems from configuration
+        System.out.println("\n=== CREATING SOFTWARE SYSTEMS ===");
+        Map<String, SoftwareSystem> softwareSystems = new HashMap<>();
+        for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
+            SoftwareSystem system = model.addSoftwareSystem(systemConfig.getName(), systemConfig.getDescription());
+            softwareSystems.put(systemConfig.getName(), system);
+            System.out.println("✓ Software System created: " + systemConfig.getName() + " - " + systemConfig.getDescription());
+        }
+        System.out.println("Total software systems created: " + softwareSystems.size());
 
-        // Define containers within the system
-        Container connectorApi = avatarSystem.addContainer("Connector API",
-                "Defines the core contract for connectors", "Java/OSGi");
+        // Create containers from configuration
+        System.out.println("\n=== CREATING CONTAINERS ===");
+        Map<String, Container> containers = new HashMap<>();
+        for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
+            // Find the parent software system (assuming first software system for now)
+            SoftwareSystem parentSystem = softwareSystems.values().iterator().next();
+            Container container = parentSystem.addContainer(
+                containerConfig.getName(), 
+                containerConfig.getDescription(), 
+                containerConfig.getTechnology()
+            );
+            containers.put(containerConfig.getName(), container);
+            System.out.println("✓ Container created: " + containerConfig.getName() + 
+                              " - " + containerConfig.getDescription() + 
+                              " (Technology: " + containerConfig.getTechnology() + ")" +
+                              " [Parent System: " + parentSystem.getName() + "]");
+        }
+        System.out.println("Total containers created: " + containers.size());
 
-        Container connectorModel = avatarSystem.addContainer("Connector Model",
-                "EMF-based data models", "Java/EMF");
+        // Establish person relationships
+        System.out.println("\n=== ESTABLISHING PERSON RELATIONSHIPS ===");
+        int personRelationCount = 0;
+        for (PersonDetail personConfig : c4Config.getPersons()) {
+            Person person = persons.get(personConfig.getName());
+            if (personConfig.getRelations() != null) {
+                for (Relations relation : personConfig.getRelations()) {
+                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
+                    Container targetContainer = containers.get(relation.getTarget());
+                    
+                    if (targetSystem != null) {
+                        person.uses(targetSystem, relation.getType());
+                        System.out.println("✓ Person-System Relationship: " + person.getName() + 
+                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        personRelationCount++;
+                    } else if (targetContainer != null) {
+                        person.uses(targetContainer, relation.getType());
+                        System.out.println("✓ Person-Container Relationship: " + person.getName() + 
+                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        personRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target not found for person relation: " + 
+                                         person.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total person relationships established: " + personRelationCount);
 
-        Container connectorImplementations = avatarSystem.addContainer("Connector Implementations",
-                "Implementations of the API for different protocols", "Java/OSGi");
+        // Establish additional person-container relationships from configuration
+        System.out.println("\n=== ESTABLISHING ADDITIONAL PERSON-CONTAINER RELATIONSHIPS ===");
+        establishPersonContainerRelationships(c4Config, persons, containers);
 
-        Container connectorInfrastructure = avatarSystem.addContainer("Infrastructure",
-                "Supporting components and services", "Java/OSGi");
+        // Establish software system relationships
+        System.out.println("\n=== ESTABLISHING SOFTWARE SYSTEM RELATIONSHIPS ===");
+        int systemRelationCount = 0;
+        for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
+            SoftwareSystem system = softwareSystems.get(systemConfig.getName());
+            if (systemConfig.getRelations() != null) {
+                for (Relations relation : systemConfig.getRelations()) {
+                    SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
+                    if (targetSystem != null) {
+                        system.uses(targetSystem, relation.getType());
+                        System.out.println("✓ System-System Relationship: " + system.getName() + 
+                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        systemRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target system not found for relation: " + 
+                                         system.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total software system relationships established: " + systemRelationCount);
 
-        // Define relationships between containers
-        connectorImplementations.uses(connectorApi, "Implements");
-        connectorImplementations.uses(connectorModel, "Uses");
-        connectorInfrastructure.uses(connectorApi, "Supports");
-        connectorInfrastructure.uses(connectorModel, "Uses");
-        clientUser.uses(connectorImplementations, "Sends requests to");
+        // Establish container relationships
+        System.out.println("\n=== ESTABLISHING CONTAINER RELATIONSHIPS ===");
+        int containerRelationCount = 0;
+        for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
+            Container container = containers.get(containerConfig.getName());
+            if (containerConfig.getRelations() != null) {
+                for (Relations relation : containerConfig.getRelations()) {
+                    Container targetContainer = containers.get(relation.getTarget());
+                    if (targetContainer != null) {
+                        container.uses(targetContainer, relation.getType());
+                        System.out.println("✓ Container-Container Relationship: " + container.getName() + 
+                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        containerRelationCount++;
+                    } else {
+                        System.out.println("⚠ Warning: Target container not found for relation: " + 
+                                         container.getName() + " -> " + relation.getTarget());
+                    }
+                }
+            }
+        }
+        System.out.println("Total container relationships established: " + containerRelationCount);
 
 
-        // Load component mapper configuration for enrichment
-        File componentMapperJson = new File("src/main/java/org/example/json/componentMapper.json");
-        ContainerConfig componentConfig = ContainerConfig.loadFromFile(componentMapperJson);
-        Map<String, ContainerDetail> allContainers = componentConfig.getContainerMap();
+        // Load component mapper configuration for enrichment (backward compatibility)
+        System.out.println("\n=== LOADING COMPONENT CONFIGURATIONS ===");
+        Map<String, ContainerDetail> allContainers = c4Config.getContainerMap();
+        System.out.println("✓ Component mapper configurations loaded: " + allContainers.size() + " containers");
         
         // Extract component maps for enrichment
         Map<String, ComponentDetail> componentMap = null;
@@ -103,54 +207,121 @@ public class AvatarC4ModelGenerator {
 
         if (connectorModelDetail != null) {
             componentMap = connectorModelDetail.getComponentMap();
+            System.out.println("✓ Connector Model component config loaded: " + componentMap.size() + " components");
         }
         if (connectorImplementationDetail != null) {
             componentConnectorMap = connectorImplementationDetail.getComponentMap();
+            System.out.println("✓ Connector Implementation component config loaded: " + componentConnectorMap.size() + " components");
         }
         if (connectorInfrastructureDetail != null) {
             componentInfrastructureMap = connectorInfrastructureDetail.getComponentMap();
+            System.out.println("✓ Connector Infrastructure component config loaded: " + componentInfrastructureMap.size() + " components");
         }
 
         // Load strategy configuration
+        System.out.println("\n=== LOADING STRATEGY CONFIGURATION ===");
         File strategyConfigJson = new File("src/main/java/org/example/json/strategyConfig.json");
         StrategyConfiguration strategyConfig = StrategyConfiguration.loadFromFile(strategyConfigJson);
+        System.out.println("✓ Strategy configuration loaded from: " + strategyConfigJson.getAbsolutePath());
         
         // Create configurable component scanner
         ConfigurableComponentScanner scanner = new ConfigurableComponentScanner(strategyConfig);
+        System.out.println("✓ Component scanner initialized");
+
+        // Get containers by name for component scanning
+        System.out.println("\n=== PREPARING CONTAINERS FOR COMPONENT SCANNING ===");
+        Container connectorApi = containers.get("Connector API");
+        Container connectorModel = containers.get("Connector Model");
+        Container connectorImplementations = containers.get("Connector Implementations");
+        Container connectorInfrastructure = containers.get("Infrastructure");
+
+        System.out.println("Available containers for scanning:");
+        System.out.println("- Connector API: " + (connectorApi != null ? "✓" : "✗"));
+        System.out.println("- Connector Model: " + (connectorModel != null ? "✓" : "✗"));
+        System.out.println("- Connector Implementations: " + (connectorImplementations != null ? "✓" : "✗"));
+        System.out.println("- Infrastructure: " + (connectorInfrastructure != null ? "✓" : "✗"));
 
         // Create API components manually (could also be configured)
-        createApiComponents(connectorApi);
+        System.out.println("\n=== CREATING API COMPONENTS ===");
+        if (connectorApi != null) {
+            createApiComponents(connectorApi);
+            System.out.println("✓ API components created for: " + connectorApi.getName());
+        } else {
+            System.out.println("⚠ Warning: Connector API container not found, skipping API component creation");
+        }
 
         // Scan containers using configured strategies
-        scanner.scanContainer(connectorModel, "connectorModel", componentMap);
-        scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
-        scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
-        //scanner.scanContainer(connectorApi, "connectorApi", null);
-
+        System.out.println("\n=== SCANNING CONTAINERS FOR COMPONENTS ===");
+        if (connectorModel != null) {
+            System.out.println("Scanning container: " + connectorModel.getName());
+            scanner.scanContainer(connectorModel, "connectorModel", componentMap);
+            System.out.println("✓ Completed scanning: " + connectorModel.getName() + " (" + connectorModel.getComponents().size() + " components)");
+        }
+        if (connectorImplementations != null) {
+            System.out.println("Scanning container: " + connectorImplementations.getName());
+            scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
+            System.out.println("✓ Completed scanning: " + connectorImplementations.getName() + " (" + connectorImplementations.getComponents().size() + " components)");
+        }
+        if (connectorInfrastructure != null) {
+            System.out.println("Scanning container: " + connectorInfrastructure.getName());
+            scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
+            System.out.println("✓ Completed scanning: " + connectorInfrastructure.getName() + " (" + connectorInfrastructure.getComponents().size() + " components)");
+        }
 
         // Create container view
+        System.out.println("\n=== CREATING VIEWS ===");
+        SoftwareSystem avatarSystem = softwareSystems.values().iterator().next(); // Get the first system
         ContainerView containerView = views.createContainerView(avatarSystem, "containers", "Container View");
         containerView.addAllElements();
-        containerView.add(clientUser);
+        System.out.println("✓ Container view created for: " + avatarSystem.getName());
+        
+        // Add all persons to container view
+        for (Person person : persons.values()) {
+            containerView.add(person);
+        }
+        System.out.println("✓ Added " + persons.size() + " persons to container view");
 
         // Create component views for each container
-        ComponentView modelComponentView = views.createComponentView(connectorModel,
-                "model-components", "Connector Model Components");
-        modelComponentView.addAllComponents();
+        int componentViewCount = 0;
+        if (connectorModel != null) {
+            ComponentView modelComponentView = views.createComponentView(connectorModel,
+                    "model-components", "Connector Model Components");
+            modelComponentView.addAllComponents();
+            System.out.println("✓ Component view created for: " + connectorModel.getName() + 
+                              " (" + connectorModel.getComponents().size() + " components)");
+            componentViewCount++;
+        }
 
-        ComponentView apiComponentView = views.createComponentView(connectorApi,
-                "api-components", "Connector API Components");
-        apiComponentView.addAllComponents();
+        if (connectorApi != null) {
+            ComponentView apiComponentView = views.createComponentView(connectorApi,
+                    "api-components", "Connector API Components");
+            apiComponentView.addAllComponents();
+            System.out.println("✓ Component view created for: " + connectorApi.getName() + 
+                              " (" + connectorApi.getComponents().size() + " components)");
+            componentViewCount++;
+        }
 
-        ComponentView implComponentView = views.createComponentView(connectorImplementations,
-                "implementation-components", "Connector Implementation Components");
-        implComponentView.addAllComponents();
+        if (connectorImplementations != null) {
+            ComponentView implComponentView = views.createComponentView(connectorImplementations,
+                    "implementation-components", "Connector Implementation Components");
+            implComponentView.addAllComponents();
+            System.out.println("✓ Component view created for: " + connectorImplementations.getName() + 
+                              " (" + connectorImplementations.getComponents().size() + " components)");
+            componentViewCount++;
+        }
 
-        ComponentView infraComponentView = views.createComponentView(connectorInfrastructure,
-                "infrastructure-components", "Infrastructure Components");
-        infraComponentView.addAllComponents();
+        if (connectorInfrastructure != null) {
+            ComponentView infraComponentView = views.createComponentView(connectorInfrastructure,
+                    "infrastructure-components", "Infrastructure Components");
+            infraComponentView.addAllComponents();
+            System.out.println("✓ Component view created for: " + connectorInfrastructure.getName() + 
+                              " (" + connectorInfrastructure.getComponents().size() + " components)");
+            componentViewCount++;
+        }
+        System.out.println("Total component views created: " + componentViewCount);
 
         // Add styles
+        System.out.println("\n=== APPLYING STYLES ===");
         Styles styles = views.getConfiguration().getStyles();
         styles.addElementStyle(Tags.PERSON).background("#08427b").color("#ffffff").shape(Shape.Person);
         styles.addElementStyle(Tags.CONTAINER).background("#438dd5").color("#ffffff");
@@ -163,12 +334,29 @@ public class AvatarC4ModelGenerator {
         styles.addElementStyle("API").background("#4b79cc").color("#ffffff");
         styles.addElementStyle("Implementation").background("#f5da55").color("#000000");
         styles.addElementStyle("Infrastructure").background("#b86950").color("#ffffff");
+        System.out.println("✓ Element styles applied for visualization");
 
         // Export to JSON
+        System.out.println("\n=== EXPORTING MODEL ===");
         try (Writer writer = new FileWriter("avatar-c4-model.json")) {
             new JsonWriter(true).write(workspace, writer);
-            System.out.println("Avatar C4 model exported to avatar-c4-model.json");
+            System.out.println("✓ Avatar C4 model exported to avatar-c4-model.json");
         }
+        
+        // Summary statistics
+        System.out.println("\n=== GENERATION SUMMARY ===");
+        System.out.println("Workspace: " + workspaceConfig.getName());
+        System.out.println("Persons: " + persons.size());
+        System.out.println("Software Systems: " + softwareSystems.size());
+        System.out.println("Containers: " + containers.size());
+        
+        int totalComponents = 0;
+        for (Container container : containers.values()) {
+            totalComponents += container.getComponents().size();
+        }
+        System.out.println("Total Components: " + totalComponents);
+        System.out.println("Component Views: " + componentViewCount);
+        System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");
     }
     /**
      * Creates manual API components for the connector API container.
@@ -182,21 +370,62 @@ public class AvatarC4ModelGenerator {
      */
     // Method to manually create API components based on documentation
     private static void createApiComponents(Container container) {
+        System.out.println("Creating API components for container: " + container.getName());
+        
         Component avatarConnectorInfo = container.addComponent("AvatarConnectorInfo",
                 "Base interface providing metadata about connectors", "Java Interface");
         avatarConnectorInfo.addTags("API");
+        System.out.println("✓ API Component created: " + avatarConnectorInfo.getName() + " - " + avatarConnectorInfo.getDescription());
 
         Component avatarConnector = container.addComponent("AvatarConnector",
                 "Main service interface for connector implementations", "Java Interface");
         avatarConnector.addTags("API");
+        System.out.println("✓ API Component created: " + avatarConnector.getName() + " - " + avatarConnector.getDescription());
 
         avatarConnector.uses(avatarConnectorInfo, "extends");
+        System.out.println("✓ API Component Relationship: " + avatarConnector.getName() + 
+                         " -> " + avatarConnectorInfo.getName() + " (extends)");
+        
+        System.out.println("Total API components created: " + container.getComponents().size());
     }
 
-
-
-
-
+    /**
+     * Establishes additional person-container relationships that may not be directly configured.
+     * 
+     * This method handles special cases where persons need to interact with specific containers
+     * based on business logic or common patterns in the system architecture.
+     * 
+     * @param c4Config The complete C4 model configuration
+     * @param persons Map of person names to Person objects
+     * @param containers Map of container names to Container objects
+     */
+    private static void establishPersonContainerRelationships(
+            C4ModelConfig c4Config, 
+            Map<String, Person> persons, 
+            Map<String, Container> containers) {
+        
+        int additionalRelationCount = 0;
+        
+        // Example: Client User sends requests to Connector Implementations
+        Person clientUser = persons.get("Client User");
+        Container connectorImplementations = containers.get("Connector Implementations");
+        
+        if (clientUser != null && connectorImplementations != null) {
+            clientUser.uses(connectorImplementations, "Sends requests to");
+            System.out.println("✓ Additional Person-Container Relationship: " + clientUser.getName() + 
+                             " -> " + connectorImplementations.getName() + " (Sends requests to)");
+            additionalRelationCount++;
+        } else {
+            if (clientUser == null) {
+                System.out.println("⚠ Warning: Client User not found for additional relationship");
+            }
+            if (connectorImplementations == null) {
+                System.out.println("⚠ Warning: Connector Implementations container not found for additional relationship");
+            }
+        }
+        
+        System.out.println("Total additional person-container relationships established: " + additionalRelationCount);
+    }
 
     /**
      * Assigns component metadata and relationships from JSON configuration to discovered components.
@@ -255,7 +484,7 @@ public class AvatarC4ModelGenerator {
                             }
                         }
                     }
-                    break; // Found a match, no need to continue checking other entries
+                    break;
                 }
             }
         }

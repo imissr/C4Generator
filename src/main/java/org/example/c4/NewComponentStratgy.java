@@ -113,11 +113,9 @@ public class NewComponentStratgy implements TypeMatcher {
                         }
                     }
                 }
-                // found @Component but not the desired property
                 return false;
             }
         }
-        // annotation not present
         return false;
     }
 }
