@@ -61,8 +61,10 @@ public class AvatarC4ModelGenerator {
         // Load complete C4 model configuration from JSON
         File c4ConfigJson = new File("src/main/java/org/example/json/c4ModelConfig.json");
         System.out.println("Loading C4 configuration from: " + c4ConfigJson.getAbsolutePath());
-        C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson);
-        System.out.println("✓ C4 configuration loaded successfully");
+        
+        // Load with schema validation enabled
+        C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson, true);
+        System.out.println("✓ C4 configuration loaded and validated successfully");
         
         // Create workspace with configured metadata
         WorkspaceDetail workspaceConfig = c4Config.getWorkspace();

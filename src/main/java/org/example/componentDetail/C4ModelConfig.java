@@ -109,8 +109,67 @@ public class C4ModelConfig {
      * @throws IOException If the file cannot be read or contains invalid JSON
      */
     public static C4ModelConfig loadFromFile(File jsonFile) throws IOException {
+        return loadFromFile(jsonFile, true);
+    }
+    
+    /**
+     * Convenience factory method for loading complete C4 model configuration from a JSON file
+     * with optional schema validation.
+     * 
+     * @param jsonFile File object pointing to the JSON configuration file
+     * @param validateSchema Whether to validate against the JSON schema
+     * @return Fully initialized C4ModelConfig with all elements loaded
+     * @throws IOException If the file cannot be read or contains invalid JSON
+     * @throws JsonSchemaValidator.ValidationException If schema validation fails
+     */
+    public static C4ModelConfig loadFromFile(File jsonFile, boolean validateSchema) throws IOException {
+        if (validateSchema) {
+            validateConfigurationFile(jsonFile);
+        }
+        
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonFile, C4ModelConfig.class);
+    }
+    
+    /**
+     * Validates a C4 model configuration file against the JSON schema.
+     * 
+     * @param jsonFile The JSON configuration file to validate
+     * @throws IOException If the file cannot be read
+     * @throws JsonSchemaValidator.ValidationException If validation fails
+     */
+    public static void validateConfigurationFile(File jsonFile) throws IOException {
+        JsonSchemaValidator validator = new JsonSchemaValidator();
+        
+        // Try to find schema file in the same directory
+        File schemaFile = new File(jsonFile.getParent(), "c4ModelConfigSchema.json");
+        
+        JsonSchemaValidator.ValidationResult result;
+        if (schemaFile.exists()) {
+            result = validator.validateJsonFile(jsonFile, schemaFile);
+            System.out.println("✓ Using schema file: " + schemaFile.getAbsolutePath());
+        } else {
+            // Fallback to classpath resource
+            try {
+                result = validator.validateJsonFileWithResource(jsonFile, "c4ModelConfigSchema.json");
+                System.out.println("✓ Using schema from classpath");
+            } catch (IOException e) {
+                System.out.println("⚠ Warning: Schema validation skipped - schema file not found");
+                return;
+            }
+        }
+        
+        if (result.isValid()) {
+            System.out.println("✓ JSON configuration validation passed");
+        } else {
+            System.err.println("✗ JSON configuration validation failed:");
+            System.err.println(result.getErrorSummary());
+            try {
+                result.throwIfInvalid();
+            } catch (JsonSchemaValidator.ValidationException e) {
+                throw new IOException("Configuration validation failed: " + e.getMessage(), e);
+            }
+        }
     }
 
     /**
