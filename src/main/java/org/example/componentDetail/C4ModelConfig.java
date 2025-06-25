@@ -71,6 +71,8 @@ public class C4ModelConfig {
     private final WorkspaceDetail workspace;
     private final List<PersonDetail> persons;
     private final List<SoftwareSystemDetail> softwareSystems;
+
+    // Conainer should be created
     private final List<ContainerConfigDetail> containers;
     
     // Keep the original container component mappings

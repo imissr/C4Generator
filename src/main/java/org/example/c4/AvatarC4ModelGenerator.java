@@ -452,10 +452,6 @@ public class AvatarC4ModelGenerator {
 
         for (Component component : container.getComponents()) {
             for (Map.Entry<String, ComponentDetail> entry : componentMap.entrySet()) {
-                if(Objects.equals(entry.getKey(), "Ecore Serializer Factory")) {
-
-
-                }
                 String keySubstring = entry.getKey().toLowerCase().trim();
                 ComponentDetail detail = entry.getValue();
 
