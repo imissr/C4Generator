@@ -25,6 +25,14 @@
         "pattern": "^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"
       },
       "containerMapping": "connectorInfrastructure"
+    },
+    {
+      "name": "API Components Strategy",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.osgi.annotation.versioning.ProviderType"
+      },
+      "containerMapping": "connectorApi"
     }
   ],
   "globalConfig": {

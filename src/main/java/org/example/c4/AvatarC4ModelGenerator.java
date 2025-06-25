@@ -96,10 +96,12 @@ public class AvatarC4ModelGenerator {
         Map<String, ComponentDetail> componentMap = null;
         Map<String, ComponentDetail> componentConnectorMap = null;
         Map<String, ComponentDetail> componentInfrastructureMap = null;
+        Map<String, ComponentDetail> componentApiMap = null;
         
         ContainerDetail connectorModelDetail = allContainers.get("connectorModel");
         ContainerDetail connectorImplementationDetail = allContainers.get("connectorImplementations");
         ContainerDetail connectorInfrastructureDetail = allContainers.get("connectorInfrastructure");
+        ContainerDetail connectorApiDetail = allContainers.get("connectorApi");
 
         if (connectorModelDetail != null) {
             componentMap = connectorModelDetail.getComponentMap();
@@ -110,6 +112,9 @@ public class AvatarC4ModelGenerator {
         if (connectorInfrastructureDetail != null) {
             componentInfrastructureMap = connectorInfrastructureDetail.getComponentMap();
         }
+        if( connectorApiDetail != null) {
+            componentApiMap = connectorApiDetail.getComponentMap();
+        }
 
         // Load strategy configuration
         File strategyConfigJson = new File("src/main/java/org/example/json/strategyConfig.json");
@@ -118,14 +123,12 @@ public class AvatarC4ModelGenerator {
         // Create configurable component scanner
         ConfigurableComponentScanner scanner = new ConfigurableComponentScanner(strategyConfig);
 
-        // Create API components manually (could also be configured)
-        createApiComponents(connectorApi);
 
-        // Scan containers using configured strategies
+
         scanner.scanContainer(connectorModel, "connectorModel", componentMap);
         scanner.scanContainer(connectorImplementations, "connectorImplementations", componentConnectorMap);
         scanner.scanContainer(connectorInfrastructure, "connectorInfrastructure", componentInfrastructureMap);
-        //scanner.scanContainer(connectorApi, "connectorApi", null);
+        scanner.scanContainer(connectorApi, "connectorApi", null);
 
 
         // Create container view
@@ -170,28 +173,7 @@ public class AvatarC4ModelGenerator {
             System.out.println("Avatar C4 model exported to avatar-c4-model.json");
         }
     }
-    /**
-     * Creates manual API components for the connector API container.
-     * 
-     * This method manually defines the core API interfaces that form the
-     * contract for all connector implementations in the Avatar system.
-     * These components represent the fundamental interfaces that all
-     * connector implementations must adhere to.
-     * 
-     * @param container The connector API container to add components to
-     */
-    // Method to manually create API components based on documentation
-    private static void createApiComponents(Container container) {
-        Component avatarConnectorInfo = container.addComponent("AvatarConnectorInfo",
-                "Base interface providing metadata about connectors", "Java Interface");
-        avatarConnectorInfo.addTags("API");
 
-        Component avatarConnector = container.addComponent("AvatarConnector",
-                "Main service interface for connector implementations", "Java Interface");
-        avatarConnector.addTags("API");
-
-        avatarConnector.uses(avatarConnectorInfo, "extends");
-    }
 
 
 
