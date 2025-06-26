@@ -6,7 +6,7 @@ import com.structurizr.component.ComponentFinderStrategyBuilder;
 import com.structurizr.component.matcher.TypeMatcher;
 import com.structurizr.model.Component;
 import com.structurizr.model.Container;
-import org.example.c4.AvatarC4ModelGenerator;
+import org.example.c4.C4ModelGenerator;
 
 import java.io.File;
 import java.util.List;
@@ -105,7 +105,7 @@ public class ConfigurableComponentScanner {
      *                    Can be null if no external enrichment is needed.
      * 
      * @see StrategyConfiguration#getStrategiesForContainer(String) for strategy filtering
-     * @see AvatarC4ModelGenerator#assignRealtionFromJson for component enrichment
+     * @see C4ModelGenerator#assignRealtionFromJson for component enrichment
      */
     public void scanContainer(Container container, String containerName, Map<String, ComponentDetail> componentMap) {
         // Get strategies for this container
@@ -141,7 +141,7 @@ public class ConfigurableComponentScanner {
         
         // Apply component enrichment if provided
         if (componentMap != null && !componentMap.isEmpty()) {
-            AvatarC4ModelGenerator.assignRealtionFromJson(container, componentMap);
+            C4ModelGenerator.assignRealtionFromJson(container, componentMap);
         }
     }
     

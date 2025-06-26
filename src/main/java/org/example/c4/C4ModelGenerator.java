@@ -6,15 +6,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.structurizr.Workspace;
-import com.structurizr.component.ComponentFinder;
-import com.structurizr.component.ComponentFinderBuilder;
-import com.structurizr.component.ComponentFinderStrategyBuilder;
-import com.structurizr.component.matcher.AnnotationTypeMatcher;
-import com.structurizr.component.matcher.NameSuffixTypeMatcher;
-import com.structurizr.component.matcher.RegexTypeMatcher;
 import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
@@ -72,7 +65,7 @@ import org.example.componentDetail.*;
  * @version 2.0
  * @since 2025-06-15
  */
-public class AvatarC4ModelGenerator {
+public class C4ModelGenerator {
     /**
      * Main entry point for the configurable C4 model generation system.
      * 

@@ -126,7 +126,7 @@ Modify the `basePaths` in `globalConfig` to point to your project directories:
 The generator will automatically load and apply your configured strategies:
 
 ```bash
-mvn clean compile exec:java -Dexec.mainClass="org.example.c4.AvatarC4ModelGenerator"
+mvn clean compile exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator"
 ```
 
 ## Configuration Examples
