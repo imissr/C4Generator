@@ -294,8 +294,8 @@ public class C4ModelGenerator {
             String viewTitle = systemName + " - Containers";
 
             ContainerView containerView = views.createContainerView(system, viewKey, viewTitle);
-            containerView.addAllElements();
-            
+            containerView.addAllContainers();
+
 
             System.out.println("✓ Container view created for: " + system.getName() + 
                              " (" + system.getContainers().size() + " containers)");
