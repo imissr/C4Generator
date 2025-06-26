@@ -1,0 +1,48 @@
+{
+  "strategies": [
+    {
+      "name": "OSGi Component Strategy",
+      "type": "CUSTOM_ANNOTATION",
+      "config": {
+        "annotationType": "org.osgi.service.component.annotations.Component",
+        "propertyName": "connector",
+        "annotationProperty": "property"
+      },
+      "containerMapping": "connectorImplementations"
+    },
+    {
+      "name": "Provider Type Strategy",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.osgi.annotation.versioning.ProviderType"
+      },
+      "containerMapping": "connectorModel"
+    },
+    {
+      "name": "Infrastructure Components Strategy",
+      "type": "REGEX",
+      "config": {
+        "pattern": "^de\\.avatar\\.connector\\.(emf|whiteboard)\\..*(?:Whiteboard|Serializer|Factory)(?!\\$).*"
+      },
+      "containerMapping": "connectorInfrastructure"
+    },
+    {
+      "name": "API Components Strategy",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.osgi.annotation.versioning.ProviderType"
+      },
+      "containerMapping": "connectorApi"
+    }
+  ],
+  "globalConfig": {
+    "excludeInnerClasses": true,
+    "excludeTestClasses": true,
+    "basePaths": {
+      "connectorModel": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.model",
+      "connectorImplementations": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
+      "connectorInfrastructure": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo",
+      "connectorApi": "/home/mohamad-khaled-minawe/Desktop/project/Structurizer/avatar-dataspaces-demo/de.avatar.connector.api"
+    }
+  }
+}

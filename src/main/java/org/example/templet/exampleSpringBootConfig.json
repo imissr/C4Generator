@@ -102,10 +102,10 @@
       ]
     }
   ],
-  "components": [
+  "container": [
     {
-      "webLayer": {
-        "components": [
+      "webApplication": {
+        "objectMapper": [
           {
             "componentName": "Admin Controller",
             "tags": "Controller",
@@ -225,13 +225,7 @@
                 "type": "uses"
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "serviceLayer": {
-        "components": [
+          },
           {
             "componentName": "Appointment Service",
             "tags": "Service",
@@ -245,6 +239,10 @@
               {
                 "target": "Time Slot Repository",
                 "type": "uses"
+              },
+              {
+                "target": "Appointment Mapper",
+                "type": "uses"
               }
             ]
           },
@@ -257,6 +255,10 @@
               {
                 "target": "Time Slot Repository",
                 "type": "uses"
+              },
+              {
+                "target": "Time Slot Mapper",
+                "type": "uses"
               }
             ]
           },
@@ -268,6 +270,10 @@
             "relations": [
               {
                 "target": "Service Repository",
+                "type": "uses"
+              },
+              {
+                "target": "Service Mapper",
                 "type": "uses"
               }
             ]
@@ -283,7 +289,15 @@
                 "type": "uses"
               },
               {
+                "target": "Car Spec Repository",
+                "type": "uses"
+              },
+              {
                 "target": "Image Service",
+                "type": "uses"
+              },
+              {
+                "target": "Car Card Mapper",
                 "type": "uses"
               }
             ]
@@ -297,6 +311,10 @@
               {
                 "target": "Service Site Repository",
                 "type": "uses"
+              },
+              {
+                "target": "Service Site Mapper",
+                "type": "uses"
               }
             ]
           },
@@ -309,6 +327,14 @@
               {
                 "target": "User Repository",
                 "type": "uses"
+              },
+              {
+                "target": "Role Repository",
+                "type": "uses"
+              },
+              {
+                "target": "Authentication Mapper",
+                "type": "uses"
               }
             ]
           },
@@ -317,14 +343,24 @@
             "tags": "Service",
             "technology": "Spring Service",
             "description": "Handles email notifications for appointments and system events",
-            "relations": []
+            "relations": [
+              {
+                "target": "Email Details",
+                "type": "uses"
+              }
+            ]
           },
           {
             "componentName": "Image Service",
             "tags": "Service",
             "technology": "Spring Service",
             "description": "Processes, resizes, and manages image files for car cards",
-            "relations": []
+            "relations": [
+              {
+                "target": "File System",
+                "type": "stores files in"
+              }
+            ]
           },
           {
             "componentName": "Admin Credential Service",
@@ -349,13 +385,7 @@
                 "type": "uses"
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "dataLayer": {
-        "components": [
+          },
           {
             "componentName": "Appointment Repository",
             "tags": "Repository",
@@ -405,6 +435,18 @@
             ]
           },
           {
+            "componentName": "Car Spec Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for car specifications",
+            "relations": [
+              {
+                "target": "Car Spec DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
             "componentName": "Service Site Repository",
             "tags": "Repository",
             "technology": "Spring Data JPA",
@@ -441,24 +483,6 @@
             ]
           },
           {
-            "componentName": "Car Spec Repository",
-            "tags": "Repository",
-            "technology": "Spring Data JPA",
-            "description": "Data access layer for car specifications",
-            "relations": [
-              {
-                "target": "Car Spec DAO",
-                "type": "manages"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "dataModel": {
-        "components": [
-          {
             "componentName": "Appointment DAO",
             "tags": "Entity",
             "technology": "JPA Entity",
@@ -478,8 +502,7 @@
             "componentName": "Time Slot DAO",
             "tags": "Entity",
             "technology": "JPA Entity",
-            "description": "Entity representing available appointment time slots with date and time information",
-            "relations": []
+            "description": "Entity representing available appointment time slots with date and time information"
           },
           {
             "componentName": "Service Item DAO",
@@ -509,15 +532,13 @@
             "componentName": "Car Spec DAO",
             "tags": "Entity",
             "technology": "JPA Entity",
-            "description": "Entity representing detailed car specifications",
-            "relations": []
+            "description": "Entity representing detailed car specifications including engine, transmission, fuel type"
           },
           {
             "componentName": "Service Site DAO",
             "tags": "Entity",
             "technology": "JPA Entity",
-            "description": "Entity representing service site content and descriptions",
-            "relations": []
+            "description": "Entity representing service site content and descriptions"
           },
           {
             "componentName": "User DAO",
@@ -535,109 +556,166 @@
             "componentName": "Role DAO",
             "tags": "Entity",
             "technology": "JPA Entity",
-            "description": "Entity representing user roles for authorization",
-            "relations": []
-          }
-        ]
-      }
-    },
-    {
-      "mapperLayer": {
-        "components": [
+            "description": "Entity representing user roles for authorization (ADMIN, USER)"
+          },
           {
             "componentName": "Appointment Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between appointment DTOs and DAOs",
-            "relations": []
+            "technology": "Spring Component",
+            "description": "Maps between AppointmentDTO and AppointmentDAO entities",
+            "relations": [
+              {
+                "target": "Appointment DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Appointment DAO",
+                "type": "converts to/from"
+              }
+            ]
           },
           {
             "componentName": "Time Slot Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between time slot DTOs and DAOs",
-            "relations": []
+            "technology": "Spring Component",
+            "description": "Maps between TimeSlotDTO and TimeSlotDAO entities",
+            "relations": [
+              {
+                "target": "Time Slot DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Time Slot DAO",
+                "type": "converts to/from"
+              }
+            ]
           },
           {
             "componentName": "Service Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between service DTOs and DAOs",
-            "relations": []
+            "technology": "Spring Component",
+            "description": "Maps between ServiceDTO and ServiceItemDAO entities",
+            "relations": [
+              {
+                "target": "Service DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Service Item DAO",
+                "type": "converts to/from"
+              }
+            ]
           },
           {
             "componentName": "Car Card Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between car card DTOs and DAOs",
-            "relations": []
+            "technology": "Spring Component",
+            "description": "Maps between CarCardDTO and CarCardDAO entities",
+            "relations": [
+              {
+                "target": "Car Card DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Car Card DAO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Car Spec DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Car Spec DAO",
+                "type": "converts to/from"
+              }
+            ]
           },
           {
             "componentName": "Service Site Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between service site DTOs and DAOs",
-            "relations": []
+            "technology": "Spring Component",
+            "description": "Maps between ServiceSiteDTO and ServiceSiteDAO entities",
+            "relations": [
+              {
+                "target": "Service Site DTO",
+                "type": "converts to/from"
+              },
+              {
+                "target": "Service Site DAO",
+                "type": "converts to/from"
+              }
+            ]
           },
           {
             "componentName": "Authentication Mapper",
             "tags": "Mapper",
-            "technology": "Spring Service",
-            "description": "Maps between user entities and Spring Security UserDetails",
-            "relations": []
-          }
-        ]
-      }
-    },
-    {
-      "configLayer": {
-        "components": [
-          {
-            "componentName": "Security Config",
-            "tags": "Configuration",
-            "technology": "Spring Security",
-            "description": "Configures authentication, authorization, CORS, and security filters",
+            "technology": "Spring Component",
+            "description": "Maps between UserDAO entities and Spring Security UserDetails",
             "relations": [
               {
-                "target": "User Details Service",
-                "type": "uses"
+                "target": "User DAO",
+                "type": "converts from"
+              },
+              {
+                "target": "User Information DTO",
+                "type": "converts to"
               }
             ]
+          },
+          {
+            "componentName": "Appointment DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for appointment information between layers"
+          },
+          {
+            "componentName": "Time Slot DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for time slot information between layers"
+          },
+          {
+            "componentName": "Service DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for service item information between layers"
+          },
+          {
+            "componentName": "Car Card DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for car card information between layers"
+          },
+          {
+            "componentName": "Car Spec DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for car specification information between layers"
+          },
+          {
+            "componentName": "Service Site DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for service site content between layers"
+          },
+          {
+            "componentName": "User Information DTO",
+            "tags": "DTO",
+            "technology": "Java POJO",
+            "description": "Data transfer object for user authentication information"
           },
           {
             "componentName": "Web Config",
             "tags": "Configuration",
             "technology": "Spring MVC",
-            "description": "Configures web resources, static file serving, and CORS mappings",
-            "relations": []
+            "description": "Configures web resources, static file serving, and CORS mappings"
           },
           {
             "componentName": "Multipart Config",
             "tags": "Configuration",
             "technology": "Spring Boot",
-            "description": "Configures file upload handling for car images",
-            "relations": []
+            "description": "Configures file upload handling for car images with size limits"
           },
-          {
-            "componentName": "Authentication Success Handler",
-            "tags": "Configuration",
-            "technology": "Spring Security",
-            "description": "Handles successful authentication responses",
-            "relations": []
-          },
-          {
-            "componentName": "Authentication Failure Handler",
-            "tags": "Configuration",
-            "technology": "Spring Security",
-            "description": "Handles authentication failure responses",
-            "relations": []
-          }
-        ]
-      }
-    },
-    {
-      "initLayer": {
-        "components": [
           {
             "componentName": "Data Initializer",
             "tags": "Initialization",
@@ -653,19 +731,50 @@
                 "type": "uses"
               }
             ]
+          },
+          {
+            "componentName": "Email Details",
+            "tags": "Model",
+            "technology": "Java POJO",
+            "description": "Data model for email notifications with recipient, subject, and body information"
           }
         ]
       }
     },
     {
-      "emailLayer": {
-        "components": [
+      "securityLayer": {
+        "objectMapper": [
           {
-            "componentName": "Email Details",
-            "tags": "Model",
-            "technology": "Java",
-            "description": "Data model for email notifications with recipient, subject, and body",
-            "relations": []
+            "componentName": "Security Config",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Configures authentication, authorization, CORS, password encoders, and security filters",
+            "relations": [
+              {
+                "target": "User Details Service",
+                "type": "uses"
+              },
+              {
+                "target": "Authentication Success Handler",
+                "type": "uses"
+              },
+              {
+                "target": "Authentication Failure Handler",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Authentication Success Handler",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Handles successful authentication responses with custom JSON formatting"
+          },
+          {
+            "componentName": "Authentication Failure Handler",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Handles authentication failure responses with detailed error information"
           }
         ]
       }

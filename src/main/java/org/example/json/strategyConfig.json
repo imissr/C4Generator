@@ -43,7 +43,7 @@
         "annotationType": "org.springframework.data.jpa.repository.JpaRepository"
       },
       "containerMapping": "webApplication",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "JPA Entities",
@@ -67,10 +67,10 @@
       "name": "Security Configuration",
       "type": "REGEX",
       "config": {
-        "pattern": ".*Security Config$"
+        "pattern": ".*SecurityConfig$"
       },
       "containerMapping": "securityLayer",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "Mappers",
@@ -79,7 +79,7 @@
         "pattern": ".*Mapper$"
       },
       "containerMapping": "webApplication",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "DTO Classes",
@@ -88,7 +88,7 @@
         "pattern": ".*DTO$"
       },
       "containerMapping": "webApplication",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "DAO Entities",
@@ -97,7 +97,7 @@
         "pattern": ".*DAO$"
       },
       "containerMapping": "webApplication",
-      "enabled": false
+      "enabled": true
     }
   ],
   "globalConfig": {
@@ -106,6 +106,7 @@
     "basePaths": {
       "webApplication": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes/",
       "securityLayer": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes/"
+
     }
   }
 }

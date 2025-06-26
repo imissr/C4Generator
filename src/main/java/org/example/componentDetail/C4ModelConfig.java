@@ -178,6 +178,7 @@ public class C4ModelConfig {
      * @return Map of container names to their component details
      */
     public Map<String, ContainerDetail> getContainerMap() {
+
         return containerComponentMap;
     }
 }
