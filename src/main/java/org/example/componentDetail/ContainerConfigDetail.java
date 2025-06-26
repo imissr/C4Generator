@@ -8,23 +8,74 @@ import lombok.ToString;
 import java.util.List;
 
 /**
- * Configuration for a Container element in the C4 model.
+ * Represents a container in the C4 architectural model.
  * 
- * This class represents a container with its properties, technology,
- * and relationships to other containers.
+ * <p>In the C4 model, containers represent runtime environments or deployable units
+ * that host applications or data. They sit between software systems and components
+ * in the abstraction hierarchy, providing a technology-focused view of how the
+ * system is structured and deployed.</p>
  * 
- * @author Generated Documentation
+ * <p>Containers typically represent:</p>
+ * <ul>
+ *   <li>Web applications (e.g., React SPA, Angular app)</li>
+ *   <li>Backend services (e.g., REST API, microservice)</li>
+ *   <li>Databases (e.g., PostgreSQL, MongoDB)</li>
+ *   <li>Message brokers (e.g., RabbitMQ, Apache Kafka)</li>
+ *   <li>File systems, CDNs, and other infrastructure components</li>
+ * </ul>
+ * 
+ * <p>Example JSON configuration:</p>
+ * <pre>
+ * {
+ *   "name": "Customer API",
+ *   "description": "RESTful API providing customer data access and management operations",
+ *   "technology": "Java/Spring Boot",
+ *   "relations": [
+ *     {
+ *       "target": "Customer Database",
+ *       "type": "reads from and writes to"
+ *     },
+ *     {
+ *       "target": "Email Service",
+ *       "type": "sends notifications via"
+ *     }
+ *   ]
+ * }
+ * </pre>
+ * 
+ * @author C4 Model Generator
  * @version 1.0
  * @since 2025-06-25
  */
 @Getter
 @ToString
 public class ContainerConfigDetail {
+    
+    /** The display name of the container (should reflect its primary purpose or technology) */
     private final String name;
+    
+    /** Detailed description of the container's role, responsibilities, and functionality */
     private final String description;
+    
+    /** Technology stack, framework, or runtime environment used by this container */
     private final String technology;
+    
+    /** List of relationships this container has with other containers or external systems */
     private final List<Relations> relations;
 
+    /**
+     * Creates a new container definition for the C4 model.
+     * 
+     * <p>This constructor is used during JSON deserialization when loading
+     * container configurations. Containers represent the deployable/runtime
+     * units that make up a software system, with a focus on technology
+     * choices and deployment characteristics.</p>
+     * 
+     * @param name The display name for this container (should be descriptive of its purpose)
+     * @param description Detailed explanation of the container's role and responsibilities
+     * @param technology The technology stack, framework, or runtime environment (e.g., "Java/Spring Boot", "React/TypeScript")
+     * @param relations Optional list of relationships this container has with other containers (can be null)
+     */
     @JsonCreator
     public ContainerConfigDetail(
             @JsonProperty("name") String name,

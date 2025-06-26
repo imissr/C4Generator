@@ -7,45 +7,68 @@ import lombok.Setter;
 import java.util.Map;
 
 /**
- * Configuration class for defining component discovery strategies.
+ * Defines a component discovery strategy for the configurable C4 model generation system.
  * 
- * This class represents a single strategy configuration that defines how components
- * should be discovered within a specific container. Each strategy has a type
- * (ANNOTATION, REGEX, NAME_SUFFIX, CUSTOM_ANNOTATION) and associated configuration
- * parameters that control the discovery behavior.
+ * <p>This class represents a single, configurable strategy that defines how software
+ * components should be automatically discovered and documented within specific containers.
+ * Each strategy encapsulates the logic for finding components based on various criteria
+ * such as annotations, naming patterns, or custom rules.</p>
+ * 
+ * <p>The strategy system supports multiple discovery approaches:</p>
+ * <ul>
+ *   <li><strong>ANNOTATION</strong> - Discovers components based on Java annotations</li>
+ *   <li><strong>REGEX</strong> - Uses regular expressions to match class names</li>
+ *   <li><strong>NAME_SUFFIX</strong> - Matches classes ending with specific suffixes</li>
+ *   <li><strong>CUSTOM_ANNOTATION</strong> - Uses custom annotation-based discovery logic</li>
+ * </ul>
+ * 
+ * <p>Example JSON configuration:</p>
+ * <pre>
+ * {
+ *   "name": "Service Components",
+ *   "type": "ANNOTATION",
+ *   "config": {
+ *     "annotationType": "org.springframework.stereotype.Service"
+ *   },
+ *   "containerMapping": "applicationServices",
+ *   "enabled": true
+ * }
+ * </pre>
+ * 
+ * @author C4 Model Generator
+ * @version 1.0
+ * @since 2025-06-26
  */
 @Getter
 @Setter
 public class StrategyConfig {
     
-    /**
-     * Human-readable name for the strategy
-     */
+    /** Human-readable name describing what this strategy discovers (e.g., "Spring Services", "Repository Classes") */
     @JsonProperty("name")
     private String name;
     
-    /**
-     * Type of strategy - determines which TypeMatcher implementation to use
-     * Valid values: ANNOTATION, REGEX, NAME_SUFFIX, CUSTOM_ANNOTATION
+    /** 
+     * The type of discovery strategy to use.
+     * Determines which component matching algorithm will be applied during scanning.
      */
     @JsonProperty("type")
     private StrategyType type;
     
-    /**
-     * Configuration parameters specific to the strategy type
+    /** 
+     * Strategy-specific configuration parameters.
+     * Content varies by strategy type (e.g., annotation class names, regex patterns, suffixes).
      */
     @JsonProperty("config")
     private Map<String, Object> config;
     
-    /**
-     * Which container this strategy should populate
+    /** 
+     * Identifier of the target container where discovered components should be placed.
+     * Must match a container name defined in the C4 model configuration.
      */
     @JsonProperty("containerMapping")
     private String containerMapping;
     
-    /**
-     * Whether this strategy is enabled
-     */
+    /** Flag indicating whether this strategy should be executed during component discovery */
     @JsonProperty("enabled")
     private boolean enabled = true;
     

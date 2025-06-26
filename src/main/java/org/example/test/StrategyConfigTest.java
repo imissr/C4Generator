@@ -8,7 +8,40 @@ import org.example.componentDetail.StrategyFactory;
 import java.io.File;
 
 /**
- * Simple test class to validate the strategy configuration system
+ * Comprehensive test class for validating the strategy configuration system.
+ * 
+ * <p>This test class provides validation and demonstration of the configurable
+ * component discovery system. It performs comprehensive testing of strategy
+ * configuration loading, validation, and matcher creation to ensure the
+ * system works correctly before applying it to actual C4 model generation.</p>
+ * 
+ * <p>Test coverage includes:</p>
+ * <ul>
+ *   <li><strong>Configuration loading</strong> - Verifies JSON parsing and deserialization</li>
+ *   <li><strong>Strategy validation</strong> - Ensures all required parameters are present</li>
+ *   <li><strong>Matcher creation</strong> - Tests TypeMatcher instantiation from configurations</li>
+ *   <li><strong>Container filtering</strong> - Validates strategy-to-container associations</li>
+ * </ul>
+ * 
+ * <p>The test operates on the actual strategy configuration file used by the
+ * system, providing real-world validation of the configuration setup. This
+ * helps catch configuration errors early in the development process.</p>
+ * 
+ * <p>Usage:</p>
+ * <pre>
+ * java org.example.test.StrategyConfigTest
+ * </pre>
+ * 
+ * <p>Expected outputs include validation results for each configured strategy
+ * and confirmation that the system is ready for component discovery.</p>
+ * 
+ * @see StrategyConfiguration for configuration structure
+ * @see StrategyFactory for matcher creation
+ * @see ConfigurableComponentScanner for strategy execution
+ * 
+ * @author C4 Model Generator
+ * @version 1.0
+ * @since 2025-06-26
  */
 public class StrategyConfigTest {
     

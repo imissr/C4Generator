@@ -8,12 +8,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Test class to demonstrate JSON schema validation for C4 model configurations.
+ * Comprehensive test class for demonstrating JSON schema validation in C4 model configurations.
  * 
- * This class provides examples of both valid and invalid configurations to show
- * how the schema validation works in practice.
+ * <p>This test class showcases the JSON schema validation system that ensures C4 model
+ * configurations conform to the expected structure and contain all required elements.
+ * It provides practical examples of both valid and invalid configurations to demonstrate
+ * how the validation system catches common configuration errors.</p>
  * 
- * @author Generated Documentation
+ * <p>The validation system is crucial for maintaining data quality and preventing
+ * runtime errors during C4 model generation. By validating configurations upfront,
+ * the system can provide clear error messages and guidance for fixing issues.</p>
+ * 
+ * <p><strong>Test scenarios covered:</strong></p>
+ * <ul>
+ *   <li><strong>Valid configuration validation</strong> - Confirms well-formed JSON passes validation</li>
+ *   <li><strong>Invalid configuration detection</strong> - Shows how missing required fields are caught</li>
+ *   <li><strong>Schema violation examples</strong> - Demonstrates validation error reporting</li>
+ *   <li><strong>Programmatic validation</strong> - Shows how to use the validation API</li>
+ * </ul>
+ * 
+ * <p><strong>Key benefits demonstrated:</strong></p>
+ * <ul>
+ *   <li>Early error detection before model generation</li>
+ *   <li>Clear, actionable error messages for debugging</li>
+ *   <li>Consistent configuration structure enforcement</li>
+ *   <li>Integration with existing Jackson-based JSON processing</li>
+ * </ul>
+ * 
+ * <p>The test creates temporary JSON files with different configuration scenarios
+ * and validates them against the C4 model schema, showing both successful
+ * validation and detailed error reporting for invalid configurations.</p>
+ * 
+ * <p>Usage:</p>
+ * <pre>
+ * java org.example.test.JsonSchemaValidationTest
+ * </pre>
+ * 
+ * @see JsonSchemaValidator for the validation implementation
+ * @see C4ModelConfig for the configuration structure being validated
+ * 
+ * @author C4 Model Generator
  * @version 1.0
  * @since 2025-06-25
  */

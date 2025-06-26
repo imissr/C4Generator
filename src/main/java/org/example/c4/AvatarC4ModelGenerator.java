@@ -22,38 +22,96 @@ import com.structurizr.view.*;
 import org.example.componentDetail.*;
 
 /**
- * Avatar C4 Model Generator - Main application for generating C4 architecture models.
+ * Configurable C4 Model Generator - Advanced architectural documentation system.
  * 
- * This class generates a comprehensive C4 model for the Avatar Connector System,
- * which is a connector-based system for healthcare data exchange. The model includes:
- * - System context views showing users and external systems
- * - Container views showing the main architectural containers
- * - Component views showing internal components within each container
- * - Automated component discovery using OSGi annotations
- * - Component relationships and dependencies
+ * <p>This sophisticated code analysis and documentation generator creates comprehensive
+ * C4 architecture models from existing Java codebases using configurable discovery
+ * strategies. The system combines static configuration with dynamic code analysis
+ * to automatically generate accurate, up-to-date architectural documentation.</p>
  * 
- * The generated model is exported as a JSON file compatible with Structurizr for
- * visualization and documentation purposes.
+ * <p><strong>Core Capabilities:</strong></p>
+ * <ul>
+ *   <li><strong>Multi-strategy component discovery</strong> - Uses configurable JSON-based strategies</li>
+ *   <li><strong>Automated relationship mapping</strong> - Discovers and documents component interactions</li>
+ *   <li><strong>Container-based organization</strong> - Organizes components into logical architectural layers</li>
+ *   <li><strong>JSON schema validation</strong> - Ensures configuration integrity and quality</li>
+ *   <li><strong>Flexible output formats</strong> - Compatible with Structurizr and other C4 tools</li>
+ * </ul>
  * 
- * @author Generated Documentation
- * @version 1.0
+ * <p><strong>Architecture Documentation Generated:</strong></p>
+ * <ul>
+ *   <li><strong>System Context</strong> - Shows users, external systems, and system boundaries</li>
+ *   <li><strong>Container Views</strong> - Displays main architectural containers and their relationships</li>
+ *   <li><strong>Component Views</strong> - Details internal components within each container</li>
+ *   <li><strong>Relationship Mapping</strong> - Documents dependencies and interactions between elements</li>
+ * </ul>
+ * 
+ * <p><strong>Key Features:</strong></p>
+ * <ul>
+ *   <li>Project-agnostic design supporting any Java codebase</li>
+ *   <li>Configurable component discovery without code modifications</li>
+ *   <li>Automated container key mapping with fallback strategies</li>
+ *   <li>Comprehensive error handling and validation</li>
+ *   <li>Integration with existing C4 tooling and visualization platforms</li>
+ * </ul>
+ * 
+ * <p>The generator has evolved from Avatar-specific tooling to a general-purpose
+ * architectural documentation system suitable for diverse Java projects including
+ * Spring applications, OSGi systems, microservices, and traditional enterprise applications.</p>
+ * 
+ * <p><strong>Configuration-driven approach:</strong> All discovery logic is externalized
+ * to JSON configuration files, making the system adaptable to different project
+ * structures and architectural patterns without requiring code changes.</p>
+ * 
+ * @see StrategyConfiguration for discovery strategy configuration
+ * @see ConfigurableComponentScanner for component discovery execution
+ * @see C4ModelConfig for overall model configuration structure
+ * @see JsonSchemaValidator for configuration validation
+ * 
+ * @author C4 Model Generator Team
+ * @version 2.0
  * @since 2025-06-15
  */
 public class AvatarC4ModelGenerator {
     /**
-     * Main entry point for the Avatar C4 Model Generator application.
+     * Main entry point for the configurable C4 model generation system.
      * 
-     * This method orchestrates the entire C4 model generation process:
-     * 1. Loads complete C4 model configuration from JSON file
-     * 2. Creates a Structurizr workspace with configured metadata
-     * 3. Automatically creates users, systems, and containers from configuration
-     * 4. Establishes relationships as defined in configuration
-     * 5. Performs automated component discovery
-     * 6. Creates container and component views
-     * 7. Applies styling and exports the model to JSON
+     * <p>This method orchestrates the complete architectural documentation generation
+     * process, combining static configuration with dynamic code analysis to produce
+     * comprehensive C4 models. The process is designed to be robust, providing
+     * detailed logging and error handling throughout execution.</p>
      * 
-     * @param args Command line arguments (currently unused)
-     * @throws Exception If model generation fails due to file I/O or component scanning errors
+     * <p><strong>Execution workflow:</strong></p>
+     * <ol>
+     *   <li><strong>Configuration loading</strong> - Loads and validates C4 model configuration from JSON</li>
+     *   <li><strong>Schema validation</strong> - Ensures configuration integrity using JSON schema</li>
+     *   <li><strong>Workspace creation</strong> - Establishes Structurizr workspace with metadata</li>
+     *   <li><strong>Model construction</strong> - Creates users, systems, and containers from configuration</li>
+     *   <li><strong>Relationship establishment</strong> - Builds connections between model elements</li>
+     *   <li><strong>Strategy-based discovery</strong> - Applies configurable component discovery strategies</li>
+     *   <li><strong>Component enrichment</strong> - Enhances discovered components with additional metadata</li>
+     *   <li><strong>View generation</strong> - Creates C4 views for different architectural levels</li>
+     *   <li><strong>Output generation</strong> - Exports the complete model in Structurizr JSON format</li>
+     * </ol>
+     * 
+     * <p><strong>Key innovations:</strong></p>
+     * <ul>
+     *   <li>Automated container key mapping with multiple fallback strategies</li>
+     *   <li>Project-agnostic configuration system</li>
+     *   <li>Comprehensive error handling and recovery</li>
+     *   <li>Detailed execution logging for debugging and monitoring</li>
+     * </ul>
+     * 
+     * <p>The system supports any Java project structure and can be easily configured
+     * for different architectural patterns including Spring applications, OSGi systems,
+     * microservices, and traditional enterprise applications.</p>
+     * 
+     * @param args Command line arguments (currently unused - all configuration is file-based)
+     * @throws Exception If critical errors occur during model generation, configuration loading,
+     *                  or file I/O operations. Non-critical errors are logged but don't halt execution.
+     * 
+     * @see C4ModelConfig#loadFromJsonFile(String) for configuration loading details
+     * @see ConfigurableComponentScanner#scanContainer for component discovery process
      */
     public static void main(String[] args) throws Exception {
         System.out.println("=== Starting Avatar C4 Model Generation ===");
