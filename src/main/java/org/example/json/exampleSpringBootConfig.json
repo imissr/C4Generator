@@ -1,92 +1,674 @@
 {
-  "strategies": [
+  "workspace": {
+    "name": "Spring KFZ Workshop Management System",
+    "description": "C4 Model for a Spring Boot-based automotive workshop management system"
+  },
+  "persons": [
     {
-      "name": "Spring Boot Controllers",
-      "type": "ANNOTATION",
-      "description": "Discovers Spring Boot REST controllers",
-      "config": {
-        "annotationType": "org.springframework.web.bind.annotation.RestController"
-      },
-      "containerMapping": "webLayer",
-      "technology": "Spring Boot",
-      "enabled": true
+      "name": "Customer",
+      "description": "Vehicle owners who book appointments and services through the system",
+      "relations": [
+        {
+          "target": "Spring KFZ System",
+          "type": "Books appointments and views services through"
+        }
+      ]
     },
     {
-      "name": "JPA Repositories",
-      "type": "ANNOTATION", 
-      "description": "Discovers Spring Data JPA repositories",
-      "config": {
-        "annotationType": "org.springframework.data.jpa.repository.JpaRepository"
-      },
-      "containerMapping": "dataLayer",
-      "technology": "Spring Data JPA",
-      "enabled": true
+      "name": "Admin",
+      "description": "Workshop administrators who manage appointments, services, and system configuration",
+      "relations": [
+        {
+          "target": "Spring KFZ System",
+          "type": "Manages appointments and configuration through"
+        }
+      ]
     },
     {
-      "name": "Service Implementations",
-      "type": "NAME_SUFFIX",
-      "description": "Discovers service implementation classes",
-      "config": {
-        "suffix": "ServiceImpl"
-      },
-      "containerMapping": "serviceLayer",
-      "technology": "Java",
-      "enabled": true
-    },
-    {
-      "name": "Configuration Classes",
-      "type": "ANNOTATION",
-      "description": "Discovers Spring configuration classes",
-      "config": {
-        "annotationType": "org.springframework.context.annotation.Configuration"
-      },
-      "containerMapping": "configLayer",
-      "technology": "Spring Configuration",
-      "enabled": true
-    },
-    {
-      "name": "Utility Classes",
-      "type": "REGEX",
-      "description": "Discovers utility and helper classes",
-      "config": {
-        "pattern": ".*(?:Util|Utils|Helper|Manager)$"
-      },
-      "containerMapping": "utilityLayer",
-      "technology": "Java",
-      "enabled": true
-    },
-    {
-      "name": "Custom Component Annotation",
-      "type": "CUSTOM_ANNOTATION",
-      "description": "Discovers components with custom properties",
-      "config": {
-        "annotationType": "org.springframework.stereotype.Component",
-        "propertyName": "profile",
-        "annotationProperty": "value"
-      },
-      "containerMapping": "customComponents",
-      "technology": "Spring Component",
-      "enabled": false
+      "name": "Mechanic",
+      "description": "Workshop mechanics who receive appointment notifications and updates",
+      "relations": [
+        {
+          "target": "Spring KFZ System",
+          "type": "Receives notifications from"
+        }
+      ]
     }
   ],
-  "globalConfig": {
-    "excludeInnerClasses": true,
-    "excludeTestClasses": true,
-    "basePaths": {
-      "webLayer": "/path/to/your/project/src/main/java",
-      "dataLayer": "/path/to/your/project/src/main/java", 
-      "serviceLayer": "/path/to/your/project/src/main/java",
-      "configLayer": "/path/to/your/project/src/main/java",
-      "utilityLayer": "/path/to/your/project/src/main/java",
-      "customComponents": "/path/to/your/project/src/main/java"
+  "softwareSystems": [
+    {
+      "name": "Spring KFZ System",
+      "description": "Automotive workshop management system for appointment booking, service management, and car card display",
+      "relations": [
+        {
+          "target": "Email Service",
+          "type": "Sends notifications via"
+        },
+        {
+          "target": "MySQL Database",
+          "type": "Stores data in"
+        },
+        {
+          "target": "File System",
+          "type": "Stores images in"
+        }
+      ]
     },
-    "defaultTechnologies": {
-      "webLayer": "Spring MVC",
-      "dataLayer": "JPA",
-      "serviceLayer": "Java",
-      "configLayer": "Spring Configuration",
-      "utilityLayer": "Java Utility",
-      "customComponents": "Spring Component"
+    {
+      "name": "Email Service",
+      "description": "External SMTP service for sending email notifications",
+      "relations": []
+    },
+    {
+      "name": "MySQL Database",
+      "description": "Relational database for storing all application data",
+      "relations": []
+    },
+    {
+      "name": "File System",
+      "description": "Local file storage for car images and uploads",
+      "relations": []
     }
-  }
+  ],
+  "containers": [
+    {
+      "name": "Web Application",
+      "description": "Spring Boot REST API providing endpoints for workshop management",
+      "technology": "Spring Boot, Java 21",
+      "relations": [
+        {
+          "target": "MySQL Database",
+          "type": "Reads from and writes to"
+        },
+        {
+          "target": "Email Service",
+          "type": "Sends emails via"
+        },
+        {
+          "target": "File System",
+          "type": "Stores and retrieves files from"
+        }
+      ]
+    },
+    {
+      "name": "Security Layer",
+      "description": "Spring Security configuration for authentication and authorization",
+      "technology": "Spring Security",
+      "relations": [
+        {
+          "target": "Web Application",
+          "type": "Secures"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "webLayer": {
+        "components": [
+          {
+            "componentName": "Admin Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Handles admin-specific operations for appointments, services, time slots, and car cards",
+            "relations": [
+              {
+                "target": "Appointment Service",
+                "type": "uses"
+              },
+              {
+                "target": "Time Slot Service",
+                "type": "uses"
+              },
+              {
+                "target": "Service Item Service",
+                "type": "uses"
+              },
+              {
+                "target": "Car Card Service",
+                "type": "uses"
+              },
+              {
+                "target": "Service Site Service",
+                "type": "uses"
+              },
+              {
+                "target": "Email Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Appointment Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Manages customer appointment booking and status updates",
+            "relations": [
+              {
+                "target": "Appointment Service",
+                "type": "uses"
+              },
+              {
+                "target": "Email Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Authentication Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Handles user authentication, login, logout, and session management",
+            "relations": [
+              {
+                "target": "User Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Card Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Displays available cars for sale with specifications and images",
+            "relations": [
+              {
+                "target": "Car Card Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Provides endpoints for available workshop services",
+            "relations": [
+              {
+                "target": "Service Item Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Site Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Manages service site content and descriptions",
+            "relations": [
+              {
+                "target": "Service Site Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Time Slot Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Manages available appointment time slots",
+            "relations": [
+              {
+                "target": "Time Slot Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Admin Auth Controller",
+            "tags": "Controller",
+            "technology": "Spring MVC",
+            "description": "Handles admin-specific authentication and credential management",
+            "relations": [
+              {
+                "target": "Admin Credential Service",
+                "type": "uses"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "serviceLayer": {
+        "components": [
+          {
+            "componentName": "Appointment Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Business logic for appointment management, validation, and status updates",
+            "relations": [
+              {
+                "target": "Appointment Repository",
+                "type": "uses"
+              },
+              {
+                "target": "Time Slot Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Time Slot Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Manages available time slots for appointments, including creation and availability checking",
+            "relations": [
+              {
+                "target": "Time Slot Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Item Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Manages workshop services including popular services and service operations",
+            "relations": [
+              {
+                "target": "Service Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Card Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Manages car listings with image processing and storage",
+            "relations": [
+              {
+                "target": "Car Repository",
+                "type": "uses"
+              },
+              {
+                "target": "Image Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Site Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Manages service site content and information",
+            "relations": [
+              {
+                "target": "Service Site Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "User Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Handles user management and authentication operations",
+            "relations": [
+              {
+                "target": "User Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Email Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Handles email notifications for appointments and system events",
+            "relations": []
+          },
+          {
+            "componentName": "Image Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Processes, resizes, and manages image files for car cards",
+            "relations": []
+          },
+          {
+            "componentName": "Admin Credential Service",
+            "tags": "Service",
+            "technology": "Spring Service",
+            "description": "Manages admin credential updates and password changes",
+            "relations": [
+              {
+                "target": "User Repository",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "User Details Service",
+            "tags": "Service",
+            "technology": "Spring Security",
+            "description": "Spring Security service for loading user details during authentication",
+            "relations": [
+              {
+                "target": "User Service",
+                "type": "uses"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "dataLayer": {
+        "components": [
+          {
+            "componentName": "Appointment Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for appointment entities with custom queries",
+            "relations": [
+              {
+                "target": "Appointment DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Time Slot Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for time slot entities with availability queries",
+            "relations": [
+              {
+                "target": "Time Slot DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for service items with popularity filtering",
+            "relations": [
+              {
+                "target": "Service Item DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for car card entities",
+            "relations": [
+              {
+                "target": "Car Card DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Service Site Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for service site content",
+            "relations": [
+              {
+                "target": "Service Site DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "User Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for user entities and authentication",
+            "relations": [
+              {
+                "target": "User DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Role Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for user roles and permissions",
+            "relations": [
+              {
+                "target": "Role DAO",
+                "type": "manages"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Spec Repository",
+            "tags": "Repository",
+            "technology": "Spring Data JPA",
+            "description": "Data access layer for car specifications",
+            "relations": [
+              {
+                "target": "Car Spec DAO",
+                "type": "manages"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "dataModel": {
+        "components": [
+          {
+            "componentName": "Appointment DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing customer appointments with time slots and service details",
+            "relations": [
+              {
+                "target": "Time Slot DAO",
+                "type": "references"
+              },
+              {
+                "target": "Service Item DAO",
+                "type": "references"
+              }
+            ]
+          },
+          {
+            "componentName": "Time Slot DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing available appointment time slots with date and time information",
+            "relations": []
+          },
+          {
+            "componentName": "Service Item DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing workshop services with popularity flags",
+            "relations": [
+              {
+                "target": "Appointment DAO",
+                "type": "referenced by"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Card DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing cars for sale with specifications and images",
+            "relations": [
+              {
+                "target": "Car Spec DAO",
+                "type": "contains"
+              }
+            ]
+          },
+          {
+            "componentName": "Car Spec DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing detailed car specifications",
+            "relations": []
+          },
+          {
+            "componentName": "Service Site DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing service site content and descriptions",
+            "relations": []
+          },
+          {
+            "componentName": "User DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing system users with authentication details",
+            "relations": [
+              {
+                "target": "Role DAO",
+                "type": "has many"
+              }
+            ]
+          },
+          {
+            "componentName": "Role DAO",
+            "tags": "Entity",
+            "technology": "JPA Entity",
+            "description": "Entity representing user roles for authorization",
+            "relations": []
+          }
+        ]
+      }
+    },
+    {
+      "mapperLayer": {
+        "components": [
+          {
+            "componentName": "Appointment Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between appointment DTOs and DAOs",
+            "relations": []
+          },
+          {
+            "componentName": "Time Slot Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between time slot DTOs and DAOs",
+            "relations": []
+          },
+          {
+            "componentName": "Service Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between service DTOs and DAOs",
+            "relations": []
+          },
+          {
+            "componentName": "Car Card Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between car card DTOs and DAOs",
+            "relations": []
+          },
+          {
+            "componentName": "Service Site Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between service site DTOs and DAOs",
+            "relations": []
+          },
+          {
+            "componentName": "Authentication Mapper",
+            "tags": "Mapper",
+            "technology": "Spring Service",
+            "description": "Maps between user entities and Spring Security UserDetails",
+            "relations": []
+          }
+        ]
+      }
+    },
+    {
+      "configLayer": {
+        "components": [
+          {
+            "componentName": "Security Config",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Configures authentication, authorization, CORS, and security filters",
+            "relations": [
+              {
+                "target": "User Details Service",
+                "type": "uses"
+              }
+            ]
+          },
+          {
+            "componentName": "Web Config",
+            "tags": "Configuration",
+            "technology": "Spring MVC",
+            "description": "Configures web resources, static file serving, and CORS mappings",
+            "relations": []
+          },
+          {
+            "componentName": "Multipart Config",
+            "tags": "Configuration",
+            "technology": "Spring Boot",
+            "description": "Configures file upload handling for car images",
+            "relations": []
+          },
+          {
+            "componentName": "Authentication Success Handler",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Handles successful authentication responses",
+            "relations": []
+          },
+          {
+            "componentName": "Authentication Failure Handler",
+            "tags": "Configuration",
+            "technology": "Spring Security",
+            "description": "Handles authentication failure responses",
+            "relations": []
+          }
+        ]
+      }
+    },
+    {
+      "initLayer": {
+        "components": [
+          {
+            "componentName": "Data Initializer",
+            "tags": "Initialization",
+            "technology": "Spring Boot",
+            "description": "Initializes default admin user and roles on application startup",
+            "relations": [
+              {
+                "target": "User Repository",
+                "type": "uses"
+              },
+              {
+                "target": "Role Repository",
+                "type": "uses"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "emailLayer": {
+        "components": [
+          {
+            "componentName": "Email Details",
+            "tags": "Model",
+            "technology": "Java",
+            "description": "Data model for email notifications with recipient, subject, and body",
+            "relations": []
+          }
+        ]
+      }
+    }
+  ]
 }
