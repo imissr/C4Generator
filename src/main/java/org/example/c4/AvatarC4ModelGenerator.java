@@ -134,6 +134,7 @@ public class AvatarC4ModelGenerator {
         System.out.println("Name: " + workspaceConfig.getName());
         System.out.println("Description: " + workspaceConfig.getDescription());
 
+
         // Create persons from configuration
         System.out.println("\n=== CREATING PERSONS ===");
         Map<String, Person> persons = new HashMap<>();
@@ -636,5 +637,5 @@ public class AvatarC4ModelGenerator {
         System.out.println("Total container relationships established: " + containerRelationCount);
     }
 
-    // ...existing code...
+
 }

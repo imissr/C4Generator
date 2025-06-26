@@ -5,6 +5,7 @@ import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ArrayElementValue;
 import org.apache.bcel.classfile.ElementValue;
 import org.apache.bcel.classfile.ElementValuePair;
+import org.example.componentDetail.StrategyConfig;
 import org.osgi.service.component.annotations.Component;
 import com.structurizr.component.matcher.TypeMatcher;
 import com.structurizr.component.Type;
@@ -44,7 +45,8 @@ import com.structurizr.component.Type;
  * annotations) looking for array elements that start with the desired property name.</p>
  * 
  * <p><strong>Example annotation that would match:</strong></p>
- * <pre>
+ * <pre>     * @see #NewComponentStratgy(String, String, String) for string-based construction
+
  * {@literal @}Component(
  *     property = {
  *         "connector=isma.himsa",
@@ -63,7 +65,6 @@ import com.structurizr.component.Type;
  * The name has been corrected to "NewComponentStrategy" to maintain consistency with naming conventions.</p>
  * 
  * @see TypeMatcher for the Structurizr component matching interface
- * @see StrategyFactory#createCustomAnnotationMatcher for integration with the strategy system
  * @see Component for the OSGi component annotation this is typically used with
  * 
  * @author C4 Model Generator
@@ -115,8 +116,7 @@ public class NewComponentStrategy implements TypeMatcher {
      * @param property The annotation attribute name that contains the property array
      *                (e.g., "property" for OSGi @Component annotations).
      * @throws IllegalArgumentException if annotationType is null or empty
-     * 
-     * @see #NewComponentStratgy(Class, String, String, String) for Class-based construction
+     *
      */
     public NewComponentStrategy(String annotationType ,  String propertyName , String property) {
         if (StringUtils.isNullOrEmpty(annotationType)) {
@@ -145,7 +145,6 @@ public class NewComponentStrategy implements TypeMatcher {
      * @param property1 Additional property parameter (currently unused - reserved for future extensions).
      * @throws IllegalArgumentException if propertyName is null or empty
      * 
-     * @see #NewComponentStratgy(String, String, String) for string-based construction
      */
     public NewComponentStrategy(Class<? extends java.lang.annotation.Annotation> annotation,
                                String propertyName, String property, String property1) {
