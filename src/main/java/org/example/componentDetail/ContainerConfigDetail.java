@@ -53,6 +53,8 @@ public class ContainerConfigDetail {
     
     /** The display name of the container (should reflect its primary purpose or technology) */
     private final String name;
+
+    private final String softwareSystemName;
     
     /** Detailed description of the container's role, responsibilities, and functionality */
     private final String description;
@@ -81,11 +83,13 @@ public class ContainerConfigDetail {
             @JsonProperty("name") String name,
             @JsonProperty("description") String description,
             @JsonProperty("technology") String technology,
-            @JsonProperty("relations") List<Relations> relations
+            @JsonProperty("relations") List<Relations> relations,
+            @JsonProperty("softwareSystemName") String softwareSystemName
     ) {
         this.name = name;
         this.description = description;
         this.technology = technology;
         this.relations = relations;
+        this.softwareSystemName = softwareSystemName;
     }
 }

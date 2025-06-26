@@ -103,7 +103,6 @@ public class C4ModelGenerator {
      * @throws Exception If critical errors occur during model generation, configuration loading,
      *                  or file I/O operations. Non-critical errors are logged but don't halt execution.
      * 
-     * @see C4ModelConfig#loadFromJsonFile(String) for configuration loading details
      * @see ConfigurableComponentScanner#scanContainer for component discovery process
      */
     public static void main(String[] args) throws Exception {
@@ -152,19 +151,29 @@ public class C4ModelGenerator {
         System.out.println("\n=== CREATING CONTAINERS ===");
         Map<String, Container> containers = new HashMap<>();
         for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
-            // Find the parent software system (assuming first software system for now)
-            SoftwareSystem parentSystem = softwareSystems.values().iterator().next();
+            String systemName = containerConfig.getSoftwareSystemName();
+            SoftwareSystem parentSystem = softwareSystems.get(systemName);
+
+            if (parentSystem == null) {
+                // fallback to the first system (or handle as you prefer)
+                parentSystem = softwareSystems.values().iterator().next();
+                System.out.println("⚠ Warning: Software system '" + systemName + "' not found. Using default: "
+                        + parentSystem.getName());
+            }
+
             Container container = parentSystem.addContainer(
-                containerConfig.getName(), 
-                containerConfig.getDescription(), 
-                containerConfig.getTechnology()
+                    containerConfig.getName(),
+                    containerConfig.getDescription(),
+                    containerConfig.getTechnology()
             );
             containers.put(containerConfig.getName(), container);
-            System.out.println("✓ Container created: " + containerConfig.getName() + 
-                              " - " + containerConfig.getDescription() + 
-                              " (Technology: " + containerConfig.getTechnology() + ")" +
-                              " [Parent System: " + parentSystem.getName() + "]");
+
+            System.out.println("✓ Container created: " + containerConfig.getName() +
+                    " - " + containerConfig.getDescription() +
+                    " (Technology: " + containerConfig.getTechnology() + ")" +
+                    " [Parent System: " + parentSystem.getName() + "]");
         }
+
         System.out.println("Total containers created: " + containers.size());
 
         // Establish person relationships
@@ -251,7 +260,7 @@ public class C4ModelGenerator {
         ContainerView containerView = views.createContainerView(avatarSystem, "containers", "Container View");
         containerView.addAllElements();
         System.out.println("✓ Container view created for: " + avatarSystem.getName());
-        
+
         // Add all persons to container view
         for (Person person : persons.values()) {
             containerView.add(person);
@@ -263,19 +272,19 @@ public class C4ModelGenerator {
         for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
             String containerName = entry.getKey();
             Container container = entry.getValue();
-            
+
             if (container.getComponents().size() > 0) {
                 String viewKey = generateViewKey(containerName);
                 String viewTitle = containerName + " Components";
-                
+
                 ComponentView componentView = views.createComponentView(container, viewKey, viewTitle);
                 componentView.addAllComponents();
-                
-                System.out.println("✓ Component view created for: " + container.getName() + 
+
+                System.out.println("✓ Component view created for: " + container.getName() +
                                  " (" + container.getComponents().size() + " components)");
                 componentViewCount++;
             } else {
-                System.out.println("⚠ Skipping component view for " + container.getName() + 
+                System.out.println("⚠ Skipping component view for " + container.getName() +
                                  " (no components found)");
             }
         }

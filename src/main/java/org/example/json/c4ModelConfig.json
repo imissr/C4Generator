@@ -88,7 +88,8 @@
           "target": "File System",
           "type": "Stores and retrieves files from"
         }
-      ]
+      ],
+      "softwareSystemName": "Spring KFZ System"
     },
     {
       "name": "Security Layer",
@@ -99,7 +100,8 @@
           "target": "Web Application",
           "type": "Secures"
         }
-      ]
+      ],
+      "softwareSystemName": "Spring KFZ System"
     }
   ],
   "container": [

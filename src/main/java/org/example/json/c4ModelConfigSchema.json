@@ -125,6 +125,13 @@
             "items": {
               "$ref": "#/definitions/relation"
             }
+          },
+          "softwareSystemName": {
+            "type": "string",
+            "description": "The name of the software system this container belongs to",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
           }
         },
         "required": ["name", "description", "technology"],
