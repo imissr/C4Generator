@@ -104,8 +104,8 @@
     "excludeInnerClasses": true,
     "excludeTestClasses": true,
     "basePaths": {
-      "webApplication": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes/",
-      "securityLayer": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes/"
+      "webApplication": "C:\\Users\\khale\\IdeaProjects\\project\\target\\classes",
+      "securityLayer": "C:\\Users\\khale\\IdeaProjects\\project\\target\\classes"
 
     }
   }

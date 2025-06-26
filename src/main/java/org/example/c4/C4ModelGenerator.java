@@ -254,18 +254,54 @@ public class C4ModelGenerator {
                              " (" + container.getComponents().size() + " components)");
         }
 
-        // Create container view
+        // Create views
         System.out.println("\n=== CREATING VIEWS ===");
-        SoftwareSystem avatarSystem = softwareSystems.values().iterator().next(); // Get the first system
-        ContainerView containerView = views.createContainerView(avatarSystem, "containers", "Container View");
-        containerView.addAllElements();
-        System.out.println("✓ Container view created for: " + avatarSystem.getName());
-
-        // Add all persons to container view
-        for (Person person : persons.values()) {
-            containerView.add(person);
+        
+        // Create system context views for each software system
+        int systemContextViewCount = 0;
+        for (Map.Entry<String, SoftwareSystem> entry : softwareSystems.entrySet()) {
+            String systemName = entry.getKey();
+            SoftwareSystem system = entry.getValue();
+            if(system.getContainers().size() == 0) {
+                System.out.println("⚠ Skipping system context view for " + systemName +
+                                 " (no containers found)");
+                continue;
+            }
+            
+            String viewKey = generateSystemContextViewKey(systemName);
+            String viewTitle = systemName + " - System Context";
+            
+            SystemContextView systemContextView = views.createSystemContextView(system, viewKey, viewTitle);
+            systemContextView.addAllElements();
+            System.out.println("✓ System context view created for: " + system.getName());
+            systemContextViewCount++;
         }
-        System.out.println("✓ Added " + persons.size() + " persons to container view");
+        System.out.println("Total system context views created: " + systemContextViewCount);
+        
+        // Create container views for each software system
+        int containerViewCount = 0;
+        for (Map.Entry<String, SoftwareSystem> entry : softwareSystems.entrySet()) {
+            String systemName = entry.getKey();
+            SoftwareSystem system = entry.getValue();
+
+            if(system.getContainers().size() == 0) {
+                System.out.println("⚠ Skipping Container context view for " + systemName +
+                        " (no containers found)");
+                continue;
+            }
+            
+            String viewKey = generateContainerViewKey(systemName);
+            String viewTitle = systemName + " - Containers";
+
+            ContainerView containerView = views.createContainerView(system, viewKey, viewTitle);
+            containerView.addAllElements();
+            
+
+            System.out.println("✓ Container view created for: " + system.getName() + 
+                             " (" + system.getContainers().size() + " containers)");
+            containerViewCount++;
+        }
+        System.out.println("Total container views created: " + containerViewCount);
 
         // Create component views automatically for all scanned containers
         int componentViewCount = 0;
@@ -274,7 +310,7 @@ public class C4ModelGenerator {
             Container container = entry.getValue();
 
             if (container.getComponents().size() > 0) {
-                String viewKey = generateViewKey(containerName);
+                String viewKey = generateContainerViewKey(containerName);
                 String viewTitle = containerName + " Components";
 
                 ComponentView componentView = views.createComponentView(container, viewKey, viewTitle);
@@ -326,6 +362,8 @@ public class C4ModelGenerator {
             totalComponents += container.getComponents().size();
         }
         System.out.println("Total Components: " + totalComponents);
+        System.out.println("System Context Views: " + systemContextViewCount);
+        System.out.println("Container Views: " + containerViewCount);
         System.out.println("Component Views: " + componentViewCount);
         System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");
     }
@@ -509,17 +547,31 @@ public class C4ModelGenerator {
     }
     
     /**
-     * Generates a unique view key from a container name for component views.
+     * Generates a unique view key from a system name for system context views.
      * 
-     * @param containerName The name of the container
+     * @param systemName The name of the software system
      * @return A sanitized view key suitable for Structurizr
      */
-    private static String generateViewKey(String containerName) {
-        return containerName.toLowerCase()
+    private static String generateSystemContextViewKey(String systemName) {
+        return systemName.toLowerCase()
                 .replace(" ", "-")
                 .replace("_", "-")
                 .replaceAll("[^a-z0-9-]", "")
-                + "-components";
+                + "-context";
+    }
+    
+    /**
+     * Generates a unique view key from a system name for container views.
+     * 
+     * @param systemName The name of the software system
+     * @return A sanitized view key suitable for Structurizr
+     */
+    private static String generateContainerViewKey(String systemName) {
+        return systemName.toLowerCase()
+                .replace(" ", "-")
+                .replace("_", "-")
+                .replaceAll("[^a-z0-9-]", "")
+                + "-containers";
     }
 
     /**

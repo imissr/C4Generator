@@ -37,7 +37,7 @@
   ],
   "softwareSystems": [
     {
-      "name": "Spring KFZ System",
+      "name": "Spring KFZ System Web",
       "description": "Automotive workshop management system for appointment booking, service management, and car card display",
       "relations": [
         {
