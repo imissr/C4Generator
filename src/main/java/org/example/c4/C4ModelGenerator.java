@@ -350,6 +350,34 @@ public class C4ModelGenerator {
             System.out.println("✓ Avatar C4 model exported to avatar-c4-model.json");
         }
         
+        // NEW: Component change detection and serialization
+        System.out.println("\n=== COMPONENT CHANGE DETECTION ===");
+        try {
+            // Validate containers have components
+            if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
+                // Perform change detection
+                ComponentSerializationService.ComponentComparisonResult changeResult = 
+                    ComponentChangeDetector.detectChanges(containers);
+                
+                // Generate change report
+                String changeReport = ComponentChangeDetector.generateChangeReport(changeResult);
+                System.out.println(changeReport);
+                
+                // Set exit code based on changes (useful for CI/CD)
+                if (changeResult.hasChanges) {
+                    System.out.println("\n🚀 Changes detected - CI/CD pipeline should regenerate documentation");
+                    // You can use System.exit(1) here if you want the CI to detect changes via exit code
+                } else {
+                    System.out.println("\n✅ No changes detected - documentation is up to date");
+                }
+            } else {
+                System.out.println("⚠ Skipping change detection due to validation issues");
+            }
+        } catch (Exception e) {
+            System.out.println("⚠ Component change detection failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
         // Summary statistics
         System.out.println("\n=== GENERATION SUMMARY ===");
         System.out.println("Workspace: " + workspaceConfig.getName());
