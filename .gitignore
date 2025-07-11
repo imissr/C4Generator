@@ -36,3 +36,19 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# C4 Model Generator - Generated Files
+# Generated C4 Models (uncomment to ignore)
+# avatar-c4-model.json
+
+# Component Snapshots (keep these for CI/CD tracking)
+# discovered-components/
+
+# Temporary CI/CD files  
+component-change-report.md
+
+# Additional temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
