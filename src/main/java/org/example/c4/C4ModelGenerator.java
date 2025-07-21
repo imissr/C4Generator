@@ -16,12 +16,12 @@ import org.example.componentDetail.*;
 
 /**
  * Configurable C4 Model Generator - Advanced architectural documentation system.
- * 
+ *
  * <p>This sophisticated code analysis and documentation generator creates comprehensive
  * C4 architecture models from existing Java codebases using configurable discovery
  * strategies. The system combines static configuration with dynamic code analysis
  * to automatically generate accurate, up-to-date architectural documentation.</p>
- * 
+ *
  * <p><strong>Core Capabilities:</strong></p>
  * <ul>
  *   <li><strong>Multi-strategy component discovery</strong> - Uses configurable JSON-based strategies</li>
@@ -30,7 +30,7 @@ import org.example.componentDetail.*;
  *   <li><strong>JSON schema validation</strong> - Ensures configuration integrity and quality</li>
  *   <li><strong>Flexible output formats</strong> - Compatible with Structurizr and other C4 tools</li>
  * </ul>
- * 
+ *
  * <p><strong>Architecture Documentation Generated:</strong></p>
  * <ul>
  *   <li><strong>System Context</strong> - Shows users, external systems, and system boundaries</li>
@@ -38,7 +38,7 @@ import org.example.componentDetail.*;
  *   <li><strong>Component Views</strong> - Details internal components within each container</li>
  *   <li><strong>Relationship Mapping</strong> - Documents dependencies and interactions between elements</li>
  * </ul>
- * 
+ *
  * <p><strong>Key Features:</strong></p>
  * <ul>
  *   <li>Project-agnostic design supporting any Java codebase</li>
@@ -47,20 +47,20 @@ import org.example.componentDetail.*;
  *   <li>Comprehensive error handling and validation</li>
  *   <li>Integration with existing C4 tooling and visualization platforms</li>
  * </ul>
- * 
+ *
  * <p>The generator has evolved from Avatar-specific tooling to a general-purpose
  * architectural documentation system suitable for diverse Java projects including
  * Spring applications, OSGi systems, microservices, and traditional enterprise applications.</p>
- * 
+ *
  * <p><strong>Configuration-driven approach:</strong> All discovery logic is externalized
  * to JSON configuration files, making the system adaptable to different project
  * structures and architectural patterns without requiring code changes.</p>
- * 
+ *
  * @see StrategyConfiguration for discovery strategy configuration
  * @see ConfigurableComponentScanner for component discovery execution
  * @see C4ModelConfig for overall model configuration structure
  * @see JsonSchemaValidator for configuration validation
- * 
+ *
  * @author C4 Model Generator Team
  * @version 2.0
  * @since 2025-06-15
@@ -68,12 +68,12 @@ import org.example.componentDetail.*;
 public class C4ModelGenerator {
     /**
      * Main entry point for the configurable C4 model generation system.
-     * 
+     *
      * <p>This method orchestrates the complete architectural documentation generation
      * process, combining static configuration with dynamic code analysis to produce
      * comprehensive C4 models. The process is designed to be robust, providing
      * detailed logging and error handling throughout execution.</p>
-     * 
+     *
      * <p><strong>Execution workflow:</strong></p>
      * <ol>
      *   <li><strong>Configuration loading</strong> - Loads and validates C4 model configuration from JSON</li>
@@ -86,7 +86,7 @@ public class C4ModelGenerator {
      *   <li><strong>View generation</strong> - Creates C4 views for different architectural levels</li>
      *   <li><strong>Output generation</strong> - Exports the complete model in Structurizr JSON format</li>
      * </ol>
-     * 
+     *
      * <p><strong>Key innovations:</strong></p>
      * <ul>
      *   <li>Automated container key mapping with multiple fallback strategies</li>
@@ -94,34 +94,34 @@ public class C4ModelGenerator {
      *   <li>Comprehensive error handling and recovery</li>
      *   <li>Detailed execution logging for debugging and monitoring</li>
      * </ul>
-     * 
+     *
      * <p>The system supports any Java project structure and can be easily configured
      * for different architectural patterns including Spring applications, OSGi systems,
      * microservices, and traditional enterprise applications.</p>
-     * 
+     *
      * @param args Command line arguments (currently unused - all configuration is file-based)
      * @throws Exception If critical errors occur during model generation, configuration loading,
      *                  or file I/O operations. Non-critical errors are logged but don't halt execution.
-     * 
+     *
      * @see ConfigurableComponentScanner#scanContainer for component discovery process
      */
     public static void main(String[] args) throws Exception {
         System.out.println("=== Starting Avatar C4 Model Generation ===");
-        
+
         // Load complete C4 model configuration from JSON
         File c4ConfigJson = new File("src/main/java/org/example/json/c4ModelConfig.json");
         System.out.println("Loading C4 configuration from: " + c4ConfigJson.getAbsolutePath());
-        
+
         // Load with schema validation enabled
         C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson, true);
         System.out.println("✓ C4 configuration loaded and validated successfully");
-        
+
         // Create workspace with configured metadata
         WorkspaceDetail workspaceConfig = c4Config.getWorkspace();
         Workspace workspace = new Workspace(workspaceConfig.getName(), workspaceConfig.getDescription());
         Model model = workspace.getModel();
         ViewSet views = workspace.getViews();
-        
+
         System.out.println("\n=== WORKSPACE CREATED ===");
         System.out.println("Name: " + workspaceConfig.getName());
         System.out.println("Description: " + workspaceConfig.getDescription());
@@ -194,19 +194,19 @@ public class C4ModelGenerator {
         System.out.println("\n=== LOADING COMPONENT CONFIGURATIONS ===");
         Map<String, ContainerDetail> allContainers = c4Config.getContainerMap();
         System.out.println("✓ Component mapper configurations loaded: " + allContainers.size() + " containers");
-        
+
         // Dynamically extract component maps for all containers in config
         Map<String, Map<String, ComponentDetail>> containerComponentMaps = new HashMap<>();
-        
+
         for (Map.Entry<String, ContainerDetail> entry : allContainers.entrySet()) {
             String containerKey = entry.getKey();
             ContainerDetail containerDetail = entry.getValue();
-            
+
             if (containerDetail != null) {
                 Map<String, ComponentDetail> componentMap = containerDetail.getComponentMap();
                 containerComponentMaps.put(containerKey, componentMap);
-                System.out.println("✓ " + containerKey + " component config loaded: " + 
-                                 (componentMap != null ? componentMap.size() : 0) + " components");
+                System.out.println("✓ " + containerKey + " component config loaded: " +
+                        (componentMap != null ? componentMap.size() : 0) + " components");
             }
         }
 
@@ -215,7 +215,7 @@ public class C4ModelGenerator {
         File strategyConfigJson = new File("src/main/java/org/example/json/strategyConfig.json");
         StrategyConfiguration strategyConfig = StrategyConfiguration.loadFromFile(strategyConfigJson);
         System.out.println("✓ Strategy configuration loaded from: " + strategyConfigJson.getAbsolutePath());
-        
+
         // Create configurable component scanner
         ConfigurableComponentScanner scanner = new ConfigurableComponentScanner(strategyConfig);
         System.out.println("✓ Component scanner initialized");
@@ -223,7 +223,7 @@ public class C4ModelGenerator {
         // Get containers dynamically from configuration for component scanning
         System.out.println("\n=== PREPARING CONTAINERS FOR COMPONENT SCANNING ===");
         Map<String, Container> containersForScanning = new HashMap<>();
-        
+
         // Map container names from config to actual containers
         for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
             Container container = containers.get(containerConfig.getName());
@@ -234,29 +234,29 @@ public class C4ModelGenerator {
                 System.out.println("- " + containerConfig.getName() + ": ✗ (not found)");
             }
         }
-        
+
 
         // Scan all containers automatically using configured strategies
         System.out.println("\n=== SCANNING CONTAINERS FOR COMPONENTS ===");
         for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
             String containerName = entry.getKey();
             Container container = entry.getValue();
-            
+
             // Find corresponding container key in the component configuration
             String containerKey = findContainerKeyInConfig(containerName, allContainers);
             Map<String, ComponentDetail> componentMap = containerComponentMaps.get(containerKey);
-            
-            System.out.println("Scanning container: " + container.getName() + 
-                             " (config key: " + containerKey + ")");
-            
+
+            System.out.println("Scanning container: " + container.getName() +
+                    " (config key: " + containerKey + ")");
+
             scanner.scanContainer(container, containerKey, componentMap);
-            System.out.println("✓ Completed scanning: " + container.getName() + 
-                             " (" + container.getComponents().size() + " components)");
+            System.out.println("✓ Completed scanning: " + container.getName() +
+                    " (" + container.getComponents().size() + " components)");
         }
 
         // Create views
         System.out.println("\n=== CREATING VIEWS ===");
-        
+
         // Create system context views for each software system
         int systemContextViewCount = 0;
         for (Map.Entry<String, SoftwareSystem> entry : softwareSystems.entrySet()) {
@@ -264,20 +264,20 @@ public class C4ModelGenerator {
             SoftwareSystem system = entry.getValue();
             if(system.getContainers().size() == 0) {
                 System.out.println("⚠ Skipping system context view for " + systemName +
-                                 " (no containers found)");
+                        " (no containers found)");
                 continue;
             }
-            
+
             String viewKey = generateSystemContextViewKey(systemName);
             String viewTitle = systemName + " - System Context";
-            
+
             SystemContextView systemContextView = views.createSystemContextView(system, viewKey, viewTitle);
             systemContextView.addAllElements();
             System.out.println("✓ System context view created for: " + system.getName());
             systemContextViewCount++;
         }
         System.out.println("Total system context views created: " + systemContextViewCount);
-        
+
         // Create container views for each software system
         int containerViewCount = 0;
         for (Map.Entry<String, SoftwareSystem> entry : softwareSystems.entrySet()) {
@@ -289,7 +289,7 @@ public class C4ModelGenerator {
                         " (no containers found)");
                 continue;
             }
-            
+
             String viewKey = generateContainerViewKey(systemName);
             String viewTitle = systemName + " - Containers";
 
@@ -297,8 +297,8 @@ public class C4ModelGenerator {
             containerView.addAllContainers();
 
 
-            System.out.println("✓ Container view created for: " + system.getName() + 
-                             " (" + system.getContainers().size() + " containers)");
+            System.out.println("✓ Container view created for: " + system.getName() +
+                    " (" + system.getContainers().size() + " containers)");
             containerViewCount++;
         }
         System.out.println("Total container views created: " + containerViewCount);
@@ -317,11 +317,11 @@ public class C4ModelGenerator {
                 componentView.addAllComponents();
 
                 System.out.println("✓ Component view created for: " + container.getName() +
-                                 " (" + container.getComponents().size() + " components)");
+                        " (" + container.getComponents().size() + " components)");
                 componentViewCount++;
             } else {
                 System.out.println("⚠ Skipping component view for " + container.getName() +
-                                 " (no components found)");
+                        " (no components found)");
             }
         }
         System.out.println("Total component views created: " + componentViewCount);
@@ -349,20 +349,20 @@ public class C4ModelGenerator {
             new JsonWriter(true).write(workspace, writer);
             System.out.println("✓ Avatar C4 model exported to avatar-c4-model.json");
         }
-        
+
         // NEW: Component change detection and serialization
-        System.out.println("\n=== COMPONENT CHANGE DETECTION ===");
+       /* System.out.println("\n=== COMPONENT CHANGE DETECTION ===");
         try {
             // Validate containers have components
             if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
                 // Perform change detection
-                ComponentSerializationService.ComponentComparisonResult changeResult = 
-                    ComponentChangeDetector.detectChanges(containers);
-                
+                ComponentSerializationService.ComponentComparisonResult changeResult =
+                        ComponentChangeDetector.detectChanges(containers);
+
                 // Generate change report
                 String changeReport = ComponentChangeDetector.generateChangeReport(changeResult);
                 System.out.println(changeReport);
-                
+
                 // Set exit code based on changes (useful for CI/CD)
                 if (changeResult.hasChanges) {
                     System.out.println("\n🚀 Changes detected - CI/CD pipeline should regenerate documentation");
@@ -377,14 +377,14 @@ public class C4ModelGenerator {
             System.out.println("⚠ Component change detection failed: " + e.getMessage());
             e.printStackTrace();
         }
-        
+
         // Summary statistics
         System.out.println("\n=== GENERATION SUMMARY ===");
         System.out.println("Workspace: " + workspaceConfig.getName());
         System.out.println("Persons: " + persons.size());
         System.out.println("Software Systems: " + softwareSystems.size());
         System.out.println("Containers: " + containers.size());
-        
+
         int totalComponents = 0;
         for (Container container : containers.values()) {
             totalComponents += container.getComponents().size();
@@ -393,35 +393,35 @@ public class C4ModelGenerator {
         System.out.println("System Context Views: " + systemContextViewCount);
         System.out.println("Container Views: " + containerViewCount);
         System.out.println("Component Views: " + componentViewCount);
-        System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");
+        System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");*/
     }
 
 
     /**
      * Establishes additional person-container relationships that may not be directly configured.
-     * 
+     *
      * This method handles special cases where persons need to interact with specific containers
      * based on business logic or common patterns in the system architecture.
-     * 
+     *
      * @param c4Config The complete C4 model configuration
      * @param persons Map of person names to Person objects
      * @param containers Map of container names to Container objects
      */
     private static void establishPersonContainerRelationships(
-            C4ModelConfig c4Config, 
-            Map<String, Person> persons, 
+            C4ModelConfig c4Config,
+            Map<String, Person> persons,
             Map<String, Container> containers) {
-        
+
         int additionalRelationCount = 0;
-        
+
         // Example: Client User sends requests to Connector Implementations
         Person clientUser = persons.get("Client User");
         Container connectorImplementations = containers.get("Connector Implementations");
-        
+
         if (clientUser != null && connectorImplementations != null) {
             clientUser.uses(connectorImplementations, "Sends requests to");
-            System.out.println("✓ Additional Person-Container Relationship: " + clientUser.getName() + 
-                             " -> " + connectorImplementations.getName() + " (Sends requests to)");
+            System.out.println("✓ Additional Person-Container Relationship: " + clientUser.getName() +
+                    " -> " + connectorImplementations.getName() + " (Sends requests to)");
             additionalRelationCount++;
         } else {
             if (clientUser == null) {
@@ -431,7 +431,7 @@ public class C4ModelGenerator {
                 System.out.println("⚠ Warning: Connector Implementations container not found for additional relationship");
             }
         }
-        
+
         System.out.println("Total additional person-container relationships established: " + additionalRelationCount);
     }
 
@@ -497,7 +497,7 @@ public class C4ModelGenerator {
     /**
      * Finds the corresponding container key in the component configuration for a given container name.
      * This method uses automated matching strategies to work with any project configuration.
-     * 
+     *
      * @param containerName The display name of the container
      * @param allContainers Map of all container configurations
      * @return The configuration key for the container, or null if not found
@@ -506,9 +506,9 @@ public class C4ModelGenerator {
         if (containerName == null || allContainers == null || allContainers.isEmpty()) {
             return null;
         }
-        
+
         String normalizedContainerName = containerName.toLowerCase().trim();
-        
+
         // Strategy 1: Exact match (case-insensitive)
         for (String key : allContainers.keySet()) {
             if (key.toLowerCase().trim().equals(normalizedContainerName)) {
@@ -516,7 +516,7 @@ public class C4ModelGenerator {
                 return key;
             }
         }
-        
+
         // Strategy 2: Exact match without spaces and special characters
         String cleanContainerName = normalizedContainerName.replaceAll("[\\s\\-_]", "");
         for (String key : allContainers.keySet()) {
@@ -526,7 +526,7 @@ public class C4ModelGenerator {
                 return key;
             }
         }
-        
+
         // Strategy 3: Key contains container name (without spaces)
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
@@ -535,7 +535,7 @@ public class C4ModelGenerator {
                 return key;
             }
         }
-        
+
         // Strategy 4: Container name contains key (without spaces)
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
@@ -544,12 +544,12 @@ public class C4ModelGenerator {
                 return key;
             }
         }
-        
+
         // Strategy 5: Partial word matching (split by spaces/dashes/underscores)
         String[] containerWords = normalizedContainerName.split("[\\s\\-_]+");
         for (String key : allContainers.keySet()) {
             String[] keyWords = key.toLowerCase().split("[\\s\\-_]+");
-            
+
             // Check if any container word matches any key word
             for (String containerWord : containerWords) {
                 for (String keyWord : keyWords) {
@@ -559,7 +559,7 @@ public class C4ModelGenerator {
                 }
             }
         }
-        
+
         // Strategy 6: Fuzzy matching - check if key is a substring of container name or vice versa
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
@@ -568,15 +568,15 @@ public class C4ModelGenerator {
                 return key;
             }
         }
-        
+
         System.out.println("⚠ Warning: No configuration key found for container: " + containerName);
         System.out.println("Available keys: " + allContainers.keySet());
         return null;
     }
-    
+
     /**
      * Generates a unique view key from a system name for system context views.
-     * 
+     *
      * @param systemName The name of the software system
      * @return A sanitized view key suitable for Structurizr
      */
@@ -587,10 +587,10 @@ public class C4ModelGenerator {
                 .replaceAll("[^a-z0-9-]", "")
                 + "-context";
     }
-    
+
     /**
      * Generates a unique view key from a system name for container views.
-     * 
+     *
      * @param systemName The name of the software system
      * @return A sanitized view key suitable for Structurizr
      */
@@ -604,10 +604,10 @@ public class C4ModelGenerator {
 
     /**
      * Establishes person relationships from configuration.
-     * 
+     *
      * This method creates relationships between persons and their target systems or containers
      * as defined in the configuration file.
-     * 
+     *
      * @param c4Config The complete C4 model configuration
      * @param persons Map of person names to Person objects
      * @param softwareSystems Map of software system names to SoftwareSystem objects
@@ -618,30 +618,30 @@ public class C4ModelGenerator {
             Map<String, Person> persons,
             Map<String, SoftwareSystem> softwareSystems,
             Map<String, Container> containers) {
-        
+
         System.out.println("\n=== ESTABLISHING PERSON RELATIONSHIPS ===");
         int personRelationCount = 0;
-        
+
         for (PersonDetail personConfig : c4Config.getPersons()) {
             Person person = persons.get(personConfig.getName());
             if (personConfig.getRelations() != null) {
                 for (Relations relation : personConfig.getRelations()) {
                     SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
                     Container targetContainer = containers.get(relation.getTarget());
-                    
+
                     if (targetSystem != null) {
                         person.uses(targetSystem, relation.getType());
-                        System.out.println("✓ Person-System Relationship: " + person.getName() + 
-                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        System.out.println("✓ Person-System Relationship: " + person.getName() +
+                                " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
                         personRelationCount++;
                     } else if (targetContainer != null) {
                         person.uses(targetContainer, relation.getType());
-                        System.out.println("✓ Person-Container Relationship: " + person.getName() + 
-                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        System.out.println("✓ Person-Container Relationship: " + person.getName() +
+                                " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
                         personRelationCount++;
                     } else {
-                        System.out.println("⚠ Warning: Target not found for person relation: " + 
-                                         person.getName() + " -> " + relation.getTarget());
+                        System.out.println("⚠ Warning: Target not found for person relation: " +
+                                person.getName() + " -> " + relation.getTarget());
                     }
                 }
             }
@@ -651,19 +651,19 @@ public class C4ModelGenerator {
 
     /**
      * Establishes software system relationships from configuration.
-     * 
+     *
      * This method creates relationships between software systems as defined in the configuration file.
-     * 
+     *
      * @param c4Config The complete C4 model configuration
      * @param softwareSystems Map of software system names to SoftwareSystem objects
      */
     private static void establishSoftwareSystemRelationships(
             C4ModelConfig c4Config,
             Map<String, SoftwareSystem> softwareSystems) {
-        
+
         System.out.println("\n=== ESTABLISHING SOFTWARE SYSTEM RELATIONSHIPS ===");
         int systemRelationCount = 0;
-        
+
         for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
             SoftwareSystem system = softwareSystems.get(systemConfig.getName());
             if (systemConfig.getRelations() != null) {
@@ -671,12 +671,12 @@ public class C4ModelGenerator {
                     SoftwareSystem targetSystem = softwareSystems.get(relation.getTarget());
                     if (targetSystem != null) {
                         system.uses(targetSystem, relation.getType());
-                        System.out.println("✓ System-System Relationship: " + system.getName() + 
-                                         " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
+                        System.out.println("✓ System-System Relationship: " + system.getName() +
+                                " -> " + targetSystem.getName() + " (" + relation.getType() + ")");
                         systemRelationCount++;
                     } else {
-                        System.out.println("⚠ Warning: Target system not found for relation: " + 
-                                         system.getName() + " -> " + relation.getTarget());
+                        System.out.println("⚠ Warning: Target system not found for relation: " +
+                                system.getName() + " -> " + relation.getTarget());
                     }
                 }
             }
@@ -686,19 +686,19 @@ public class C4ModelGenerator {
 
     /**
      * Establishes container relationships from configuration.
-     * 
+     *
      * This method creates relationships between containers as defined in the configuration file.
-     * 
+     *
      * @param c4Config The complete C4 model configuration
      * @param containers Map of container names to Container objects
      */
     private static void establishContainerRelationships(
             C4ModelConfig c4Config,
             Map<String, Container> containers) {
-        
+
         System.out.println("\n=== ESTABLISHING CONTAINER RELATIONSHIPS ===");
         int containerRelationCount = 0;
-        
+
         for (ContainerConfigDetail containerConfig : c4Config.getContainers()) {
             Container container = containers.get(containerConfig.getName());
             if (containerConfig.getRelations() != null) {
@@ -706,12 +706,12 @@ public class C4ModelGenerator {
                     Container targetContainer = containers.get(relation.getTarget());
                     if (targetContainer != null) {
                         container.uses(targetContainer, relation.getType());
-                        System.out.println("✓ Container-Container Relationship: " + container.getName() + 
-                                         " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
+                        System.out.println("✓ Container-Container Relationship: " + container.getName() +
+                                " -> " + targetContainer.getName() + " (" + relation.getType() + ")");
                         containerRelationCount++;
                     } else {
-                        System.out.println("⚠ Warning: Target container not found for relation: " + 
-                                         container.getName() + " -> " + relation.getTarget());
+                        System.out.println("⚠ Warning: Target container not found for relation: " +
+                                container.getName() + " -> " + relation.getTarget());
                     }
                 }
             }
