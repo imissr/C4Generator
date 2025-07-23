@@ -1,4 +1,4 @@
-+name: C4 Architecture Documentation CI/CD
+name: C4 Architecture Documentation CI/CD
 
 on:
   push:
