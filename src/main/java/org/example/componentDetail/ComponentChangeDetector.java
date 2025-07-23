@@ -65,10 +65,17 @@ public class ComponentChangeDetector {
         System.out.println("   ✓ New snapshot created with " + 
                          getTotalComponentCount(newSnapshot) + " components");
 
-        System.out.println( "compare hash: " + ComponentSerializationService.snapshotsAreEqual( oldSnapshot, newSnapshot));
-        
+        if( ComponentSerializationService.snapshotsAreEqual( oldSnapshot, newSnapshot)) {
+            System.out.println("✅ No changes detected – skipping full diff.");
+            System.out.println("4. Saving new snapshot...");
+            ComponentSerializationService.saveSnapshotWithHistory(newSnapshot);
+            ComponentSerializationService.ComponentComparisonResult result =
+                    new ComponentSerializationService.ComponentComparisonResult(null ,null ,null);
+
+            return result ;
+        }
         // Step 3: Compare snapshots
-        System.out.println("3. Comparing snapshots for changes...");
+        System.out.println("3. Comparing snapshots for changes component By Component...");
         ComponentSerializationService.ComponentComparisonResult result = 
                 ComponentSerializationService.compareSnapshots(oldSnapshot, newSnapshot);
 

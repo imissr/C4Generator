@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
 @ToString
 public class ComponentSerializationService {
 
+    private static final int PARALLEL_SORT_THRESHOLD = 1_000;
+
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
             .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
@@ -132,10 +134,24 @@ public class ComponentSerializationService {
         public ComponentComparisonResult(Set<String> newComponents,
                                          Set<String> removedComponents,
                                          Set<String> modifiedComponents) {
-            this.newComponents = newComponents;
-            this.removedComponents = removedComponents;
-            this.modifiedComponents = modifiedComponents;
-            this.hasChanges = !newComponents.isEmpty() || !removedComponents.isEmpty() || !modifiedComponents.isEmpty();
+            // Coalesce nulls to empty sets
+            this.newComponents      = newComponents      != null ? newComponents      : Collections.emptySet();
+            this.removedComponents  = removedComponents  != null ? removedComponents  : Collections.emptySet();
+            this.modifiedComponents = modifiedComponents != null ? modifiedComponents : Collections.emptySet();
+
+            this.hasChanges =
+                    !this.newComponents.isEmpty() ||
+                            !this.removedComponents.isEmpty() ||
+                            !this.modifiedComponents.isEmpty();
+        }
+
+        /** Factory for the “no changes” result */
+        public static ComponentComparisonResult noChanges() {
+            return new ComponentComparisonResult(
+                    Collections.emptySet(),
+                    Collections.emptySet(),
+                    Collections.emptySet()
+            );
         }
     }
 
@@ -300,56 +316,75 @@ public class ComponentSerializationService {
         System.out.println("compare hash: " + same);
 
         if (same) {
-            System.out.println("✅ No changes detected – skipping full diff.");
+
             return true;
         } else {
-            System.out.println("⚠️ Changes detected – running per‑component comparison.");
-            // fall back to compareS
-            //;
+
             return false;
         }
     }
 
     private static void sortRecursively(JsonNode node) {
-        // 1) If it’s a JSON object, dive into each of its field values
         if (node.isObject()) {
+            // Recurse into each field value
             node.fields().forEachRemaining(e -> sortRecursively(e.getValue()));
         }
-        // 2) Otherwise, if it’s an array, we’ll sort its elements
         else if (node.isArray()) {
             ArrayNode array = (ArrayNode) node;
-            // 2a) Copy the array elements into a List<JsonNode>
-            List<JsonNode> elems = new ArrayList<>();
-            array.forEach(elems::add);
+            int size = array.size();
 
-            // 2b) Choose how to compare/sort those elements:
+            // For tiny arrays, just recurse and return
+            if (size <= 1) {
+                array.forEach(ComponentSerializationService::sortRecursively);
+                return;
+            }
+
+            // 1) Copy to a fixed array (pre‑sized)
+            JsonNode[] elems = new JsonNode[size];
+            int idx = 0;
+            for (JsonNode e : array) {
+                elems[idx++] = e;
+            }
+
+            // 2) Single pass to detect element type
+            boolean allTextual    = true;
+            boolean allHaveTarget = true;
+            for (JsonNode e : elems) {
+                if (!e.isTextual())                           allTextual    = false;
+                if (!(e.isObject() && e.has("target")))       allHaveTarget = false;
+                if (!allTextual && !allHaveTarget) break;
+            }
+
+            // 3) Pick comparator
             Comparator<JsonNode> cmp;
-            if (elems.stream().allMatch(JsonNode::isTextual)) {
-                // • If every element is a plain text node → sort by the text value
+            if (allTextual) {
                 cmp = Comparator.comparing(JsonNode::asText);
-            } else if (elems.stream().allMatch(e -> e.has("target"))) {
-                // • Else if every element is an object with a "target" field
-                //   (your `relationships` arrays) → sort by that target string
+            } else if (allHaveTarget) {
                 cmp = Comparator.comparing(e -> e.get("target").asText());
             } else {
-                // • Otherwise → fall back to sorting by the element’s full JSON string
                 cmp = Comparator.comparing(JsonNode::toString);
             }
 
-            // 2c) Sort the list in place
-            elems.sort(cmp);
+            // 4) Sort (parallel for big arrays)
+            if (size >= PARALLEL_SORT_THRESHOLD) {
+                Arrays.parallelSort(elems, cmp);
+            } else {
+                Arrays.sort(elems, cmp);
+            }
 
-            // 2d) Clear out the original ArrayNode and re‑add the now‑sorted elements
-            array.removeAll();
-            elems.forEach(array::add);
+            // 5) Overwrite in‑place
+            for (int i = 0; i < size; i++) {
+                array.set(i, elems[i]);
+            }
 
-            // 2e) Finally, recurse into each element we just re‑added,
-            //     so nested arrays/objects get their own sorting applied
-            elems.forEach(ComponentSerializationService::sortRecursively);
+            // 6) Recurse into sorted elements
+            for (JsonNode e : elems) {
+                sortRecursively(e);
+            }
         }
-        // 3) If it’s neither an object nor an array (e.g. a number, boolean, or text),
-        //    there’s nothing to sort or recurse into, so we do nothing.
+        // else: primitive (text, number, boolean)—nothing to do
     }
+
 
 
     public static String snapshotContentHash(ComponentSnapshot snap) throws Exception {
