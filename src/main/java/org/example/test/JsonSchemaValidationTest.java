@@ -1,6 +1,6 @@
 package org.example.test;
 
-import org.example.model.C4ModelConfig;
+import org.example.model.C4ModelConfigDetail;
 import org.example.utils.JsonSchemaValidator;
 
 import java.io.File;
@@ -45,7 +45,7 @@ import java.io.IOException;
  * </pre>
  * 
  * @see JsonSchemaValidator for the validation implementation
- * @see C4ModelConfig for the configuration structure being validated
+ * @see C4ModelConfigDetail for the configuration structure being validated
  * 
  * @author C4 Model Generator
  * @version 1.0
@@ -131,7 +131,7 @@ public class JsonSchemaValidationTest {
         }
         
         try {
-            C4ModelConfig config = C4ModelConfig.loadFromFile(validFile, true);
+            C4ModelConfigDetail config = C4ModelConfigDetail.loadFromFile(validFile, true);
             System.out.println("✓ Valid configuration loaded successfully");
             System.out.println("  - Workspace: " + config.getWorkspace().getName());
             System.out.println("  - Persons: " + config.getPersons().size());
@@ -173,7 +173,7 @@ public class JsonSchemaValidationTest {
         }
         
         try {
-            C4ModelConfig config = C4ModelConfig.loadFromFile(invalidFile, true);
+            C4ModelConfigDetail config = C4ModelConfigDetail.loadFromFile(invalidFile, true);
             System.out.println("✗ Should have failed validation!");
         } catch (IOException e) {
             System.out.println("✓ Correctly caught validation error:");
@@ -219,7 +219,7 @@ public class JsonSchemaValidationTest {
         }
         
         try {
-            C4ModelConfig config = C4ModelConfig.loadFromFile(invalidFile, true);
+            C4ModelConfigDetail config = C4ModelConfigDetail.loadFromFile(invalidFile, true);
             System.out.println("✗ Should have failed validation!");
         } catch (IOException e) {
             System.out.println("✓ Correctly caught validation error:");

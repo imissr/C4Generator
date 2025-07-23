@@ -12,7 +12,7 @@ import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
 import com.structurizr.view.*;
-import org.example.config.ContainerConfigDetail;
+import org.example.model.ContainerConfigDetail;
 import org.example.config.StrategyConfiguration;
 import org.example.model.*;
 import org.example.service.ComponentChangeDetector;
@@ -64,7 +64,7 @@ import org.example.utils.JsonSchemaValidator;
  *
  * @see StrategyConfiguration for discovery strategy configuration
  * @see ConfigurableComponentScanner for component discovery execution
- * @see C4ModelConfig for overall model configuration structure
+ * @see C4ModelConfigDetail for overall model configuration structure
  * @see JsonSchemaValidator for configuration validation
  *
  * @author C4 Model Generator Team
@@ -119,7 +119,7 @@ public class C4ModelGenerator {
         System.out.println("Loading C4 configuration from: " + c4ConfigJson.getAbsolutePath());
 
         // Load with schema validation enabled
-        C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson, true);
+        C4ModelConfigDetail c4Config = C4ModelConfigDetail.loadFromFile(c4ConfigJson, true);
         System.out.println("✓ C4 configuration loaded and validated successfully");
 
         // Create workspace with configured metadata
@@ -414,7 +414,7 @@ public class C4ModelGenerator {
      * @param containers Map of container names to Container objects
      */
     private static void establishPersonContainerRelationships(
-            C4ModelConfig c4Config,
+            C4ModelConfigDetail c4Config,
             Map<String, Person> persons,
             Map<String, Container> containers) {
 
@@ -620,7 +620,7 @@ public class C4ModelGenerator {
      * @param containers Map of container names to Container objects
      */
     private static void establishPersonRelationships(
-            C4ModelConfig c4Config,
+            C4ModelConfigDetail c4Config,
             Map<String, Person> persons,
             Map<String, SoftwareSystem> softwareSystems,
             Map<String, Container> containers) {
@@ -664,7 +664,7 @@ public class C4ModelGenerator {
      * @param softwareSystems Map of software system names to SoftwareSystem objects
      */
     private static void establishSoftwareSystemRelationships(
-            C4ModelConfig c4Config,
+            C4ModelConfigDetail c4Config,
             Map<String, SoftwareSystem> softwareSystems) {
 
         System.out.println("\n=== ESTABLISHING SOFTWARE SYSTEM RELATIONSHIPS ===");
@@ -699,7 +699,7 @@ public class C4ModelGenerator {
      * @param containers Map of container names to Container objects
      */
     private static void establishContainerRelationships(
-            C4ModelConfig c4Config,
+            C4ModelConfigDetail c4Config,
             Map<String, Container> containers) {
 
         System.out.println("\n=== ESTABLISHING CONTAINER RELATIONSHIPS ===");

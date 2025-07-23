@@ -1,10 +1,9 @@
-package org.example.config;
+package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
-import org.example.model.Relations;
 
 import java.util.List;
 

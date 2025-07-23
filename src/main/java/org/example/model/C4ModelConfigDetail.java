@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.ToString;
 import org.example.utils.JsonSchemaValidator;
-import org.example.config.ContainerConfigDetail;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +67,7 @@ import java.util.*;
  */
 @Getter
 @ToString
-public class C4ModelConfig {
+public class C4ModelConfigDetail {
 
     private final WorkspaceDetail workspace;
     private final List<PersonDetail> persons;
@@ -81,7 +80,7 @@ public class C4ModelConfig {
     private final Map<String, ContainerDetail> containerComponentMap = new HashMap<>();
 
     @JsonCreator
-    public C4ModelConfig(
+    public C4ModelConfigDetail(
             @JsonProperty("workspace") WorkspaceDetail workspace,
             @JsonProperty("persons") List<PersonDetail> persons,
             @JsonProperty("softwareSystems") List<SoftwareSystemDetail> softwareSystems,
@@ -110,7 +109,7 @@ public class C4ModelConfig {
      * @return Fully initialized C4ModelConfig with all elements loaded
      * @throws IOException If the file cannot be read or contains invalid JSON
      */
-    public static C4ModelConfig loadFromFile(File jsonFile) throws IOException {
+    public static C4ModelConfigDetail loadFromFile(File jsonFile) throws IOException {
         return loadFromFile(jsonFile, true);
     }
     
@@ -124,13 +123,13 @@ public class C4ModelConfig {
      * @throws IOException If the file cannot be read or contains invalid JSON
      * @throws JsonSchemaValidator.ValidationException If schema validation fails
      */
-    public static C4ModelConfig loadFromFile(File jsonFile, boolean validateSchema) throws IOException {
+    public static C4ModelConfigDetail loadFromFile(File jsonFile, boolean validateSchema) throws IOException {
         if (validateSchema) {
             validateConfigurationFile(jsonFile);
         }
         
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(jsonFile, C4ModelConfig.class);
+        return mapper.readValue(jsonFile, C4ModelConfigDetail.class);
     }
     
     /**

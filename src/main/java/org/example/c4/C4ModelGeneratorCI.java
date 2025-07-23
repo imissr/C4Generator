@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.structurizr.model.*;
-import org.example.config.ContainerConfigDetail;
+import org.example.model.ContainerConfigDetail;
 import org.example.config.StrategyConfiguration;
-import org.example.model.C4ModelConfig;
+import org.example.model.C4ModelConfigDetail;
 import org.example.model.ComponentDetail;
 import org.example.model.ContainerDetail;
 import org.example.model.SoftwareSystemDetail;
@@ -178,7 +178,7 @@ public class C4ModelGeneratorCI {
 
         // Load configuration
         File c4ConfigJson = new File(configPath);
-        C4ModelConfig c4Config = C4ModelConfig.loadFromFile(c4ConfigJson, true);
+        C4ModelConfigDetail c4Config = C4ModelConfigDetail.loadFromFile(c4ConfigJson, true);
 
         // Create minimal model structure for scanning
         com.structurizr.Workspace workspace = new com.structurizr.Workspace("CI-Scan", "Quick scan for CI/CD");
