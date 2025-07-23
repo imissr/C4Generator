@@ -125,7 +125,7 @@ public class JsonSchemaValidationTest {
         }
         """;
         
-        File validFile = new File("test-valid-config.json");
+        File validFile = new File("src/main/java/org/example/json/test.json");
         try (FileWriter writer = new FileWriter(validFile)) {
             writer.write(validJson);
         }
@@ -167,7 +167,7 @@ public class JsonSchemaValidationTest {
         }
         """;
         
-        File invalidFile = new File("test-invalid-config.json");
+        File invalidFile = new File("src/main/java/org/example/json/test.json");
         try (FileWriter writer = new FileWriter(invalidFile)) {
             writer.write(invalidJson);
         }
@@ -213,7 +213,7 @@ public class JsonSchemaValidationTest {
         }
         """;
         
-        File invalidFile = new File("test-invalid-types.json");
+        File invalidFile = new File("src/main/java/org/example/json/test.json");
         try (FileWriter writer = new FileWriter(invalidFile)) {
             writer.write(invalidJson);
         }
