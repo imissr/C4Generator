@@ -9,197 +9,148 @@ on:
 jobs:
   component-change-detection:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Fetch full history for proper change detection
-    
-    - name: Set up JDK 22
-      uses: actions/setup-java@v4
-      with:
-        java-version: '22'
-        distribution: 'temurin'
-    
-    - name: Cache Maven dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-    
-    - name: Restore previous component snapshots
-      uses: actions/cache@v4
-      with:
-        path: discovered-components/
-        key: components-${{ github.repository }}-${{ github.ref_name }}
-        restore-keys: |
-          components-${{ github.repository }}-
-          components-
-    
-    - name: Compile project
-      run: mvn clean compile -q
-    
-    - name: Run component change detection
-      id: change-detection
-      run: |
-        echo "🔍 Running component change detection..."
-        
-        # Run change detection mode - exits with code 1 if changes found
-        if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="change-detect" -q; then
-          echo "No component changes detected"
-          echo "changes_detected=false" >> $GITHUB_OUTPUT
-          echo "should_generate=false" >> $GITHUB_OUTPUT
-        else
-          exit_code=$?
-          if [ $exit_code -eq 1 ]; then
-            echo "✅ Component changes detected - proceeding with documentation generation"
-            echo "changes_detected=true" >> $GITHUB_OUTPUT
-            echo "should_generate=true" >> $GITHUB_OUTPUT
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for diffs
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+
+      - name: Cache component snapshots
+        id: cache-components
+        uses: actions/cache@v4
+        with:
+          path: discovered-components/
+          key: components-${{ github.repository }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            components-${{ github.repository }}-
+            components-
+
+      - name: Compile project
+        run: mvn clean compile -q
+
+      - name: Run component change detection
+        id: change-detection
+        run: |
+          echo "🔍 Running component change detection..."
+          if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="change-detect" -q; then
+            echo "changes_detected=false"   >> $GITHUB_OUTPUT
+            echo "should_generate=false"    >> $GITHUB_OUTPUT
           else
-            echo "❌ Error in change detection (exit code: $exit_code)"
-            exit $exit_code
+            exit_code=$?
+            if [ $exit_code -eq 1 ]; then
+              echo "changes_detected=true"  >> $GITHUB_OUTPUT
+              echo "should_generate=true"   >> $GITHUB_OUTPUT
+            else
+              echo "Error in change detection (exit code: $exit_code)"
+              exit $exit_code
+            fi
           fi
-        fi
-    
-    - name: Generate C4 documentation (if changes detected)
-      if: steps.change-detection.outputs.should_generate == 'true'
-      run: |
-        echo "🏗️ Generating complete C4 architecture documentation..."
-        mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -q
-        
-        echo "📊 Generated files:"
-        ls -la *.json || echo "No JSON files generated"
-        ls -la discovered-components/ || echo "No component snapshots"
-    
-    - name: Upload C4 model artifacts
-      if: steps.change-detection.outputs.should_generate == 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: c4-architecture-model
-        path: |
-          avatar-c4-model.json
-          discovered-components/
-        retention-days: 30
-    
-    - name: Save component snapshots
-      if: always()
-      uses: actions/cache/save@v4
-      with:
-        path: discovered-components/
-        key: components-${{ github.repository }}-${{ github.ref_name }}-${{ github.sha }}
-    
-    - name: Generate component change report
-      if: steps.change-detection.outputs.changes_detected == 'true'
-      run: |
-        echo "📋 Generating detailed component change report..."
-        
-        # Create a detailed report file
-        cat > component-change-report.md << 'EOF'
-        # 🏗️ Component Architecture Changes Detected
-        
-        **Repository:** ${{ github.repository }}
-        **Branch:** ${{ github.ref_name }}
-        **Commit:** ${{ github.sha }}
-        **Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-        
-        ## Changes Summary
-        
-        The automated component scanner has detected changes in the system architecture.
-        A new C4 model has been generated and is available in the artifacts.
-        
-        ## Files Updated
-        
-        - `avatar-c4-model.json` - Complete C4 architecture model
-        - `discovered-components/components-latest.json` - Latest component snapshot
-        - `discovered-components/components-snapshot-*.json` - Timestamped snapshot
-        
-        ## Next Steps
-        
-        1. Review the generated C4 model
-        2. Update any architectural documentation
-        3. Consider updating system diagrams if significant changes occurred
-        
-        ---
-        *This report was automatically generated by the C4 Architecture Documentation CI/CD pipeline.*
-        EOF
-        
-        # Replace template variables
-        sed -i "s/\${{ github.repository }}/${{ github.repository }}/g" component-change-report.md
-        sed -i "s/\${{ github.ref_name }}/${{ github.ref_name }}/g" component-change-report.md
-        sed -i "s/\${{ github.sha }}/${{ github.sha }}/g" component-change-report.md
-        sed -i "s/\$(date -u +\"%Y-%m-%d %H:%M:%S UTC\")/$(date -u +"%Y-%m-%d %H:%M:%S UTC")/g" component-change-report.md
-        
-        echo "📄 Component change report generated:"
-        cat component-change-report.md
-    
-    - name: Upload change report
-      if: steps.change-detection.outputs.changes_detected == 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: component-change-report
-        path: component-change-report.md
-        retention-days: 30
-    
-    - name: Comment on PR (if changes detected)
-      if: steps.change-detection.outputs.changes_detected == 'true' && github.event_name == 'pull_request'
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          
-          let reportContent = '';
-          try {
-            reportContent = fs.readFileSync('component-change-report.md', 'utf8');
-          } catch (error) {
-            reportContent = '🏗️ Component architecture changes detected. See workflow artifacts for details.';
-          }
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: reportContent
-          });
-    
+
+      - name: Generate C4 documentation
+        if: steps.change-detection.outputs.should_generate == 'true'
+        run: |
+          mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -q
+          echo "📊 Generated files:"
+          ls -la *.json || echo "(none)"
+          ls -la discovered-components/ || echo "(none)"
+
+      - name: Upload C4 model artifacts
+        if: steps.change-detection.outputs.should_generate == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: c4-architecture-model
+          path: |
+            avatar-c4-model.json
+            discovered-components/
+          retention-days: 30
+
+      - name: Generate component change report
+        if: steps.change-detection.outputs.changes_detected == 'true'
+        run: |
+          cat > component-change-report.md << 'EOF'
+          # 🏗️ Component Architecture Changes Detected
+
+          **Repository:** ${{ github.repository }}
+          **Branch:** ${{ github.ref_name }}
+          **Commit:** ${{ github.sha }}
+          **Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          ## Changes Summary
+          A new C4 model has been generated and is available in the artifacts.
+
+          ## Files Updated
+          - avatar-c4-model.json
+          - discovered-components/components-*.json
+
+          ## Next Steps
+          1. Review the generated C4 model  
+          2. Update architectural docs  
+          3. Refresh diagrams if needed  
+          EOF
+
+          sed -i "s/\${{ github.repository }}/${{ github.repository }}/" component-change-report.md
+          sed -i "s/\${{ github.ref_name }}/${{ github.ref_name }}/" component-change-report.md
+          sed -i "s/\${{ github.sha }}/${{ github.sha }}/" component-change-report.md
+
+      - name: Upload change report
+        if: steps.change-detection.outputs.changes_detected == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-change-report
+          path: component-change-report.md
+          retention-days: 30
+
+      - name: Comment on PR
+        if: steps.change-detection.outputs.changes_detected == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const body = require('fs').readFileSync('component-change-report.md', 'utf8')
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            })
+
     outputs:
       changes_detected: ${{ steps.change-detection.outputs.changes_detected }}
       should_generate: ${{ steps.change-detection.outputs.should_generate }}
 
-  # Optional: Deploy documentation if changes detected
   deploy-documentation:
     needs: component-change-detection
     if: needs.component-change-detection.outputs.should_generate == 'true' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Download C4 model artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: c4-architecture-model
-    
-    - name: Deploy to documentation site
-      run: |
-        echo "🚀 Deploying updated architecture documentation..."
-        echo "This step would typically:"
-        echo "1. Upload avatar-c4-model.json to a documentation site"
-        echo "2. Trigger documentation site rebuild"
-        echo "3. Update architecture diagrams"
-        echo "4. Notify stakeholders of changes"
-        
-        # Example deployment commands:
-        # - Upload to AWS S3, Azure Blob, or other storage
-        # - Trigger Structurizr workspace update
-        # - Update internal documentation systems
-        # - Send notifications to architecture team
-        
-        echo "📄 Files available for deployment:"
-        ls -la
-    
-    - name: Create deployment summary
-      run: |
-        echo "✅ Architecture documentation deployment completed" >> $GITHUB_STEP_SUMMARY
-        echo "- C4 model updated with latest component changes" >> $GITHUB_STEP_SUMMARY
-        echo "- Documentation site refreshed" >> $GITHUB_STEP_SUMMARY
-        echo "- Stakeholders notified" >> $GITHUB_STEP_SUMMARY
+      - name: Download C4 model artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: c4-architecture-model
+
+      - name: Deploy to documentation site
+        run: |
+          echo "🚀 Deploying updated architecture documentation..."
+          # e.g. upload to S3, rebuild site, trigger diagram service, notify stakeholders
+
+      - name: Create deployment summary
+        run: |
+          echo "✅ Documentation deployed" >> $GITHUB_STEP_SUMMARY
+          echo "- C4 model refreshed"      >> $GITHUB_STEP_SUMMARY
+          echo "- Site rebuild triggered" >> $GITHUB_STEP_SUMMARY
+          echo "- Stakeholders notified"  >> $GITHUB_STEP_SUMMARY
