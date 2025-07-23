@@ -75,7 +75,7 @@ jobs:
     
     - name: Upload C4 model artifacts
       if: steps.change-detection.outputs.should_generate == 'true'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: c4-architecture-model
         path: |
@@ -136,7 +136,7 @@ jobs:
     
     - name: Upload change report
       if: steps.change-detection.outputs.changes_detected == 'true'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: component-change-report
         path: component-change-report.md
