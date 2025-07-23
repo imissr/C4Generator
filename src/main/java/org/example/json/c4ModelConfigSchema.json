@@ -1,0 +1,256 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "C4 Model Configuration Schema",
+  "description": "JSON schema for validating C4 model configuration files used in automated C4 architecture diagram generation",
+  "type": "object",
+  "properties": {
+    "workspace": {
+      "type": "object",
+      "description": "Workspace metadata containing name and description",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the workspace",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the workspace",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": ["name", "description"],
+      "additionalProperties": false
+    },
+    "persons": {
+      "type": "array",
+      "description": "Array of persons (users/actors) in the system",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "description": "A person/user/actor that interacts with the system",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the person",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the person's role and responsibilities",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "relations": {
+            "type": "array",
+            "description": "Relationships this person has with systems or containers",
+            "items": {
+              "$ref": "#/definitions/relation"
+            }
+          }
+        },
+        "required": ["name", "description"],
+        "additionalProperties": false
+      }
+    },
+    "softwareSystems": {
+      "type": "array",
+      "description": "Array of software systems in the architecture",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "A software system that delivers value to users",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the software system",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of what the software system does",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "relations": {
+            "type": "array",
+            "description": "Relationships this system has with other systems",
+            "items": {
+              "$ref": "#/definitions/relation"
+            }
+          }
+        },
+        "required": ["name", "description"],
+        "additionalProperties": false
+      }
+    },
+    "containers": {
+      "type": "array",
+      "description": "Array of containers within the software systems",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "description": "A container that hosts applications or data",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the container",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of what the container does",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "technology": {
+            "type": "string",
+            "description": "The technology stack used by this container",
+            "minLength": 1,
+            "maxLength": 100,
+            "examples": ["Java/Spring Boot", "Node.js/Express", "Python/Django", "React", "Angular", "PostgreSQL", "MongoDB", "Java/OSGi", "Java/EMF"]
+          },
+          "relations": {
+            "type": "array",
+            "description": "Relationships this container has with other containers",
+            "items": {
+              "$ref": "#/definitions/relation"
+            }
+          },
+          "softwareSystemName": {
+            "type": "string",
+            "description": "The name of the software system this container belongs to",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+          }
+        },
+        "required": ["name", "description", "technology"],
+        "additionalProperties": false
+      }
+    },
+    "container": {
+      "type": "array",
+      "description": "Array of container component mappings for detailed component analysis",
+      "items": {
+        "type": "object",
+        "description": "Container component mapping object with dynamic container names as keys",
+        "patternProperties": {
+          "^[A-Za-z_$][A-Za-z0-9_$]*$": {
+            "type": "object",
+            "description": "Container component configuration. The property name should match a container identifier.",
+            "properties": {
+              "objectMapper": {
+                "type": "array",
+                "description": "Array of component definitions inside this container",
+                "minItems": 0,
+                "items": {
+                  "type": "object",
+                  "description": "A single component definition",
+                  "properties": {
+                    "componentName": {
+                      "type": "string",
+                      "description": "The name of this component (must be unique within its container)",
+                      "minLength": 1,
+                      "maxLength": 100,
+                      "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+                    },
+                    "tags": {
+                      "type": "string",
+                      "description": "Comma-separated list of tags or a single tag for categorization",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "examples": ["API", "Service", "Repository", "Controller", "Info,Request", "Implementation", "Infrastructure", "Endpoint", "Response", "Result"]
+                    },
+                    "technology": {
+                      "type": "string",
+                      "description": "Technology used by this component",
+                      "minLength": 1,
+                      "maxLength": 100,
+                      "examples": ["Java", "Spring", "EMF Model", "REST API", "JPA Repository", "Java Interface", "Java/OSGi", "Java/HTTP"]
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Human-readable description of this component",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "relations": {
+                      "type": "array",
+                      "description": "Outbound relationships from this component",
+                      "items": {
+                        "$ref": "#/definitions/relation"
+                      }
+                    }
+                  },
+                  "required": ["componentName", "tags", "technology", "description"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["objectMapper"],
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1
+      }
+    }
+  },
+  "required": ["workspace", "persons", "softwareSystems", "containers"],
+  "additionalProperties": false,
+  "definitions": {
+    "relation": {
+      "type": "object",
+      "description": "A relationship between two elements in the architecture",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "The name of the target element this relationship points to",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z][A-Za-z0-9 _-]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type/nature of the relationship",
+          "minLength": 1,
+          "maxLength": 100,
+          "examples": [
+            "uses",
+            "depends on",
+            "implements",
+            "extends",
+            "calls",
+            "sends data to",
+            "receives data from",
+            "manages",
+            "configures",
+            "monitors",
+            "creates",
+            "provides",
+            "contains",
+            "responds-to",
+            "Makes data requests through",
+            "Sends requests to",
+            "Implements",
+            "Uses",
+            "Supports"
+          ]
+        }
+      },
+      "required": ["target", "type"],
+      "additionalProperties": false
+    }
+  }
+}

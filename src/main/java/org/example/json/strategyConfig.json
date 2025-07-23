@@ -1,0 +1,112 @@
+{
+  "strategies": [
+    {
+      "name": "Spring MVC Controllers",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.web.bind.annotation.RestController"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "Controller Request Mappings",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.web.bind.annotation.RequestMapping"
+      },
+      "containerMapping": "webApplication",
+      "enabled": false
+    },
+    {
+      "name": "Service Beans",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.stereotype.Service"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "Repository Interfaces",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.stereotype.Repository"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "JPA Repositories",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.data.jpa.repository.JpaRepository"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "JPA Entities",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "jakarta.persistence.Entity"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "Web Configuration",
+      "type": "ANNOTATION",
+      "config": {
+        "annotationType": "org.springframework.context.annotation.Configuration"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "Security Configuration",
+      "type": "REGEX",
+      "config": {
+        "pattern": ".*SecurityConfig$"
+      },
+      "containerMapping": "securityLayer",
+      "enabled": true
+    },
+    {
+      "name": "Mappers",
+      "type": "REGEX",
+      "config": {
+        "pattern": ".*Mapper$"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "DTO Classes",
+      "type": "REGEX",
+      "config": {
+        "pattern": ".*DTO$"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    },
+    {
+      "name": "DAO Entities",
+      "type": "REGEX",
+      "config": {
+        "pattern": ".*DAO$"
+      },
+      "containerMapping": "webApplication",
+      "enabled": true
+    }
+  ],
+  "globalConfig": {
+    "excludeInnerClasses": true,
+    "excludeTestClasses": true,
+    "basePaths": {
+      "webApplication": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes",
+      "securityLayer": "/home/mohamad-khaled-minawe/Downloads/TestProjcet/Spring_Kfz_Project/target/classes"
+
+    }
+  }
+}
