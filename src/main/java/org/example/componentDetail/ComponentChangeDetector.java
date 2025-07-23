@@ -40,7 +40,7 @@ public class ComponentChangeDetector {
      * @throws IOException if snapshot saving fails
      */
     public static ComponentSerializationService.ComponentComparisonResult detectChanges(
-            Map<String, Container> containers) throws IOException {
+            Map<String, Container> containers) throws Exception {
         
         System.out.println("\n=== COMPONENT CHANGE DETECTION WORKFLOW ===");
         
@@ -48,6 +48,9 @@ public class ComponentChangeDetector {
         System.out.println("1. Loading previous component snapshot...");
         ComponentSerializationService.ComponentSnapshot oldSnapshot = 
                 ComponentSerializationService.loadLatestSnapshot();
+
+
+
         
         if (oldSnapshot == null) {
             System.out.println("   No previous snapshot found - this will be the initial baseline");
@@ -61,11 +64,15 @@ public class ComponentChangeDetector {
                 ComponentSerializationService.serializeComponents(containers);
         System.out.println("   ✓ New snapshot created with " + 
                          getTotalComponentCount(newSnapshot) + " components");
+
+        System.out.println( "compare hash: " + ComponentSerializationService.snapshotsAreEqual( oldSnapshot, newSnapshot));
         
         // Step 3: Compare snapshots
         System.out.println("3. Comparing snapshots for changes...");
         ComponentSerializationService.ComponentComparisonResult result = 
                 ComponentSerializationService.compareSnapshots(oldSnapshot, newSnapshot);
+
+
         
         // Step 4: Save new snapshot with history
         System.out.println("4. Saving new snapshot...");
@@ -87,7 +94,7 @@ public class ComponentChangeDetector {
      * @return true if new components were detected, false otherwise
      * @throws IOException if snapshot operations fail
      */
-    public static boolean hasNewComponents(Map<String, Container> containers) throws IOException {
+    public static boolean hasNewComponents(Map<String, Container> containers) throws Exception {
         ComponentSerializationService.ComponentComparisonResult result = detectChanges(containers);
         return !result.newComponents.isEmpty();
     }
@@ -99,7 +106,7 @@ public class ComponentChangeDetector {
      * @return true if any changes (new, modified, or removed components) were detected
      * @throws IOException if snapshot operations fail
      */
-    public static boolean hasAnyChanges(Map<String, Container> containers) throws IOException {
+    public static boolean hasAnyChanges(Map<String, Container> containers) throws Exception {
         ComponentSerializationService.ComponentComparisonResult result = detectChanges(containers);
         return result.hasChanges;
     }

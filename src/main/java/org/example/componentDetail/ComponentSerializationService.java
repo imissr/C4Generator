@@ -1,16 +1,27 @@
 package org.example.componentDetail;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.structurizr.model.Component;
 import com.structurizr.model.Container;
+import com.structurizr.model.Element;
 import com.structurizr.model.Relationship;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service responsible for serializing discovered components to JSON format
@@ -32,6 +43,7 @@ import java.util.*;
  * @version 1.0
  * @since 2025-07-11
  */
+@ToString
 public class ComponentSerializationService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -91,6 +103,7 @@ public class ComponentSerializationService {
             this.relationships = new ArrayList<>();
             this.metadata = new LinkedHashMap<>();
         }
+
     }
 
     /**
@@ -152,6 +165,7 @@ public class ComponentSerializationService {
             }
 
             snapshot.containers.put(containerName, containerSnapshot);
+
         }
 
         return snapshot;
@@ -202,7 +216,7 @@ public class ComponentSerializationService {
     /**
      * Saves a component snapshot to a JSON file.
      *
-     * @param snapshot The ComponentSnapshot to save
+     * @param snapshot   The ComponentSnapshot to save
      * @param outputPath The path where to save the snapshot file
      * @throws IOException if file writing fails
      */
@@ -272,6 +286,100 @@ public class ComponentSerializationService {
         return loadSnapshot(latestFile);
     }
 
+    public static boolean snapshotsAreEqual(ComponentSnapshot oldSnap,
+                                            ComponentSnapshot newSnap) throws Exception {
+        String oldHash = oldSnap == null
+                ? ""
+                : snapshotContentHash(oldSnap);
+        String newHash = snapshotContentHash(newSnap);
+
+        System.out.println("Old content hash: " + oldHash);
+        System.out.println("New content hash: " + newHash);
+
+        boolean same = oldHash.equals(newHash);
+        System.out.println("compare hash: " + same);
+
+        if (same) {
+            System.out.println("✅ No changes detected – skipping full diff.");
+            return true;
+        } else {
+            System.out.println("⚠️ Changes detected – running per‑component comparison.");
+            // fall back to compareS
+            //;
+            return false;
+        }
+    }
+
+    private static void sortRecursively(JsonNode node) {
+        // 1) If it’s a JSON object, dive into each of its field values
+        if (node.isObject()) {
+            node.fields().forEachRemaining(e -> sortRecursively(e.getValue()));
+        }
+        // 2) Otherwise, if it’s an array, we’ll sort its elements
+        else if (node.isArray()) {
+            ArrayNode array = (ArrayNode) node;
+            // 2a) Copy the array elements into a List<JsonNode>
+            List<JsonNode> elems = new ArrayList<>();
+            array.forEach(elems::add);
+
+            // 2b) Choose how to compare/sort those elements:
+            Comparator<JsonNode> cmp;
+            if (elems.stream().allMatch(JsonNode::isTextual)) {
+                // • If every element is a plain text node → sort by the text value
+                cmp = Comparator.comparing(JsonNode::asText);
+            } else if (elems.stream().allMatch(e -> e.has("target"))) {
+                // • Else if every element is an object with a "target" field
+                //   (your `relationships` arrays) → sort by that target string
+                cmp = Comparator.comparing(e -> e.get("target").asText());
+            } else {
+                // • Otherwise → fall back to sorting by the element’s full JSON string
+                cmp = Comparator.comparing(JsonNode::toString);
+            }
+
+            // 2c) Sort the list in place
+            elems.sort(cmp);
+
+            // 2d) Clear out the original ArrayNode and re‑add the now‑sorted elements
+            array.removeAll();
+            elems.forEach(array::add);
+
+            // 2e) Finally, recurse into each element we just re‑added,
+            //     so nested arrays/objects get their own sorting applied
+            elems.forEach(ComponentSerializationService::sortRecursively);
+        }
+        // 3) If it’s neither an object nor an array (e.g. a number, boolean, or text),
+        //    there’s nothing to sort or recurse into, so we do nothing.
+    }
+
+
+    public static String snapshotContentHash(ComponentSnapshot snap) throws Exception {
+
+         final ObjectMapper CANONICAL_MAPPER = JsonMapper.builder()
+                 .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS)
+                 .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+                 .build();
+        ObjectNode root = CANONICAL_MAPPER.valueToTree(snap);
+
+        // 2) Remove volatile fields
+        root.remove("timestamp");
+        root.remove("generatedBy");
+        root.remove("version");
+
+        // 3) Recursively sort everything
+        sortRecursively(root);
+
+        // 4) Serialize and hash
+        String canon = CANONICAL_MAPPER.writeValueAsString(root);
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] digest = md.digest(canon.getBytes(StandardCharsets.UTF_8));
+
+        // Hex‑encode
+        StringBuilder sb = new StringBuilder(digest.length * 2);
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
     /**
      * Compares two component snapshots to identify changes.
      *
