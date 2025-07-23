@@ -1,12 +1,19 @@
 package org.example.c4;
 
-import org.example.componentDetail.*;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.structurizr.model.*;
+import org.example.config.ContainerConfigDetail;
+import org.example.config.StrategyConfiguration;
+import org.example.model.C4ModelConfig;
+import org.example.model.ComponentDetail;
+import org.example.model.ContainerDetail;
+import org.example.model.SoftwareSystemDetail;
+import org.example.service.ComponentChangeDetector;
+import org.example.service.ComponentSerializationService;
+import org.example.service.ConfigurableComponentScanner;
 
 /**
  * CI/CD-focused entry point for component change detection and model generation.

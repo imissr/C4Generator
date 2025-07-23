@@ -1,10 +1,11 @@
-package org.example.componentDetail;
+package org.example.utils;
 
 import com.structurizr.component.matcher.AnnotationTypeMatcher;
 import com.structurizr.component.matcher.NameSuffixTypeMatcher;
 import com.structurizr.component.matcher.RegexTypeMatcher;
 import com.structurizr.component.matcher.TypeMatcher;
-import org.example.c4.NewComponentStrategy;
+import org.example.strategies.NewComponentStrategy;
+import org.example.config.StrategyConfig;
 
 /**
  * Factory class for creating TypeMatcher instances from strategy configurations.

@@ -1,11 +1,10 @@
-package org.example.c4;
+package org.example.strategies;
 
 import com.structurizr.util.StringUtils;
 import org.apache.bcel.classfile.AnnotationEntry;
 import org.apache.bcel.classfile.ArrayElementValue;
 import org.apache.bcel.classfile.ElementValue;
 import org.apache.bcel.classfile.ElementValuePair;
-import org.example.componentDetail.StrategyConfig;
 import org.osgi.service.component.annotations.Component;
 import com.structurizr.component.matcher.TypeMatcher;
 import com.structurizr.component.Type;

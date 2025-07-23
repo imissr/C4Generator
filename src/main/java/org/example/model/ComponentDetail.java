@@ -1,10 +1,9 @@
-package org.example.componentDetail;
+package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.management.relation.Relation;
 import java.util.List;
 
 /**

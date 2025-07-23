@@ -12,7 +12,13 @@ import com.structurizr.io.json.JsonWriter;
 import com.structurizr.model.*;
 import com.structurizr.model.Component;
 import com.structurizr.view.*;
-import org.example.componentDetail.*;
+import org.example.config.ContainerConfigDetail;
+import org.example.config.StrategyConfiguration;
+import org.example.model.*;
+import org.example.service.ComponentChangeDetector;
+import org.example.service.ComponentSerializationService;
+import org.example.service.ConfigurableComponentScanner;
+import org.example.utils.JsonSchemaValidator;
 
 /**
  * Configurable C4 Model Generator - Advanced architectural documentation system.

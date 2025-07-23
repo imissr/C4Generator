@@ -1,10 +1,12 @@
-package org.example.componentDetail;
+package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.ToString;
+import org.example.utils.JsonSchemaValidator;
+import org.example.config.ContainerConfigDetail;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.example.componentDetail;
+package org.example.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -9,9 +9,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.structurizr.model.Component;
 import com.structurizr.model.Container;
-import com.structurizr.model.Element;
 import com.structurizr.model.Relationship;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.io.File;
@@ -21,7 +19,6 @@ import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Service responsible for serializing discovered components to JSON format

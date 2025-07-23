@@ -1,7 +1,7 @@
 package org.example.test;
 
-import org.example.componentDetail.C4ModelConfig;
-import org.example.componentDetail.JsonSchemaValidator;
+import org.example.model.C4ModelConfig;
+import org.example.utils.JsonSchemaValidator;
 
 import java.io.File;
 import java.io.FileWriter;

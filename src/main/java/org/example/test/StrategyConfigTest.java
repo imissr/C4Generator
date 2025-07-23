@@ -1,9 +1,8 @@
 package org.example.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.componentDetail.StrategyConfiguration;
-import org.example.componentDetail.StrategyConfig;
-import org.example.componentDetail.StrategyFactory;
+import org.example.config.StrategyConfiguration;
+import org.example.config.StrategyConfig;
+import org.example.utils.StrategyFactory;
 
 import java.io.File;
 

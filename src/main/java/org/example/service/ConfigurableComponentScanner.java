@@ -1,4 +1,4 @@
-package org.example.componentDetail;
+package org.example.service;
 
 import com.structurizr.component.ComponentFinder;
 import com.structurizr.component.ComponentFinderBuilder;
@@ -7,6 +7,10 @@ import com.structurizr.component.matcher.TypeMatcher;
 import com.structurizr.model.Component;
 import com.structurizr.model.Container;
 import org.example.c4.C4ModelGenerator;
+import org.example.utils.StrategyFactory;
+import org.example.config.StrategyConfig;
+import org.example.config.StrategyConfiguration;
+import org.example.model.ComponentDetail;
 
 import java.io.File;
 import java.util.List;

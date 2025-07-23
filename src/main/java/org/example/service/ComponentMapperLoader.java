@@ -1,11 +1,11 @@
-package org.example.componentDetail;
+package org.example.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.model.ComponentDetail;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 /**

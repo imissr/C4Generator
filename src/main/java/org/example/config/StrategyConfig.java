@@ -1,4 +1,4 @@
-package org.example.componentDetail;
+package org.example.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -1,9 +1,11 @@
-package org.example.componentDetail;
+package org.example.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.service.ConfigurableComponentScanner;
+import org.example.utils.StrategyFactory;
 
 import java.io.File;
 import java.io.IOException;

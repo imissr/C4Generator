@@ -1,4 +1,4 @@
-package org.example.componentDetail;
+package org.example.service;
 
 import com.structurizr.model.Container;
 
