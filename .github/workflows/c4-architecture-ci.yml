@@ -11,10 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout C4 generator repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # full history for diffs
+          fetch-depth: 0
+
+      - name: Clone private target project
+        run: |
+          git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/YOUR_ORG/main-app-repo.git scanned-project
 
       - name: Set up JDK 22
         uses: actions/setup-java@v4
@@ -40,14 +44,19 @@ jobs:
             components-${{ github.repository }}-
             components-
 
-      - name: Compile project
+      - name: Compile the scanned project
+        working-directory: ./scanned-project
         run: mvn clean compile -q
+
+      - name: Patch config.json for all basePaths
+        run: |
+          jq '.globalConfig.basePaths |= with_entries(.value = "scanned-project/target/classes")' config.json > config.patched.json
 
       - name: Run component change detection
         id: change-detection
         run: |
           echo "🔍 Running component change detection..."
-          if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="change-detect" -q; then
+          if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="config.patched.json" -q; then
             echo "changes_detected=false"   >> $GITHUB_OUTPUT
             echo "should_generate=false"    >> $GITHUB_OUTPUT
           else
@@ -64,7 +73,7 @@ jobs:
       - name: Generate C4 documentation
         if: steps.change-detection.outputs.should_generate == 'true'
         run: |
-          mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -q
+          mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -Dexec.args="config.patched.json" -q
           echo "📊 Generated files:"
           ls -la *.json || echo "(none)"
           ls -la discovered-components/ || echo "(none)"
