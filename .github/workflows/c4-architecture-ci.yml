@@ -5,18 +5,18 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  # If you choose to implement the artifact‐based approach, you could also
-  # trigger on workflow_run here.
 
 jobs:
   component-change-detection:
     runs-on: ubuntu-latest
     steps:
+      # 1) Check out THIS repo (your C4 generator + snapshots branch)
       - name: Checkout C4 generator repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0            # needed for branching & force-push
 
+      # 2) Set up Java & build your generator
       - name: Set up JDK 22
         uses: actions/setup-java@v4
         with:
@@ -34,20 +34,25 @@ jobs:
       - name: Compile & package C4 generator
         run: mvn clean package -DskipTests
 
+      # 3) Clone the target project you’re scanning
       - name: Clone private target project
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
-      - name: Cache component snapshots
-        id: cache-components
-        uses: actions/cache@v4
-        with:
-          path: discovered-components/
-          # Use branch‐scoped key so the previous run's snapshot is restored
-          key: components-${{ github.repository }}-${{ github.ref_name }}
-          restore-keys: |
-            components-${{ github.repository }}-${{ github.ref_name }}-
+      # 4) Fetch & unpack the last snapshot from `snapshot` branch
+      - name: Fetch snapshot branch
+        run: |
+          # allow failure if branch doesn’t exist yet
+          git fetch origin snapshot:refs/remotes/origin/snapshot || true
 
+      - name: Restore previous snapshots (if any)
+        run: |
+          if git show-ref --quiet refs/remotes/origin/snapshot; then
+            mkdir -p discovered-components
+            git archive origin/snapshot discovered-components | tar -x -C .
+          fi
+
+      # 5) Compile the scanned project & prepare config
       - name: Compile scanned project
         working-directory: ./scanned-project
         run: mvn clean compile -DskipTests
@@ -58,6 +63,7 @@ jobs:
              src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
+      # 6) Run your change‐detection
       - name: Run component change detection
         id: change-detection
         run: |
@@ -79,6 +85,7 @@ jobs:
             fi
           fi
 
+      # 7) If changed, regenerate & upload artifacts
       - name: Generate C4 documentation
         if: steps.change-detection.outputs.should_generate == 'true'
         run: |
@@ -96,6 +103,25 @@ jobs:
             discovered-components/
           retention-days: 30
 
+      # 8) Commit updated snapshots back to `snapshot` branch
+      - name: Push updated snapshots
+        if: steps.change-detection.outputs.should_generate == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create a fresh orphan branch containing only the new snapshots
+          git checkout --orphan snapshot-update
+          git rm -rf .
+
+          # Copy in the newly discovered-components folder
+          cp -R discovered-components .
+
+          git add discovered-components
+          git commit -m "⬆️ Update C4 component snapshots @ ${{ github.sha }}"
+          git push --force origin HEAD:snapshot
+
+      # 9) Produce & upload the change-report (as before)
       - name: Generate component change report
         if: steps.change-detection.outputs.changes_detected == 'true'
         run: |
@@ -120,9 +146,6 @@ jobs:
           3. Refresh diagrams if needed  
           EOF
 
-          # (The sed replacements here are no‐ops since we're using HEREDOC interpolation, 
-          #  but you could adjust if you prefer separate file templating.)
-
       - name: Upload change report
         if: steps.change-detection.outputs.changes_detected == 'true'
         uses: actions/upload-artifact@v4
@@ -146,7 +169,7 @@ jobs:
 
     outputs:
       changes_detected: ${{ steps.change-detection.outputs.changes_detected }}
-      should_generate: ${{ steps.change-detection.outputs.should_generate }}
+      should_generate:  ${{ steps.change-detection.outputs.should_generate }}
 
   deploy-documentation:
     needs: component-change-detection
