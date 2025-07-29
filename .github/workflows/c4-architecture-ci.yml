@@ -60,7 +60,7 @@ jobs:
           echo "=== CHANGE DETECTION MODE ==="
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
-            -Dexec.args="change-detect src/main/java/org/example/json/strategyConfig.json"
+            -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
           echo "::set-output name=changes::$([[ $code -eq 1 ]] && echo true || echo false)"
 
