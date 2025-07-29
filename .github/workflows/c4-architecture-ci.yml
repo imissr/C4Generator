@@ -20,34 +20,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 1.1) Ensure snapshot branch exists (if not, create an empty one)
+      # 1.1) Ensure snapshot branch exists (emit snapshot_created=true if we just made it)
       - name: Ensure snapshot branch exists
+        id: ensure-snapshot
         run: |
-          # determine which branch we started on (main or master)
           DEFAULT_BRANCH=${GITHUB_REF#refs/heads/}
-          echo "Default branch is $DEFAULT_BRANCH"
-
-          # if origin/snapshot doesn't exist, make an empty orphan
           if ! git ls-remote --exit-code origin snapshot; then
-            echo "Snapshot branch not found → creating empty snapshot branch"
+            echo "Branch snapshot not found → creating empty snapshot"
             git checkout --orphan snapshot
             git rm -rf .
-
-            # configure commit‐author so git won’t complain
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-
             git commit --allow-empty -m "Initialize snapshot branch"
             git push origin snapshot
-
-            # return to our original branch so we still have all files
             git checkout "$DEFAULT_BRANCH"
+            echo "snapshot_created=true" >> $GITHUB_OUTPUT
           else
-            echo "Snapshot branch already exists"
+            echo "snapshot_created=false" >> $GITHUB_OUTPUT
           fi
 
-      # 2) ALSO checkout snapshot branch into 'prev-snapshot' and grab its latest snapshot
+      # 2) Fetch & copy previous snapshot only if *not* newly created
       - name: Fetch previous component snapshot
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
         uses: actions/checkout@v4
         with:
           ref: snapshot
@@ -55,13 +49,13 @@ jobs:
           path: prev-snapshot
 
       - name: Copy previous snapshot into working folder
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
         run: |
           mkdir -p discovered-components
           cp prev-snapshot/discovered-components/components-latest.json \
              discovered-components/components-latest.json
 
-      # ... the rest of your steps remain unchanged ...
-      # 3) Clone target project to scan
+      # 3) Clone target project (needed for both baseline & change-detect)
       - name: Clone target project
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
@@ -82,25 +76,36 @@ jobs:
       - name: Compile & package C4 generator
         run: mvn clean package -DskipTests
 
-      # 5) Compile scanned project & patch config
+      # 5) Compile scanned project (needed by baseline scan too)
       - name: Compile scanned project
         working-directory: scanned-project
         run: mvn clean compile -DskipTests
 
+      # 6) Patch config
       - name: Patch strategyConfig.json
         run: |
           jq '.globalConfig.basePaths |= with_entries(.value="scanned-project/target/classes")' \
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run change‑detection using the CI‑specific class
+      # 7a) BASELINE MODE (only if we just created snapshot)
+      - name: Run baseline snapshot
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'true'
+        run: |
+          echo "▶ Running baseline mode (no previous snapshot)..."
+          mvn exec:java \
+            -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
+            -Dexec.args="baseline src/main/java/org/example/json/c4ModelConfig.json"
+
+      # 7b) CHANGE-DETECTION MODE (only if snapshot already existed)
       - name: Detect changes in C4 components
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
         id: change-detection
         continue-on-error: true
         shell: bash
         run: |
           set +e
-          echo "Using previous snapshot at: discovered-components/components-latest.json"
+          echo "▶ Detecting changes against prev snapshot..."
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
@@ -108,16 +113,18 @@ jobs:
           echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Run C4 model generator
-        if: steps.change-detection.outputs.changes_detected == 'true'
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'false' && steps.change-detection.outputs.changes_detected == 'true'
         run: |
-          echo "Changes detected, generating new C4 model..."
+          echo "▶ Changes detected → generating new C4 model..."
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
 
-      # 7) Upload artifacts if changed
+      # 8) Upload artifacts if either path produced something
       - name: Upload C4 model artifacts
-        if: steps.change-detection.outputs.changes_detected == 'true'
+        if: >
+          steps.ensure-snapshot.outputs.snapshot_created == 'true' ||
+          (steps.ensure-snapshot.outputs.snapshot_created == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         uses: actions/upload-artifact@v4
         with:
           name: c4-architecture-model
@@ -126,9 +133,11 @@ jobs:
             discovered-components/
           retention-days: 30
 
-      # 8) Update the snapshot branch with the new components AND the avatar model
+      # 9) Update snapshot branch (common for both baseline & change-detect)
       - name: Checkout snapshot branch for update
-        if: steps.change-detection.outputs.changes_detected == 'true'
+        if: >
+          steps.ensure-snapshot.outputs.snapshot_created == 'true' ||
+          (steps.ensure-snapshot.outputs.snapshot_created == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         uses: actions/checkout@v4
         with:
           ref: snapshot
@@ -137,7 +146,9 @@ jobs:
           path: snapshot
 
       - name: Replace snapshot files
-        if: steps.change-detection.outputs.changes_detected == 'true'
+        if: >
+          steps.ensure-snapshot.outputs.snapshot_created == 'true' ||
+          (steps.ensure-snapshot.outputs.snapshot_created == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         run: |
           rm -rf snapshot/discovered-components
           rm -f snapshot/avatar-c4-model.json
@@ -145,7 +156,9 @@ jobs:
           cp avatar-c4-model.json   snapshot/avatar-c4-model.json
 
       - name: Commit & push snapshot
-        if: steps.change-detection.outputs.changes_detected == 'true'
+        if: >
+          steps.ensure-snapshot.outputs.snapshot_created == 'true' ||
+          (steps.ensure-snapshot.outputs.snapshot_created == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         run: |
           cd snapshot
           git config user.name  "github-actions[bot]"
