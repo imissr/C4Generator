@@ -81,7 +81,7 @@ jobs:
             -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
           
-          echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPU
+          echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       # 7) Upload artifacts if changed
       - name: Upload C4 model artifacts
