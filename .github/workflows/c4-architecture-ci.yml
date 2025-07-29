@@ -70,13 +70,18 @@ jobs:
       - name: Detect changes in C4 components
         id: change-detection
         continue-on-error: true
+        shell: bash
         run: |
+          # disable exit-on-error so we can capture the mvn exit code
+          set +e
+          
           echo "Using previous snapshot at: discovered-components/components-latest.json"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
-          echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+          
+          echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPU
 
       # 7) Upload artifacts if changed
       - name: Upload C4 model artifacts
