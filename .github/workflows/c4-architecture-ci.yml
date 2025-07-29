@@ -1,8 +1,7 @@
 name: C4 Architecture Documentation CI/CD
-# ← add this!
+
 permissions:
   contents: write
-
 
 on:
   push:
@@ -44,6 +43,13 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
+      # 4) Fetch the previous snapshot from the `snapshot` branch
+      - name: Fetch previous components-latest.json
+        run: |
+          git fetch origin snapshot
+          mkdir -p discovered-components
+          git show origin/snapshot:discovered-components/components-latest.json \
+            > discovered-components/components-latest.json
 
       # 5) Compile the scanned project & prepare config
       - name: Compile scanned project
@@ -126,7 +132,7 @@ jobs:
           else
             commit_msg="✨ Initial C4 component snapshots @ ${{ github.sha }}"
           fi
-
+          
           # Create orphan snapshot branch containing *only* discovered-components
           git checkout --orphan snapshot
           git add discovered-components
