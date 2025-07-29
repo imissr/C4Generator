@@ -1,32 +1,31 @@
 name: C4 Architecture Documentation CI/CD
 
-permissions:
-  contents: write
-
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  repository_dispatch:
+    types: [ c4-scan-request ]
+
+permissions:
+  contents: write
 
 jobs:
   component-change-detection:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout main/master
+      # 1) Checkout main/master (or the dispatch payload branch)
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 1.1) Ensure snapshot branch exists (if not, create an empty one)
+      # 1.1) Ensure snapshot branch exists
       - name: Ensure snapshot branch exists
         id: ensure-snapshot
         run: |
           DEFAULT_BRANCH=${GITHUB_REF#refs/heads/}
           if ! git ls-remote --exit-code origin snapshot; then
-            echo "Branch snapshot not found → creating empty snapshot"
             git checkout --orphan snapshot
             git rm -rf .
             git config user.name  "github-actions[bot]"
@@ -39,7 +38,7 @@ jobs:
             echo "snapshot_created=false" >> $GITHUB_OUTPUT
           fi
 
-      # 2) Fetch previous snapshot (only if branch already existed)
+      # 2) Fetch previous snapshot (if it existed)
       - name: Fetch previous snapshot
         if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
         uses: actions/checkout@v4
@@ -48,17 +47,14 @@ jobs:
           fetch-depth: 0
           path: prev-snapshot
 
-      # 3) Decide baseline vs change‑detect
+      # 3) Baseline vs change‑detect
       - name: Determine baseline vs change‑detect
         id: determine-mode
         run: |
-          # if snapshot was just created OR the prev-snapshot file is missing → baseline
           if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ] \
              || [ ! -f prev-snapshot/discovered-components/components-latest.json ]; then
-            echo "No valid prior snapshot → baseline mode"
             echo "baseline_mode=true" >> $GITHUB_OUTPUT
           else
-            echo "Found previous snapshot → change‑detect mode"
             echo "baseline_mode=false" >> $GITHUB_OUTPUT
             mkdir -p discovered-components
             cp prev-snapshot/discovered-components/components-latest.json \
@@ -66,7 +62,7 @@ jobs:
           fi
 
       # 4) Clone & build everything
-      - name: Clone target project
+      - name: Clone scanned project
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
@@ -95,7 +91,7 @@ jobs:
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 5a) BASELINE MODE
+      # 5a) BASELINE
       - name: Run baseline snapshot
         if: steps.determine-mode.outputs.baseline_mode == 'true'
         run: |
@@ -103,7 +99,7 @@ jobs:
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="baseline src/main/java/org/example/json/c4ModelConfig.json"
 
-      # 5b) CHANGE‑DETECT MODE
+      # 5b) CHANGE‑DETECT
       - name: Detect changes in C4 components
         if: steps.determine-mode.outputs.baseline_mode == 'false'
         id: change-detection
@@ -141,8 +137,8 @@ jobs:
             discovered-components/
           retention-days: 30
 
-      # 7) Update snapshot branch with new data
-      - name: Checkout snapshot branch for update
+      # 7) Update snapshot branch
+      - name: Checkout snapshot branch
         if: steps.determine-mode.outputs.baseline_mode == 'true' || (steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         uses: actions/checkout@v4
         with:
@@ -166,9 +162,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add discovered-components avatar-c4-model.json
-          if git diff --cached --quiet; then
-            echo "No changes to snapshot"
-          else
+          if ! git diff --cached --quiet; then
             git commit -m "⬆️ Update C4 component snapshots & avatar model @ ${{ github.sha }}"
             git push origin HEAD:snapshot --force
           fi
