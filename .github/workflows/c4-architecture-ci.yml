@@ -75,7 +75,7 @@ jobs:
           echo "Calling C4ModelGeneratorCI with generate-if-changed mode"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
-            -Dexec.args="generate-if-changed strategyConfig.patched.json"
+            -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
           
           echo "=== FINAL RESULT ==="
