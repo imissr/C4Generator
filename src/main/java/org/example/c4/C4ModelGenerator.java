@@ -268,7 +268,7 @@ public class C4ModelGenerator {
         for (Map.Entry<String, SoftwareSystem> entry : softwareSystems.entrySet()) {
             String systemName = entry.getKey();
             SoftwareSystem system = entry.getValue();
-            if(system.getContainers().size() == 0) {
+            if (system.getContainers().size() == 0) {
                 System.out.println("⚠ Skipping system context view for " + systemName +
                         " (no containers found)");
                 continue;
@@ -290,7 +290,7 @@ public class C4ModelGenerator {
             String systemName = entry.getKey();
             SoftwareSystem system = entry.getValue();
 
-            if(system.getContainers().size() == 0) {
+            if (system.getContainers().size() == 0) {
                 System.out.println("⚠ Skipping Container context view for " + systemName +
                         " (no containers found)");
                 continue;
@@ -357,7 +357,7 @@ public class C4ModelGenerator {
         }
 
         // NEW: Component change detection and serialization
-       System.out.println("\n=== COMPONENT CHANGE DETECTION ===");
+    /*   System.out.println("\n=== COMPONENT CHANGE DETECTION ===");
         try {
             // Validate containers have components
             if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
@@ -400,6 +400,7 @@ public class C4ModelGenerator {
         System.out.println("Container Views: " + containerViewCount);
         System.out.println("Component Views: " + componentViewCount);
         System.out.println("=== Avatar C4 Model Generation Completed Successfully ===");
+    }*/
     }
 
 
