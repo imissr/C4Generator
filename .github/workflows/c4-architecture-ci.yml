@@ -14,20 +14,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout this repo (incl. snapshot branch)
+      # 1) Checkout this repo (incl. main/master code)
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2) Fetch previous snapshot.json (if any)
+      # 2) Checkout snapshot branch into a temp folder and grab the last snapshot file
       - name: Fetch previous snapshot
+        uses: actions/checkout@v4
+        with:
+          ref: snapshot
+          fetch-depth: 0
+          path: prev-snapshot
+
+      - name: Copy previous snapshot into working folder
         run: |
-          git fetch origin snapshot
           mkdir -p discovered-components
-          git show origin/snapshot:discovered-components/components-latest.json \
-            > discovered-components/components-latest.json \
-            || echo "No previous snapshot found"
+          cp prev-snapshot/discovered-components/components-latest.json \
+             discovered-components/components-latest.json
 
       # 3) Clone target project
       - name: Clone target project
@@ -70,14 +75,11 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Config file exists: $(ls -la strategyConfig.patched.json)"
           echo "=== USING CI-SPECIFIC CLASS ==="
-          
-          # Use the CI-specific class that has change detection logic
           echo "Calling C4ModelGeneratorCI with generate-if-changed mode"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
-          
           echo "=== FINAL RESULT ==="
           echo "Final exit code: $code"
           # 1 = changes detected & docs regenerated
