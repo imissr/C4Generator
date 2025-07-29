@@ -20,6 +20,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      # 1.1) Ensure snapshot branch exists (if not, create an empty one)
+      - name: Ensure snapshot branch exists
+        run: |
+          # check remotely for 'snapshot'
+          if ! git ls-remote --exit-code origin snapshot; then
+            echo "Snapshot branch not found → creating empty snapshot branch"
+            # create orphan snapshot locally
+            git checkout --orphan snapshot
+            git rm -rf .
+            # make an initial empty commit
+            git commit --allow-empty -m "Initialize snapshot branch"
+            # push it upstream
+            git push origin snapshot
+            # switch back to main
+            git checkout -
+          else
+            echo "Snapshot branch already exists"
+          fi
+
       # 2) ALSO checkout snapshot branch into 'prev-snapshot' and grab its latest snapshot
       - name: Fetch previous component snapshot
         uses: actions/checkout@v4
@@ -34,6 +53,7 @@ jobs:
           cp prev-snapshot/discovered-components/components-latest.json \
              discovered-components/components-latest.json
 
+      # ... the rest of your steps remain unchanged ...
       # 3) Clone target project to scan
       - name: Clone target project
         run: |
@@ -72,9 +92,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          # disable exit-on-error so we can capture the mvn exit code
           set +e
-          
           echo "Using previous snapshot at: discovered-components/components-latest.json"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
@@ -89,7 +107,6 @@ jobs:
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
-          
 
       # 7) Upload artifacts if changed
       - name: Upload C4 model artifacts
@@ -115,11 +132,8 @@ jobs:
       - name: Replace snapshot files
         if: steps.change-detection.outputs.changes_detected == 'true'
         run: |
-          # Remove old artifacts
           rm -rf snapshot/discovered-components
           rm -f snapshot/avatar-c4-model.json
-
-          # Copy in the new snapshot and avatar model
           cp -R discovered-components snapshot/discovered-components
           cp avatar-c4-model.json   snapshot/avatar-c4-model.json
 
@@ -129,10 +143,7 @@ jobs:
           cd snapshot
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Stage both the component snapshot and the avatar model
           git add discovered-components avatar-c4-model.json
-
           if git diff --cached --quiet; then
             echo "No changes to snapshot"
           else
