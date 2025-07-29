@@ -35,7 +35,7 @@ jobs:
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
       # 4) Build your C4 generator
-      - name: Set up JDK 22
+      - name: Set up JDK 22
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -61,16 +61,19 @@ jobs:
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run detect+generate (exit 1 when changed, 0 when no‐change)
+      # 6) Run detect+generate (exit 1 when changed, 0 when no‐change)
       - name: Detect & generate C4 docs
         id: change-detection
         continue-on-error: true
         run: |
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-            -Dexec.args="generate-if-changed strategyConfig.patched.json" -q
+            -Dexec.args="generate-if-changed $(pwd)/strategyConfig.patched.json" -q
           code=$?
+          echo "Exit code: $code"
           # 1 = changes detected & docs regenerated
+          # 0 = no changes detected
+          # 2 = error occurred
           echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       # 7) Upload artifacts if there were changes
