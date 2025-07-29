@@ -51,16 +51,16 @@ jobs:
       - name: Check compiled class folders
         run: find scanned-project -type d -path "*/target/classes"
 
-      - name: Patch c4ModelConfig.json for all basePaths
+
+      - name: Patch config.json for all basePaths
         run: |
-          jq '.globalConfig.basePaths |= with_entries(.value = "scanned-project/target/classes")' \
-            src/main/java/org/example/json/c4ModelConfig.json > c4ModelConfig.patched.json
+          jq '.globalConfig.basePaths |= with_entries(.value = "scanned-project/target/classes")' src/main/java/org/example/json/strategyConfig.json > strategyConfig.patched.json
 
       - name: Run component change detection
         id: change-detection
         run: |
           echo "🔍 Running component change detection..."
-          if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="change-detect c4ModelConfig.patched.json"; then
+          if mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" -Dexec.args="change-detect c4ModelConfig.patched.json" -X; then
             echo "changes_detected=false"   >> $GITHUB_OUTPUT
             echo "should_generate=false"   >> $GITHUB_OUTPUT
           else
@@ -77,7 +77,7 @@ jobs:
       - name: Generate C4 documentation
         if: steps.change-detection.outputs.should_generate == 'true'
         run: |
-          mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -Dexec.args="generate-if-changed c4ModelConfig.patched.json"
+          mvn exec:java -Dexec.mainClass="org.example.c4.C4ModelGenerator" -Dexec.args="generate-if-changed c4ModelConfig.patched.json" -X 
           echo "📊 Generated files:"
           ls -la *.json || echo "(none)"
           ls -la discovered-components/ || echo "(none)"
