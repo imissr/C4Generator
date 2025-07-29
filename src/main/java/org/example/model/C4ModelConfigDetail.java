@@ -141,9 +141,14 @@ public class C4ModelConfigDetail {
      */
     public static void validateConfigurationFile(File jsonFile) throws IOException {
         JsonSchemaValidator validator = new JsonSchemaValidator();
-        
+        File schemaFile;
         // Try to find schema file in the same directory
-        File schemaFile = new File(jsonFile.getParent(), "c4ModelConfigSchema.json");
+        if( !jsonFile.exists() || !jsonFile.isFile()) {
+           schemaFile = new File("src/main/java/org/example/json/c4ModelConfigSchema.json");
+        }else{
+            schemaFile = new File(jsonFile.getParent(), "c4ModelConfigSchema.json");
+        }
+
         
         JsonSchemaValidator.ValidationResult result;
         if (schemaFile.exists()) {
