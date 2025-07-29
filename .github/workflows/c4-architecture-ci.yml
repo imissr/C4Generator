@@ -61,7 +61,7 @@ jobs:
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run detect+generate (exit 1 when changed, 0 when no‐change)
+      # 6) Run detect+generate using CI-specific class (exit 1 when changed, 0 when no‐change)
       - name: Detect & generate C4 docs
         id: change-detection
         continue-on-error: true
@@ -69,28 +69,14 @@ jobs:
           echo "=== DEBUGGING ARGUMENTS ==="
           echo "Current directory: $(pwd)"
           echo "Config file exists: $(ls -la strategyConfig.patched.json)"
-          echo "=== TRYING DIFFERENT ARGUMENT FORMATS ==="
+          echo "=== USING CI-SPECIFIC CLASS ==="
           
-          # Try format 1: space-separated arguments
-          echo "Trying: generate-if-changed strategyConfig.patched.json"
+          # Use the CI-specific class that has change detection logic
+          echo "Calling C4ModelGeneratorCI with generate-if-changed mode"
           mvn exec:java \
-            -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
+            -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed strategyConfig.patched.json"
-          code1=$?
-          echo "Exit code (format 1): $code1"
-          
-          # If that didn't work, try format 2: single argument with colon
-          if [[ $code1 -ne 1 ]]; then
-            echo "Trying: generate-if-changed:strategyConfig.patched.json"
-            mvn exec:java \
-              -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-              -Dexec.args="generate-if-changed:strategyConfig.patched.json"
-            code2=$?
-            echo "Exit code (format 2): $code2"
-            code=$code2
-          else
-            code=$code1
-          fi
+          code=$?
           
           echo "=== FINAL RESULT ==="
           echo "Final exit code: $code"
