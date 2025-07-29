@@ -110,25 +110,25 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Prepare commit message and branch
+          # Check if snapshot branch exists on remote
           if git ls-remote --exit-code origin snapshot; then
-            echo "🔄 Snapshot branch exists – updating"
+            echo "🔄 Snapshot branch exists – creating update commit"
             commit_msg="⬆️ Update C4 component snapshots @ ${{ github.sha }}"
-            git fetch origin snapshot:snapshot
-            git checkout snapshot
-            git rm -rf .
           else
             echo "🌱 No snapshot branch found – creating initial snapshot"
             commit_msg="✨ Initial C4 component snapshots @ ${{ github.sha }}"
-            git checkout --orphan snapshot
-            git rm -rf .
           fi
 
-          # Copy and commit the new snapshots
+          # Create an orphan branch for storing snapshots
+          git checkout --orphan snapshot-update
+          git rm -rf .
+
+          # Copy in the new snapshots
           cp -R discovered-components .
+
           git add discovered-components
           git commit -m "$commit_msg"
-          git push --force origin snapshot
+          git push --force origin snapshot-update:snapshot
 
       # 9) Produce & upload the change-report (as before)
       - name: Generate component change report
