@@ -63,7 +63,7 @@ jobs:
              src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run your change‐detection
+      # 6) Run your change‑detection
       - name: Run component change detection
         id: change-detection
         run: |
@@ -103,23 +103,32 @@ jobs:
             discovered-components/
           retention-days: 30
 
-      # 8) Commit updated snapshots back to `snapshot` branch
+      # 8) Commit updated snapshots back to `snapshot` branch (initial or update)
       - name: Push updated snapshots
         if: steps.change-detection.outputs.should_generate == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Create a fresh orphan branch containing only the new snapshots
+          # Check if snapshot branch exists on remote
+          if git ls-remote --exit-code origin snapshot; then
+            echo "🔄 Snapshot branch exists – creating update commit"
+            commit_msg="⬆️ Update C4 component snapshots @ ${{ github.sha }}"
+          else
+            echo "🌱 No snapshot branch found – creating initial snapshot"
+            commit_msg="✨ Initial C4 component snapshots @ ${{ github.sha }}"
+          fi
+
+          # Create an orphan branch for storing snapshots
           git checkout --orphan snapshot-update
           git rm -rf .
 
-          # Copy in the newly discovered-components folder
+          # Copy in the new snapshots
           cp -R discovered-components .
 
           git add discovered-components
-          git commit -m "⬆️ Update C4 component snapshots @ ${{ github.sha }}"
-          git push --force master HEAD:snapshot
+          git commit -m "$commit_msg"
+          git push --force origin snapshot-update:snapshot
 
       # 9) Produce & upload the change-report (as before)
       - name: Generate component change report
