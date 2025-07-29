@@ -18,7 +18,7 @@ jobs:
 
       - name: Clone private target project
         run: |
-          git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/YOUR_ORG/main-app-repo.git scanned-project
+          git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project scanned-project
 
       - name: Set up JDK 22
         uses: actions/setup-java@v4
