@@ -50,16 +50,11 @@ jobs:
         working-directory: ./scanned-project
         run: mvn clean compile -DskipTests
 
-      - name: Copy C4 model schema into workspace
-        run: cp src/main/java/org/example/json/c4ModelConfigSchema.json .
-
-      - name: Patch & clean C4 model config
+      - name: Patch config.json for all basePaths
         run: |
-          jq 'del(.strategies)
-             | .globalConfig.basePaths
-                 |= with_entries(.value = "scanned-project/target/classes")' \
-             src/main/java/org/example/json/c4ModelConfig.json \
-            > c4ModelConfig.patched.json
+          jq '.globalConfig.basePaths |= with_entries(.value = "scanned-project/target/classes")' \
+             src/main/java/org/example/json/strategyConfig.json \
+            > strategyConfig.patched.json
 
       - name: Run component change detection
         id: change-detection
@@ -67,7 +62,7 @@ jobs:
           set -o pipefail
           if mvn exec:java \
                -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
-               -Dexec.args="change-detect c4ModelConfig.patched.json" \
+               -Dexec.args="change-detect strategyConfig.patched.json" \
                -q; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
             echo "should_generate=false" >> $GITHUB_OUTPUT
@@ -87,7 +82,7 @@ jobs:
         run: |
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-            -Dexec.args="generate-if-changed c4ModelConfig.patched.json"
+            -Dexec.args="generate-if-changed strategyConfig.patched.json"
 
       - name: Upload C4 model artifacts
         if: steps.change-detection.outputs.should_generate == 'true'
@@ -140,7 +135,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const body = require('fs').readFileSync('component-change-report.md', 'utf8')
+            const body = require('fs').readFileSync('component-change-report.md', 'utf8');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -150,7 +145,7 @@ jobs:
 
     outputs:
       changes_detected: ${{ steps.change-detection.outputs.changes_detected }}
-      should_generate:   ${{ steps.change-detection.outputs.should_generate }}
+      should_generate: ${{ steps.change-detection.outputs.should_generate }}
 
   deploy-documentation:
     needs: component-change-detection
@@ -165,7 +160,7 @@ jobs:
       - name: Deploy to documentation site
         run: |
           echo "🚀 Deploying updated architecture documentation..."
-          # TODO: upload to S3, rebuild site, trigger diagram service, notify stakeholders
+          # TODO: upload to S3 / rebuild site / trigger diagram service / notify stakeholders
 
       - name: Create deployment summary
         run: |
