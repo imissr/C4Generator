@@ -23,18 +23,25 @@ jobs:
       # 1.1) Ensure snapshot branch exists (if not, create an empty one)
       - name: Ensure snapshot branch exists
         run: |
-          # check remotely for 'snapshot'
+          # determine which branch we started on (main or master)
+          DEFAULT_BRANCH=${GITHUB_REF#refs/heads/}
+          echo "Default branch is $DEFAULT_BRANCH"
+
+          # if origin/snapshot doesn't exist, make an empty orphan
           if ! git ls-remote --exit-code origin snapshot; then
             echo "Snapshot branch not found → creating empty snapshot branch"
-            # create orphan snapshot locally
             git checkout --orphan snapshot
             git rm -rf .
-            # make an initial empty commit
+
+            # configure commit‐author so git won’t complain
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
             git commit --allow-empty -m "Initialize snapshot branch"
-            # push it upstream
             git push origin snapshot
-            # switch back to main
-            git checkout -
+
+            # return to our original branch so we still have all files
+            git checkout "$DEFAULT_BRANCH"
           else
             echo "Snapshot branch already exists"
           fi
