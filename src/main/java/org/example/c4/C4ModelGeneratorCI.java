@@ -114,24 +114,25 @@ public class C4ModelGeneratorCI {
         System.out.println("\n=== GENERATE IF CHANGED MODE ===");
 
         // First check for changes
-        Map<String, Container> containers = performQuickComponentScan(configPath);
+      /*  Map<String, Container> containers = performQuickComponentScan(configPath);
 
         if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
             ComponentSerializationService.ComponentComparisonResult result =
-                    ComponentChangeDetector.detectChanges(containers);
+                    ComponentChangeDetector.detectChanges(containers);*/
 
-            if (result.hasChanges) {
-                System.out.println("Changes detected - proceeding with full model generation");
-                // Run full generation
-                C4ModelGenerator.main(new String[]{});
-            } else {
-                System.out.println("No changes detected - skipping full model generation");
-            }
-        } else {
+        //  if (result.hasChanges) {
+        System.out.println("Changes detected - proceeding with full model generation");
+        // Run full generation
+        C4ModelGenerator.main(new String[]{});
+        // } else {
+        System.out.println("No changes detected - skipping full model generation");
+    }
+        /*} else {
             System.err.println("Component validation failed - running full generation as fallback");
             C4ModelGenerator.main(new String[]{});
-        }
-    }
+        }*/
+
+
 
     /**
      * Serialize only mode - just serialize components without full model generation.
