@@ -12,9 +12,10 @@ on:
 jobs:
   component-change-detection:
     runs-on: ubuntu-latest
+
     steps:
-      # 1) Checkout your main/master branch
-      - name: Checkout main branch
+      # 1) Checkout your code (and fetch all branches)
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -25,16 +26,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '22'
-
       - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-m2
-
-      - name: Compile & package C4 generator
+      - name: Build C4 generator
         run: mvn clean package -DskipTests
 
       # 3) Clone the project you want to scan
@@ -42,7 +39,7 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
-      # 4) Fetch last snapshot (if any)
+      # 4) Pull in last snapshot (if any)
       - name: Fetch previous snapshot
         run: |
           git fetch origin snapshot
@@ -51,57 +48,45 @@ jobs:
                > discovered-components/components-latest.json; then
             echo "✅ Loaded previous snapshot"
           else
-            echo "::notice::No previous snapshot – initial baseline"
+            echo "::notice::No previous snapshot – treating as initial baseline"
           fi
 
-      # 5) Compile the scanned project & patch config
+      # 5) Compile scanned project & patch config
       - name: Compile scanned project
         working-directory: scanned-project
         run: mvn clean compile -DskipTests
-
-      - name: Patch config.json for basePaths
+      - name: Patch strategyConfig.json
         run: |
-          jq '.globalConfig.basePaths |= with_entries(.value = "scanned-project/target/classes")' \
-             src/main/java/org/example/json/strategyConfig.json \
+          jq '.globalConfig.basePaths |= with_entries(.value="scanned-project/target/classes")' \
+            src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run change‑detection
-      - name: Run component change detection
+      # 6) Detect changes (will exit 1 if changes, 0 if none)
+      - name: Detect component‑model changes
         id: detect
         run: |
-          set -o pipefail
-          has_prev=false
-          [ -f discovered-components/components-latest.json ] && has_prev=true
-
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-            -Dexec.args="generate-if-changed strategyConfig.patched.json" \
-            -q
-          exit_code=$?
-
-          if [ "$has_prev" = false ]; then
+            -Dexec.args="detect-changes strategyConfig.patched.json" -q
+          code=$?
+          if [ $code -eq 1 ]; then
             echo "changes_detected=true"  >> $GITHUB_OUTPUT
             echo "should_generate=true"   >> $GITHUB_OUTPUT
+          elif [ $code -eq 0 ]; then
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "should_generate=false"  >> $GITHUB_OUTPUT
           else
-            if   [ $exit_code -eq 0 ]; then
-              echo "changes_detected=false" >> $GITHUB_OUTPUT
-              echo "should_generate=false"  >> $GITHUB_OUTPUT
-            elif [ $exit_code -eq 1 ]; then
-              echo "changes_detected=true"  >> $GITHUB_OUTPUT
-              echo "should_generate=true"   >> $GITHUB_OUTPUT
-            else
-              echo "::error::Change detection failed (exit code: $exit_code)"
-              exit $exit_code
-            fi
+            echo "::error::Change detection failed (exit code: $code)"
+            exit $code
           fi
 
-      # 7) Regenerate & upload artifacts if changes detected
+      # 7) Generate & upload only if changes
       - name: Generate C4 documentation
         if: steps.detect.outputs.should_generate == 'true'
         run: |
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-            -Dexec.args="generate-if-changed strategyConfig.patched.json"
+            -Dexec.args="generate strategyConfig.patched.json" -q
 
       - name: Upload C4 model artifacts
         if: steps.detect.outputs.should_generate == 'true'
@@ -113,31 +98,25 @@ jobs:
             discovered-components/
           retention-days: 30
 
-      # 8) Checkout snapshot branch into its own folder
+      # 8) Push updated discovered-components back to snapshot
       - name: Checkout snapshot branch
         if: steps.detect.outputs.changes_detected == 'true'
         uses: actions/checkout@v4
         with:
           ref: snapshot
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
           path: snapshot
-
-      # 9) Overwrite snapshot’s discovered-components
-      - name: Update snapshot files
+      - name: Overwrite snapshot files
         if: steps.detect.outputs.changes_detected == 'true'
         run: |
           rm -rf snapshot/discovered-components
           cp -R discovered-components snapshot/discovered-components
-
-      # 10) Commit & push back to snapshot
       - name: Commit & push snapshot
         if: steps.detect.outputs.changes_detected == 'true'
         working-directory: snapshot
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git add discovered-components
           if git diff --cached --quiet; then
             echo "No snapshot changes to commit"
