@@ -90,8 +90,6 @@ jobs:
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
           
-      
-
 
       # 7) Upload artifacts if changed
       - name: Upload C4 model artifacts
