@@ -5,6 +5,8 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  # If you choose to implement the artifact‐based approach, you could also
+  # trigger on workflow_run here.
 
 jobs:
   component-change-detection:
@@ -41,10 +43,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: discovered-components/
-          key: components-${{ github.repository }}-${{ github.ref_name }}-${{ github.sha }}
+          # Use branch‐scoped key so the previous run's snapshot is restored
+          key: components-${{ github.repository }}-${{ github.ref_name }}
           restore-keys: |
-            components-${{ github.repository }}-
-            components-
+            components-${{ github.repository }}-${{ github.ref_name }}-
 
       - name: Compile scanned project
         working-directory: ./scanned-project
@@ -62,7 +64,7 @@ jobs:
           set -o pipefail
           if mvn exec:java \
                -Dexec.mainClass="org.example.c4.C4ModelGenerator" \
-               -Dexec.args="generate-if-changed strategyConfig.patched.json"
+               -Dexec.args="generate-if-changed strategyConfig.patched.json" \
                -q; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
             echo "should_generate=false" >> $GITHUB_OUTPUT
@@ -118,9 +120,8 @@ jobs:
           3. Refresh diagrams if needed  
           EOF
 
-          sed -i "s/\${{ github.repository }}/${{ github.repository }}/" component-change-report.md
-          sed -i "s/\${{ github.ref_name }}/${{ github.ref_name }}/" component-change-report.md
-          sed -i "s/\${{ github.sha }}/${{ github.sha }}/" component-change-report.md
+          # (The sed replacements here are no‐ops since we're using HEREDOC interpolation, 
+          #  but you could adjust if you prefer separate file templating.)
 
       - name: Upload change report
         if: steps.change-detection.outputs.changes_detected == 'true'
