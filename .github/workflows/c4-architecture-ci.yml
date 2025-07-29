@@ -67,14 +67,14 @@ jobs:
             > strategyConfig.patched.json
 
       # 6) Run change‑detection using the CI‑specific class
-      - name: Detect & generate C4 docs
+      - name: Detect changes in C4 components
         id: change-detection
         continue-on-error: true
         run: |
           echo "Using previous snapshot at: discovered-components/components-latest.json"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
-            -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
+            -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
           echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
