@@ -52,11 +52,13 @@ jobs:
       - name: Determine baseline vs change‑detect
         id: determine-mode
         run: |
-          if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ]; then
-            echo "Snapshot branch was just created → baseline mode"
+          # if snapshot was just created OR the prev-snapshot file is missing → baseline
+          if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ] \
+             || [ ! -f prev-snapshot/discovered-components/components-latest.json ]; then
+            echo "No valid prior snapshot → baseline mode"
             echo "baseline_mode=true" >> $GITHUB_OUTPUT
           else
-            echo "Using existing snapshot → change‑detect mode"
+            echo "Found previous snapshot → change‑detect mode"
             echo "baseline_mode=false" >> $GITHUB_OUTPUT
             mkdir -p discovered-components
             cp prev-snapshot/discovered-components/components-latest.json \
