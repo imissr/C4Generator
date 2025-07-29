@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout this repo (incl. main/master code)
-      - name: Checkout repo
+      # 1) Checkout main/master
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2) Checkout snapshot branch into a temp folder and grab the last snapshot file
-      - name: Fetch previous snapshot
+      # 2) ALSO checkout snapshot branch into 'prev-snapshot' and grab its latest snapshot
+      - name: Fetch previous component snapshot
         uses: actions/checkout@v4
         with:
           ref: snapshot
@@ -34,12 +34,12 @@ jobs:
           cp prev-snapshot/discovered-components/components-latest.json \
              discovered-components/components-latest.json
 
-      # 3) Clone target project
+      # 3) Clone target project to scan
       - name: Clone target project
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
-      # 4) Build your C4 generator
+      # 4) Build C4 generator
       - name: Set up JDK 22
         uses: actions/setup-java@v4
         with:
@@ -66,28 +66,19 @@ jobs:
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 6) Run detect+generate using CI-specific class (exit 1 when changed, 0 when no‐change)
+      # 6) Run change‑detection using the CI‑specific class
       - name: Detect & generate C4 docs
         id: change-detection
         continue-on-error: true
         run: |
-          echo "=== DEBUGGING ARGUMENTS ==="
-          echo "Current directory: $(pwd)"
-          echo "Config file exists: $(ls -la strategyConfig.patched.json)"
-          echo "=== USING CI-SPECIFIC CLASS ==="
-          echo "Calling C4ModelGeneratorCI with generate-if-changed mode"
+          echo "Using previous snapshot at: discovered-components/components-latest.json"
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
           code=$?
-          echo "=== FINAL RESULT ==="
-          echo "Final exit code: $code"
-          # 1 = changes detected & docs regenerated
-          # 0 = no changes detected  
-          # 2 = error occurred
           echo "changes_detected=$([[ $code -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
-      # 7) Upload artifacts if there were changes
+      # 7) Upload artifacts if changed
       - name: Upload C4 model artifacts
         if: steps.change-detection.outputs.changes_detected == 'true'
         uses: actions/upload-artifact@v4
@@ -98,8 +89,8 @@ jobs:
             discovered-components/
           retention-days: 30
 
-      # 8) Checkout the snapshot branch into a separate folder
-      - name: Checkout snapshot branch
+      # 8) Update the snapshot branch with the new components-latest.json
+      - name: Checkout snapshot branch for update
         if: steps.change-detection.outputs.changes_detected == 'true'
         uses: actions/checkout@v4
         with:
@@ -108,14 +99,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: snapshot
 
-      # 9) Overwrite its discovered-components with the newly generated ones
-      - name: Update snapshot files
+      - name: Replace snapshot files
         if: steps.change-detection.outputs.changes_detected == 'true'
         run: |
           rm -rf snapshot/discovered-components
           cp -R discovered-components snapshot/discovered-components
 
-      # 10) Commit & force-push back to snapshot only if there really are diffs
       - name: Commit & push snapshot
         if: steps.change-detection.outputs.changes_detected == 'true'
         run: |
@@ -124,7 +113,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add discovered-components
           if git diff --cached --quiet; then
-            echo "No snapshot changes to commit"
+            echo "No changes to snapshot"
           else
             git commit -m "⬆️ Update C4 component snapshots @ ${{ github.sha }}"
             git push origin HEAD:snapshot --force
