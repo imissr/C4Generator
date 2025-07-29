@@ -117,7 +117,7 @@ jobs:
           echo "changes_detected=$([[ $? -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Run C4 model generator
-        if: steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true'
+        if:  steps.change-detection.outputs.changes_detected == 'true'
         run: |
           mvn exec:java \
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
