@@ -44,17 +44,6 @@ jobs:
         run: |
           git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
 
-      # 4) Fetch & unpack the last snapshot from `snapshot` branch
-      - name: Fetch snapshot branch
-        run: |
-          git fetch origin snapshot:refs/remotes/origin/snapshot || true
-
-      - name: Restore previous snapshots (if any)
-        run: |
-          if git show-ref --quiet refs/remotes/origin/snapshot; then
-            mkdir -p discovered-components
-            git archive origin/snapshot discovered-components | tar -x -C .
-          fi
 
       # 5) Compile the scanned project & prepare config
       - name: Compile scanned project
