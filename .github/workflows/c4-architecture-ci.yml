@@ -1,4 +1,8 @@
 name: C4 Architecture Documentation CI/CD
+# ← add this!
+permissions:
+  contents: write
+
 
 on:
   push:
