@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Checkout main/master (or the dispatch payload branch)
-      - name: Checkout code
+      # 1) Checkout this CI repo (configs + snapshot logic)
+      - name: Checkout C4 CI code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -38,7 +38,7 @@ jobs:
             echo "snapshot_created=false" >> $GITHUB_OUTPUT
           fi
 
-      # 2) Fetch previous snapshot (if it existed)
+      # 2) Fetch previous snapshot if it existed
       - name: Fetch previous snapshot
         if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
         uses: actions/checkout@v4
@@ -61,11 +61,32 @@ jobs:
                discovered-components/components-latest.json
           fi
 
-      # 4) Clone & build everything
-      - name: Clone scanned project
+      # 4) Clone & build *the* dispatched project
+      - name: Clone scanned project (from dispatch payload)
         run: |
-          git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/imissr/Spring_Kfz_Project.git scanned-project
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            REPO="${{ github.event.client_payload.source_repo }}"
+            REF_FULL="${{ github.event.client_payload.ref }}"
+            SHA="${{ github.event.client_payload.sha }}"
+            echo "➡️ Dispatch from $REPO @ $REF_FULL ($SHA)"
+            BRANCH="${REF_FULL#refs/heads/}"
+          else
+            REPO="imissr/Spring_Kfz_Project"
+            BRANCH="master"
+            SHA="master"
+            echo "➡️ Fallback clone of $REPO @ $BRANCH"
+          fi
 
+          git clone \
+            --branch "$BRANCH" \
+            https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/${REPO}.git \
+            scanned-project
+
+          cd scanned-project
+          git checkout "$SHA"
+          cd ..
+
+      # 5) Build & run your C4 generator against scanned-project
       - name: Set up JDK 22
         uses: actions/setup-java@v4
         with:
@@ -111,6 +132,7 @@ jobs:
             -Dexec.args="change-detect src/main/java/org/example/json/c4ModelConfig.json"
           echo "changes_detected=$([[ $? -eq 1 ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
+      # Always generate if baseline OR changes detected
       - name: Run C4 model generator
         if: steps.determine-mode.outputs.baseline_mode == 'true' || steps.change-detection.outputs.changes_detected == 'true'
         run: |
