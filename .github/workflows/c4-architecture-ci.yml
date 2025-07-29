@@ -46,7 +46,11 @@ jobs:
 
       - name: Compile the scanned project
         working-directory: ./scanned-project
-        run: mvn clean compile -q
+        run: mvn clean compile -DskipTests
+
+      - name: Check compiled class folders
+        run: find scanned-project -type d -path "*/target/classes"
+
 
       - name: Patch config.json for all basePaths
         run: |
