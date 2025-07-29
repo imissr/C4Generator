@@ -119,7 +119,7 @@ jobs:
 
           git add discovered-components
           git commit -m "⬆️ Update C4 component snapshots @ ${{ github.sha }}"
-          git push --force origin HEAD:snapshot
+          git push --force master HEAD:snapshot
 
       # 9) Produce & upload the change-report (as before)
       - name: Generate component change report
