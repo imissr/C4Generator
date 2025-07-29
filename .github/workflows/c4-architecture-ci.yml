@@ -62,7 +62,7 @@ jobs:
           set -o pipefail
           if mvn exec:java \
                -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
-               -Dexec.args="change-detect strategyConfig.patched.json" \
+               -Dexec.args="change-detect c4ModelConfig.patched.json" \
                -q; then
             echo "changes_detected=false" >> $GITHUB_OUTPUT
             echo "should_generate=false" >> $GITHUB_OUTPUT
