@@ -111,6 +111,8 @@ public class C4ModelGenerator {
      *
      * @see ConfigurableComponentScanner#scanContainer for component discovery process
      */
+    //TODO: ADD FALLBACK FOR MISSING WORKSPACE CONFIG AND OTHER , PERSON SHOULD NOT BE MANDATORY
+    //ADD SOME CHANGES
     public static void main(String[] args) throws Exception {
         System.out.println("=== Starting Avatar C4 Model Generation ===");
 
