@@ -12,6 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # --- A) Identify dispatched repo & slug ---
+      - name: Set repository identifiers
+        id: set-ids
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            REPO="${{ github.event.client_payload.source_repo }}"
+            REF_FULL="${{ github.event.client_payload.ref }}"
+            SHA="${{ github.event.client_payload.sha }}"
+            echo "➡️ Dispatch from $REPO @ $REF_FULL ($SHA)"
+            BRANCH="${REF_FULL#refs/heads/}"
+          else
+            REPO="imissr/Spring_Kfz_Project"
+            BRANCH="master"
+            SHA="master"
+            echo "➡️ Fallback clone of $REPO @ $BRANCH"
+          fi
+
+          # slugify to use as folder name (replace / and . with _)
+          REPO_SLUG=$(echo "$REPO" | tr '/.' '__')
+          echo "repo=$REPO" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "repo_slug=$REPO_SLUG" >> $GITHUB_OUTPUT
+
       # 1) Checkout this CI repo (configs + snapshot logic)
       - name: Checkout C4 CI code
         uses: actions/checkout@v4
@@ -36,44 +60,40 @@ jobs:
             echo "snapshot_created=false" >> $GITHUB_OUTPUT
           fi
 
-      # 2) Fetch previous snapshot if it existed
-      - name: Fetch previous snapshot
-        if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
+      # 2) Fetch previous snapshot branch (for per-repo snapshot)
+      - name: Checkout snapshot branch for previous data
+        if: always()
         uses: actions/checkout@v4
         with:
           ref: snapshot
           fetch-depth: 0
-          path: prev-snapshot
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: snapshot
 
-      # 3) Baseline vs change‑detect
-      - name: Determine baseline vs change‑detect
+      # 3) Determine baseline vs change-detect for this repo
+      - name: Determine baseline vs change-detect
         id: determine-mode
         run: |
-          if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ] \
-             || [ ! -f prev-snapshot/discovered-components/components-latest.json ]; then
+          REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
+
+          # If snapshot branch was just created, we have no previous per-repo data.
+          if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ]; then
+            echo "baseline_mode=true" >> $GITHUB_OUTPUT
+          elif [ ! -f snapshot/$REPO_SLUG/discovered-components/components-latest.json ]; then
             echo "baseline_mode=true" >> $GITHUB_OUTPUT
           else
             echo "baseline_mode=false" >> $GITHUB_OUTPUT
             mkdir -p discovered-components
-            cp prev-snapshot/discovered-components/components-latest.json \
+            cp snapshot/$REPO_SLUG/discovered-components/components-latest.json \
                discovered-components/components-latest.json
           fi
 
       # 4) Clone & build *the* dispatched project
       - name: Clone scanned project (from dispatch payload)
         run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            REPO="${{ github.event.client_payload.source_repo }}"
-            REF_FULL="${{ github.event.client_payload.ref }}"
-            SHA="${{ github.event.client_payload.sha }}"
-            echo "➡️ Dispatch from $REPO @ $REF_FULL ($SHA)"
-            BRANCH="${REF_FULL#refs/heads/}"
-          else
-            REPO="imissr/Spring_Kfz_Project"
-            BRANCH="master"
-            SHA="master"
-            echo "➡️ Fallback clone of $REPO @ $BRANCH"
-          fi
+          REPO=${{ steps.set-ids.outputs.repo }}
+          BRANCH=${{ steps.set-ids.outputs.branch }}
+          SHA=${{ steps.set-ids.outputs.sha }}
 
           git clone \
             --branch "$BRANCH" \
@@ -110,7 +130,7 @@ jobs:
             src/main/java/org/example/json/strategyConfig.json \
             > strategyConfig.patched.json
 
-      # 5a) BASELINE
+      # 5a) BASELINE snapshot generation
       - name: Run baseline snapshot
         if: steps.determine-mode.outputs.baseline_mode == 'true'
         run: |
@@ -118,7 +138,7 @@ jobs:
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="baseline src/main/java/org/example/json/c4ModelConfig.json"
 
-      # 5b) CHANGE‑DETECT
+      # 5b) CHANGE-DETECT
       - name: Detect changes in C4 components
         if: steps.determine-mode.outputs.baseline_mode == 'false'
         id: change-detection
@@ -138,12 +158,12 @@ jobs:
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
 
-      # 6) Upload artifacts
+      # 6) Upload artifacts (optional: per-repo naming)
       - name: Upload baseline snapshot
         if: steps.determine-mode.outputs.baseline_mode == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: baseline-component-snapshot
+          name: baseline-component-snapshot-${{ steps.set-ids.outputs.repo_slug }}
           path: discovered-components/
           retention-days: 30
 
@@ -151,38 +171,33 @@ jobs:
         if: steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: c4-architecture-model
+          name: c4-architecture-model-${{ steps.set-ids.outputs.repo_slug }}
           path: |
             avatar-c4-model.json
             discovered-components/
           retention-days: 30
 
-      # 7) Update snapshot branch
-      - name: Checkout snapshot branch
-        if: steps.determine-mode.outputs.baseline_mode == 'true' || (steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true')
-        uses: actions/checkout@v4
-        with:
-          ref: snapshot
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: snapshot
-
-      - name: Replace snapshot files
+      # 7) Update snapshot branch for this repo
+      - name: Prepare updated snapshot for repo
         if: steps.determine-mode.outputs.baseline_mode == 'true' || (steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         run: |
-          rm -rf snapshot/discovered-components
-          rm -f snapshot/avatar-c4-model.json
-          cp -R discovered-components snapshot/discovered-components
-          cp avatar-c4-model.json snapshot/avatar-c4-model.json || true
+          REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
+          # Replace the per-repo snapshot subfolder
+          rm -rf snapshot/$REPO_SLUG/discovered-components
+          mkdir -p snapshot/$REPO_SLUG
+          cp -R discovered-components snapshot/$REPO_SLUG/discovered-components
+          cp avatar-c4-model.json snapshot/$REPO_SLUG/avatar-c4-model.json || true
 
-      - name: Commit & push snapshot
+      - name: Commit & push per-repo snapshot update
         if: steps.determine-mode.outputs.baseline_mode == 'true' || (steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         run: |
           cd snapshot
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add discovered-components avatar-c4-model.json
+          git add ${{ steps.set-ids.outputs.repo_slug }}/discovered-components avatar-c4-model.json || true
+          # ensure we're adding the correct avatar under the repo slug
+          git add ${{ steps.set-ids.outputs.repo_slug }}/avatar-c4-model.json || true
           if ! git diff --cached --quiet; then
-            git commit -m "⬆️ Update C4 component snapshots & avatar model @ ${{ github.sha }}"
+            git commit -m "⬆️ Update C4 component snapshot & avatar model for ${{ steps.set-ids.outputs.repo_slug }} @ ${{ github.sha }}"
             git push origin HEAD:snapshot --force
           fi
