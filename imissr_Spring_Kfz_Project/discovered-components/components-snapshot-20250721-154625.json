@@ -1,0 +1,759 @@
+{
+  "timestamp" : "2025-07-21T15:46:25.0199763",
+  "generatedBy" : "C4ModelGenerator",
+  "version" : "1.0",
+  "containers" : {
+    "Security Layer" : {
+      "containerName" : "Security Layer",
+      "containerDescription" : "Spring Security configuration for authentication and authorization",
+      "containerTechnology" : "Spring Security",
+      "componentCount" : 1,
+      "components" : {
+        "Security Config" : {
+          "name" : "Security Config",
+          "description" : "Configures authentication, authorization, CORS, password encoders, and security filters",
+          "technology" : "Spring Security",
+          "tags" : [ "Component", "Configuration", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.config.SecurityConfig"
+          }
+        }
+      }
+    },
+    "Web Application" : {
+      "containerName" : "Web Application",
+      "containerDescription" : "Spring Boot REST API providing endpoints for workshop management",
+      "containerTechnology" : "Spring Boot, Java 21",
+      "componentCount" : 50,
+      "components" : {
+        "Admin Auth Controller" : {
+          "name" : "Admin Auth Controller",
+          "description" : "Handles admin-specific authentication and credential management",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Admin Credential Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.adminAuth.AdminAuthController"
+          }
+        },
+        "Admin Controller" : {
+          "name" : "Admin Controller",
+          "description" : "Handles admin-specific operations for appointments, services, time slots, and car cards",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Card Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Service Site Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.adminController.AdminController"
+          }
+        },
+        "Admin Credential Service" : {
+          "name" : "Admin Credential Service",
+          "description" : "Manages admin credential updates and password changes",
+          "technology" : "Spring Service",
+          "tags" : [ "Annotated", "Component", "Element", "Service" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.adminAuth.AdminCredentialService"
+          }
+        },
+        "Appointment Controller" : {
+          "name" : "Appointment Controller",
+          "description" : "Manages customer appointment booking and status updates",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.appointment.AppointmentController"
+          }
+        },
+        "Appointment DAO" : {
+          "name" : "Appointment DAO",
+          "description" : "Entity representing customer appointments with time slots and service details",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Time Slot DAO",
+            "description" : "references",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Service Item DAO",
+            "description" : "references",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.appointment.model.AppointmentDAO"
+          }
+        },
+        "Appointment DTO" : {
+          "name" : "Appointment DTO",
+          "description" : "Data transfer object for appointment information between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.appointment.model.AppointmentDTO"
+          }
+        },
+        "Appointment Mapper" : {
+          "name" : "Appointment Mapper",
+          "description" : "Maps between AppointmentDTO and AppointmentDAO entities",
+          "technology" : "Spring Component",
+          "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment DTO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Appointment DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.appointment.mapper.AppointmentMapper"
+          }
+        },
+        "Appointment Repository" : {
+          "name" : "Appointment Repository",
+          "description" : "Data access layer for appointment entities with custom queries",
+          "technology" : "Spring Data JPA",
+          "tags" : [ "Annotated", "Component", "Element", "Repository" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment DAO",
+            "description" : "manages",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.appointment.AppointmentRepository"
+          }
+        },
+        "Appointment Service" : {
+          "name" : "Appointment Service",
+          "description" : "Business logic for appointment management, validation, and status updates",
+          "technology" : "Spring Service",
+          "tags" : [ "Annotated", "Component", "Element", "Service" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment Repository",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Time Slot Repository",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Appointment Mapper",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.appointment.AppointmentService"
+          }
+        },
+        "Appointment Service Impl" : {
+          "name" : "Appointment Service Impl",
+          "description" : "Implementation of Appointment Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.appointment.AppointmentServiceImpl"
+          }
+        },
+        "Authentication Controller" : {
+          "name" : "Authentication Controller",
+          "description" : "Handles user authentication, login, logout, and session management",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.auth.AuthenticationController"
+          }
+        },
+        "Authentication Mapper" : {
+          "name" : "Authentication Mapper",
+          "description" : "Maps between UserDAO entities and Spring Security UserDetails",
+          "technology" : "Spring Component",
+          "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "User DAO",
+            "description" : "converts from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "User Information DTO",
+            "description" : "converts to",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.user.mapper.AuthenticationMapper"
+          }
+        },
+        "Car Card Controller" : {
+          "name" : "Car Card Controller",
+          "description" : "Displays available cars for sale with specifications and images",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Car Card Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.carCard.CarCardController"
+          }
+        },
+        "Car Card DAO" : {
+          "name" : "Car Card DAO",
+          "description" : "Entity representing cars for sale with specifications and images",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Car Spec DAO",
+            "description" : "contains",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.carcards.model.CarCardDAO"
+          }
+        },
+        "Car Card DTO" : {
+          "name" : "Car Card DTO",
+          "description" : "Data transfer object for car card information between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.carCardService.model.CarCardDTO"
+          }
+        },
+        "Car Card Mapper" : {
+          "name" : "Car Card Mapper",
+          "description" : "Maps between CarCardDTO and CarCardDAO entities",
+          "technology" : "Spring Component",
+          "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Car Card DTO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Card DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Spec DTO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Spec DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.carCardService.mapper.CarCardMapper"
+          }
+        },
+        "Car Card Service" : {
+          "name" : "Car Card Service",
+          "description" : "Manages car listings with image processing and storage",
+          "technology" : "Spring Service",
+          "tags" : [ "Annotated", "Component", "Element", "Service" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Image Service",
+            "description" : "",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Image Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Card Mapper",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.carCardService.CarCardService"
+          }
+        },
+        "Car Spec DAO" : {
+          "name" : "Car Spec DAO",
+          "description" : "Entity representing detailed car specifications including engine, transmission, fuel type",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.carcards.model.CarSpecDAO"
+          }
+        },
+        "Car Spec DTO" : {
+          "name" : "Car Spec DTO",
+          "description" : "Data transfer object for car specification information between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.carCardService.model.CarSpecDTO"
+          }
+        },
+        "Email Service Impl" : {
+          "name" : "Email Service Impl",
+          "description" : "Implementation of Email Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.Email.EmailServiceImpl"
+          }
+        },
+        "Image Service" : {
+          "name" : "Image Service",
+          "description" : "Processes, resizes, and manages image files for car cards",
+          "technology" : "Spring Service",
+          "tags" : [ "Annotated", "Component", "Element", "Service" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.Image.ImageService"
+          }
+        },
+        "Multipart Config" : {
+          "name" : "Multipart Config",
+          "description" : "Configures file upload handling for car images with size limits",
+          "technology" : "Spring Boot",
+          "tags" : [ "Annotated", "Component", "Configuration", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.config.MultipartConfig"
+          }
+        },
+        "Opinion Controller" : {
+          "name" : "Opinion Controller",
+          "description" : "Component discovered by Spring MVC Controllers",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.opinion.OpinionController"
+          }
+        },
+        "Opinion DAO" : {
+          "name" : "Opinion DAO",
+          "description" : "Component discovered by JPA Entities",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.csopinion.model.OpinionDAO"
+          }
+        },
+        "Opinion DTO" : {
+          "name" : "Opinion DTO",
+          "description" : "Component discovered by DTO Classes",
+          "technology" : "Java",
+          "tags" : [ "Component", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.opinion.model.OpinionDTO"
+          }
+        },
+        "Opinion Mapper" : {
+          "name" : "Opinion Mapper",
+          "description" : "Component discovered by Service Beans",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.opinion.mapper.OpinionMapper"
+          }
+        },
+        "Opinion Service Impl" : {
+          "name" : "Opinion Service Impl",
+          "description" : "Implementation of Opinion Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.opinion.OpinionServiceImpl"
+          }
+        },
+        "Role DAO" : {
+          "name" : "Role DAO",
+          "description" : "Entity representing user roles for authorization (ADMIN, USER)",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.user.model.RoleDAO"
+          }
+        },
+        "Security Config" : {
+          "name" : "Security Config",
+          "description" : "Component discovered by Web Configuration",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.config.SecurityConfig"
+          }
+        },
+        "Service Controller" : {
+          "name" : "Service Controller",
+          "description" : "Provides endpoints for available workshop services",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.service.ServiceController"
+          }
+        },
+        "Service DTO" : {
+          "name" : "Service DTO",
+          "description" : "Data transfer object for service item information between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.service.model.ServiceDTO"
+          }
+        },
+        "Service Item DAO" : {
+          "name" : "Service Item DAO",
+          "description" : "Entity representing workshop services with popularity flags",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Appointment DAO",
+            "description" : "referenced by",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.service.model.ServiceItemDAO"
+          }
+        },
+        "Service Mapper" : {
+          "name" : "Service Mapper",
+          "description" : "Maps between ServiceDTO and ServiceItemDAO entities",
+          "technology" : "Spring Component",
+          "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Service DTO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Service Item DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.service.mapper.ServiceMapper"
+          }
+        },
+        "Service Repository" : {
+          "name" : "Service Repository",
+          "description" : "Data access layer for service items with popularity filtering",
+          "technology" : "Spring Data JPA",
+          "tags" : [ "Annotated", "Component", "Element", "Repository" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Service Item DAO",
+            "description" : "manages",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.service.ServiceRepository"
+          }
+        },
+        "Service Service Impl" : {
+          "name" : "Service Service Impl",
+          "description" : "Implementation of Service Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.service.ServiceServiceImpl"
+          }
+        },
+        "Service Site Controller" : {
+          "name" : "Service Site Controller",
+          "description" : "Manages service site content and descriptions",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Service Site Service",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.serviceSite.ServiceSiteController"
+          }
+        },
+        "Service Site DAO" : {
+          "name" : "Service Site DAO",
+          "description" : "Entity representing service site content and descriptions",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.serviceSite.model.ServiceSiteDAO"
+          }
+        },
+        "Service Site DTO" : {
+          "name" : "Service Site DTO",
+          "description" : "Data transfer object for service site content between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.serviceSite.model.ServiceSiteDTO"
+          }
+        },
+        "Service Site Service" : {
+          "name" : "Service Site Service",
+          "description" : "Manages service site content and information",
+          "technology" : "Spring Service",
+          "tags" : [ "Annotated", "Component", "Element", "Service" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.serviceSite.ServiceSiteService"
+          }
+        },
+        "Time Slot Controller" : {
+          "name" : "Time Slot Controller",
+          "description" : "Manages available appointment time slots",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Controller", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.timeSlot.TimeSlotController"
+          }
+        },
+        "Time Slot DAO" : {
+          "name" : "Time Slot DAO",
+          "description" : "Entity representing available appointment time slots with date and time information",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.timeSlot.model.TimeSlotDAO"
+          }
+        },
+        "Time Slot DTO" : {
+          "name" : "Time Slot DTO",
+          "description" : "Data transfer object for time slot information between layers",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.timeSlot.model.TimeSlotDTO"
+          }
+        },
+        "Time Slot Mapper" : {
+          "name" : "Time Slot Mapper",
+          "description" : "Maps between TimeSlotDTO and TimeSlotDAO entities",
+          "technology" : "Spring Component",
+          "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Time Slot DTO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Time Slot DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.timeSlot.mapper.TimeSlotMapper"
+          }
+        },
+        "Time Slot Repository" : {
+          "name" : "Time Slot Repository",
+          "description" : "Data access layer for time slot entities with availability queries",
+          "technology" : "Spring Data JPA",
+          "tags" : [ "Annotated", "Component", "Element", "Repository" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Time Slot DAO",
+            "description" : "manages",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.timeSlot.TimeSlotRepository"
+          }
+        },
+        "Time Slot Service Impl" : {
+          "name" : "Time Slot Service Impl",
+          "description" : "Implementation of Time Slot Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.timeSlot.TimeSlotServiceImpl"
+          }
+        },
+        "User DAO" : {
+          "name" : "User DAO",
+          "description" : "Entity representing system users with authentication details",
+          "technology" : "JPA Entity",
+          "tags" : [ "Annotated", "Component", "Element", "Entity" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Role DAO",
+            "description" : "has many",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.user.model.UserDAO"
+          }
+        },
+        "User Details Service Impl" : {
+          "name" : "User Details Service Impl",
+          "description" : "Implementation of User Details Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Authentication Mapper",
+            "description" : "",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.userDetailService.UserDetailsServiceImpl"
+          }
+        },
+        "User Information DTO" : {
+          "name" : "User Information DTO",
+          "description" : "Data transfer object for user authentication information",
+          "technology" : "Java POJO",
+          "tags" : [ "Component", "DTO", "Element", "Pattern-Matched" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.controller.auth.model.UserInformationDTO"
+          }
+        },
+        "User Service Impl" : {
+          "name" : "User Service Impl",
+          "description" : "Implementation of User Service  interface",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element", "Implementation" ],
+          "type" : "Component",
+          "relationships" : [ {
+            "target" : "Authentication Mapper",
+            "description" : "",
+            "type" : "uses",
+            "properties" : { }
+          } ],
+          "metadata" : {
+            "component.type" : "org.example.project.services.user.UserServiceImpl"
+          }
+        },
+        "Web Config" : {
+          "name" : "Web Config",
+          "description" : "Configures web resources, static file serving, and CORS mappings",
+          "technology" : "Spring MVC",
+          "tags" : [ "Annotated", "Component", "Configuration", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.config.WebConfig"
+          }
+        }
+      }
+    }
+  }
+}
