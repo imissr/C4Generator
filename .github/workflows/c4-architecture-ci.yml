@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # --- A) Identify dispatched repo & slug ---
+      # --- 0) Identify dispatched repo & derive a safe slug for its folder ---
       - name: Set repository identifiers
         id: set-ids
         run: |
@@ -29,8 +29,8 @@ jobs:
             echo "➡️ Fallback clone of $REPO @ $BRANCH"
           fi
 
-          # slugify to use as folder name (replace / and . with _)
-          REPO_SLUG=$(echo "$REPO" | tr '/.' '__')
+          # slugify: substitute non-alphanumeric with underscores
+          REPO_SLUG=$(echo "$REPO" | sed -E 's/[^A-Za-z0-9]+/_/g')
           echo "repo=$REPO" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "sha=$SHA" >> $GITHUB_OUTPUT
@@ -60,15 +60,19 @@ jobs:
             echo "snapshot_created=false" >> $GITHUB_OUTPUT
           fi
 
-      # 2) Fetch previous snapshot branch (for per-repo snapshot)
-      - name: Checkout snapshot branch for previous data
-        if: always()
-        uses: actions/checkout@v4
-        with:
-          ref: snapshot
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: snapshot
+      # 2) Sparse-clone only the per-repo snapshot subfolder if snapshot already existed
+      - name: Fetch previous per-repo snapshot (sparse)
+        if: steps.ensure-snapshot.outputs.snapshot_created == 'false'
+        run: |
+          REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
+          # Clone snapshot branch sparsely, only the per-repo folder we care about
+          git clone --filter=blob:none --no-checkout --branch snapshot \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git snapshot
+          cd snapshot
+          git sparse-checkout init --cone
+          # include discovered-components and avatar model for this slug if they exist
+          git sparse-checkout set "$REPO_SLUG/discovered-components/components-latest.json" "$REPO_SLUG/avatar-c4-model.json"
+          git checkout snapshot
 
       # 3) Determine baseline vs change-detect for this repo
       - name: Determine baseline vs change-detect
@@ -76,7 +80,6 @@ jobs:
         run: |
           REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
 
-          # If snapshot branch was just created, we have no previous per-repo data.
           if [ "${{ steps.ensure-snapshot.outputs.snapshot_created }}" = "true" ]; then
             echo "baseline_mode=true" >> $GITHUB_OUTPUT
           elif [ ! -f snapshot/$REPO_SLUG/discovered-components/components-latest.json ]; then
@@ -88,7 +91,7 @@ jobs:
                discovered-components/components-latest.json
           fi
 
-      # 4) Clone & build *the* dispatched project
+      # 4) Clone & checkout the dispatched (scanned) project
       - name: Clone scanned project (from dispatch payload)
         run: |
           REPO=${{ steps.set-ids.outputs.repo }}
@@ -99,7 +102,6 @@ jobs:
             --branch "$BRANCH" \
             https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/${REPO}.git \
             scanned-project
-
           cd scanned-project
           git checkout "$SHA"
           cd ..
@@ -158,7 +160,7 @@ jobs:
             -Dexec.mainClass="org.example.c4.C4ModelGeneratorCI" \
             -Dexec.args="generate-if-changed src/main/java/org/example/json/c4ModelConfig.json"
 
-      # 6) Upload artifacts (optional: per-repo naming)
+      # 6) Upload artifacts (per-repo naming)
       - name: Upload baseline snapshot
         if: steps.determine-mode.outputs.baseline_mode == 'true'
         uses: actions/upload-artifact@v4
@@ -182,7 +184,11 @@ jobs:
         if: steps.determine-mode.outputs.baseline_mode == 'true' || (steps.determine-mode.outputs.baseline_mode == 'false' && steps.change-detection.outputs.changes_detected == 'true')
         run: |
           REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
-          # Replace the per-repo snapshot subfolder
+          # Ensure we have the snapshot clone available; if it wasn't cloned (fresh snapshot branch), do a full checkout
+          if [ ! -d snapshot ]; then
+            git clone --branch snapshot https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git snapshot
+          fi
+          # Replace per-repo snapshot contents
           rm -rf snapshot/$REPO_SLUG/discovered-components
           mkdir -p snapshot/$REPO_SLUG
           cp -R discovered-components snapshot/$REPO_SLUG/discovered-components
@@ -194,10 +200,10 @@ jobs:
           cd snapshot
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ${{ steps.set-ids.outputs.repo_slug }}/discovered-components avatar-c4-model.json || true
-          # ensure we're adding the correct avatar under the repo slug
-          git add ${{ steps.set-ids.outputs.repo_slug }}/avatar-c4-model.json || true
+          REPO_SLUG=${{ steps.set-ids.outputs.repo_slug }}
+          git add "$REPO_SLUG/discovered-components"
+          git add "$REPO_SLUG/avatar-c4-model.json" || true
           if ! git diff --cached --quiet; then
-            git commit -m "⬆️ Update C4 component snapshot & avatar model for ${{ steps.set-ids.outputs.repo_slug }} @ ${{ github.sha }}"
-            git push origin HEAD:snapshot --force
+            git commit -m "⬆️ Update C4 component snapshot & avatar model for $REPO_SLUG @ ${{ github.sha }}"
+            git push origin HEAD:snapshot
           fi
