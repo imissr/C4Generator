@@ -57,18 +57,5 @@ public class StrategyConfig {
         Object value = config.get(key);
         return value != null ? value.toString() : null;
     }
-    
-    /**
-     * Get configuration value as Boolean
-     */
-    public Boolean getConfigBoolean(String key) {
-        Object value = config.get(key);
-        if (value instanceof Boolean) {
-            return (Boolean) value;
-        }
-        if (value instanceof String) {
-            return Boolean.parseBoolean((String) value);
-        }
-        return null;
-    }
+
 }
