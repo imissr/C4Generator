@@ -98,22 +98,22 @@ public class C4ModelConfigDetail {
         JsonSchemaValidator.ValidationResult result;
         if (schemaFile.exists()) {
             result = validator.validateJsonFile(jsonFile, schemaFile);
-            System.out.println("✓ Using schema file: " + schemaFile.getAbsolutePath());
+            System.out.println(" Using schema file: " + schemaFile.getAbsolutePath());
         } else {
             // Fallback to classpath resource
             try {
                 result = validator.validateJsonFileWithResource(jsonFile, "c4ModelConfigSchema.json");
-                System.out.println("✓ Using schema from classpath");
+                System.out.println(" Using schema from classpath");
             } catch (IOException e) {
-                System.out.println("⚠ Warning: Schema validation skipped - schema file not found");
+                System.out.println(" Warning: Schema validation skipped - schema file not found");
                 return;
             }
         }
         
         if (result.isValid()) {
-            System.out.println("✓ JSON configuration validation passed");
+            System.out.println(" JSON configuration validation passed");
         } else {
-            System.err.println("✗ JSON configuration validation failed:");
+            System.err.println(" JSON configuration validation failed:");
             System.err.println(result.getErrorSummary());
             try {
                 result.throwIfInvalid();

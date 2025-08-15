@@ -211,7 +211,7 @@ public class C4ModelGeneratorCI {
             if (containerDetail != null) {
                 Map<String, ComponentDetail> componentMap = containerDetail.getComponentMap();
                 containerComponentMaps.put(containerKey, componentMap);
-                System.out.println("✓ " + containerKey + " component config loaded: " +
+                System.out.println(" " + containerKey + " component config loaded: " +
                         (componentMap != null ? componentMap.size() : 0) + " components");
             }
         }

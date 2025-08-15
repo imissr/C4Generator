@@ -53,7 +53,7 @@ public class C4ModelGenerator {
         for (PersonDetail personConfig : c4Config.getPersons()) {
             Person person = model.addPerson(personConfig.getName(), personConfig.getDescription());
             persons.put(personConfig.getName(), person);
-            System.out.println("✓ Person created: " + personConfig.getName() + " - " + personConfig.getDescription());
+            System.out.println(" Person created: " + personConfig.getName() + " - " + personConfig.getDescription());
         }
         System.out.println("Total persons created: " + persons.size());
 
