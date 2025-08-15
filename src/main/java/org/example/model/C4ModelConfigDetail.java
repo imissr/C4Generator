@@ -42,9 +42,7 @@ public class C4ModelConfigDetail {
         // Process the container component mappings (existing structure)
         if (containerComponents != null) {
             for (Map<String, ContainerDetail> singleContainerEntry : containerComponents) {
-                singleContainerEntry.forEach((name, detail) -> {
-                    containerComponentMap.put(name, detail);
-                });
+                containerComponentMap.putAll(singleContainerEntry);
             }
         }
     }
