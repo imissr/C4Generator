@@ -63,7 +63,7 @@ public class C4ModelGenerator {
         for (SoftwareSystemDetail systemConfig : c4Config.getSoftwareSystems()) {
             SoftwareSystem system = model.addSoftwareSystem(systemConfig.getName(), systemConfig.getDescription());
             softwareSystems.put(systemConfig.getName(), system);
-            System.out.println("✓ Software System created: " + systemConfig.getName() + " - " + systemConfig.getDescription());
+            System.out.println(" Software System created: " + systemConfig.getName() + " - " + systemConfig.getDescription());
         }
         System.out.println("Total software systems created: " + softwareSystems.size());
 
@@ -125,7 +125,7 @@ public class C4ModelGenerator {
             if (containerDetail != null) {
                 Map<String, ComponentDetail> componentMap = containerDetail.getComponentMap();
                 containerComponentMaps.put(containerKey, componentMap);
-                System.out.println("✓ " + containerKey + " component config loaded: " +
+                System.out.println( containerKey + " component config loaded: " +
                         (componentMap != null ? componentMap.size() : 0) + " components");
             }
         }
@@ -183,7 +183,7 @@ public class C4ModelGenerator {
             String systemName = entry.getKey();
             SoftwareSystem system = entry.getValue();
             if (system.getContainers().size() == 0) {
-                System.out.println("⚠ Skipping system context view for " + systemName +
+                System.out.println(" Skipping system context view for " + systemName +
                         " (no containers found)");
                 continue;
             }
@@ -301,7 +301,7 @@ public class C4ModelGenerator {
             additionalRelationCount++;
         } else {
             if (clientUser == null) {
-                System.out.println("⚠Warning: Client User not found for additional relationship");
+                System.out.println(" Warning: Client User not found for additional relationship");
             }
             if (connectorImplementations == null) {
                 System.out.println(" Warning: Connector Implementations container not found for additional relationship");
