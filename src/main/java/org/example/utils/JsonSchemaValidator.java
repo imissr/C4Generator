@@ -75,23 +75,7 @@ public class JsonSchemaValidator {
         }
     }
     
-    /**
-     * Validates a JSON string against a schema file.
-     * 
-     * @param jsonString The JSON string to validate
-     * @param schemaFile The schema file to validate against
-     * @return ValidationResult containing validation status and any errors
-     * @throws IOException If files cannot be read or JSON cannot be parsed
-     */
-    public ValidationResult validateJsonString(String jsonString, File schemaFile) throws IOException {
-        JsonNode jsonNode = objectMapper.readTree(jsonString);
-        JsonNode schemaNode = objectMapper.readTree(schemaFile);
-        
-        JsonSchema schema = factory.getSchema(schemaNode);
-        Set<ValidationMessage> validationMessages = schema.validate(jsonNode);
-        
-        return new ValidationResult(validationMessages.isEmpty(), validationMessages);
-    }
+
     
     /**
      * Validation result containing the validation status and any error messages.

@@ -20,26 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-/**
- * Service responsible for serializing discovered components to JSON format
- * and managing component state tracking for CI/CD pipeline integration.
- *
- * <p>This service provides functionality to:</p>
- * <ul>
- *   <li>Serialize discovered components to structured JSON format</li>
- *   <li>Compare current components with previously serialized components</li>
- *   <li>Generate component snapshots for version tracking</li>
- *   <li>Detect new, modified, and removed components</li>
- *   <li>Support CI/CD pipeline automation for architectural documentation</li>
- * </ul>
- *
- * <p>The serialized format is designed to be human-readable and suitable for
- * version control systems, enabling tracking of architectural changes over time.</p>
- *
- * @author C4 Model Generator Team
- * @version 1.0
- * @since 2025-07-11
- */
+
 @ToString
 public class ComponentSerializationService {
 
@@ -238,7 +219,7 @@ public class ComponentSerializationService {
         outputFile.getParentFile().mkdirs(); // Create directories if they don't exist
 
         objectMapper.writeValue(outputFile, snapshot);
-        System.out.println("✓ Component snapshot saved to: " + outputFile.getAbsolutePath());
+        System.out.println(" Component snapshot saved to: " + outputFile.getAbsolutePath());
     }
 
     /**
@@ -261,7 +242,7 @@ public class ComponentSerializationService {
         String latestFile = COMPONENTS_DIR + "/" + LATEST_SNAPSHOT_FILE;
         saveSnapshot(snapshot, latestFile);
 
-        System.out.println("✓ Component snapshots saved:");
+        System.out.println(" Component snapshots saved:");
         System.out.println("  - Latest: " + latestFile);
         System.out.println("  - Timestamped: " + timestampedFile);
     }
@@ -281,10 +262,10 @@ public class ComponentSerializationService {
             }
 
             ComponentSnapshot snapshot = objectMapper.readValue(file, ComponentSnapshot.class);
-            System.out.println("✓ Component snapshot loaded from: " + filePath);
+            System.out.println(" Component snapshot loaded from: " + filePath);
             return snapshot;
         } catch (IOException e) {
-            System.out.println("⚠ Failed to load snapshot from " + filePath + ": " + e.getMessage());
+            System.out.println(" Failed to load snapshot from " + filePath + ": " + e.getMessage());
             return null;
         }
     }
@@ -537,24 +518,24 @@ public class ComponentSerializationService {
         System.out.println("\n=== COMPONENT CHANGE DETECTION SUMMARY ===");
 
         if (!result.hasChanges) {
-            System.out.println("✓ No changes detected in component architecture");
+            System.out.println(" No changes detected in component architecture");
             return;
         }
 
         System.out.println("Changes detected:");
 
         if (!result.newComponents.isEmpty()) {
-            System.out.println("\n📦 NEW COMPONENTS (" + result.newComponents.size() + "):");
+            System.out.println("\n NEW COMPONENTS (" + result.newComponents.size() + "):");
             result.newComponents.forEach(comp -> System.out.println("  + " + comp));
         }
 
         if (!result.removedComponents.isEmpty()) {
-            System.out.println("\n🗑️ REMOVED COMPONENTS (" + result.removedComponents.size() + "):");
+            System.out.println("\n🗑 REMOVED COMPONENTS (" + result.removedComponents.size() + "):");
             result.removedComponents.forEach(comp -> System.out.println("  - " + comp));
         }
 
         if (!result.modifiedComponents.isEmpty()) {
-            System.out.println("\n🔄 MODIFIED COMPONENTS (" + result.modifiedComponents.size() + "):");
+            System.out.println("\n MODIFIED COMPONENTS (" + result.modifiedComponents.size() + "):");
             result.modifiedComponents.forEach(comp -> System.out.println("  ~ " + comp));
         }
 
