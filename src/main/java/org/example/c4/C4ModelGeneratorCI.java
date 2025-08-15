@@ -112,25 +112,11 @@ public class C4ModelGeneratorCI {
      */
     private static void runGenerateIfChangedMode(String configPath) throws Exception {
         System.out.println("\n=== GENERATE IF CHANGED MODE ===");
-
-        // First check for changes
-      /*  Map<String, Container> containers = performQuickComponentScan(configPath);
-
-        if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
-            ComponentSerializationService.ComponentComparisonResult result =
-                    ComponentChangeDetector.detectChanges(containers);*/
-
-        //  if (result.hasChanges) {
         System.out.println("Changes detected - proceeding with full model generation");
-        // Run full generation
         C4ModelGenerator.main(new String[]{});
-        // } else {
         System.out.println("No changes detected - skipping full model generation");
     }
-        /*} else {
-            System.err.println("Component validation failed - running full generation as fallback");
-            C4ModelGenerator.main(new String[]{});
-        }*/
+
 
 
 
@@ -146,7 +132,7 @@ public class C4ModelGeneratorCI {
             ComponentSerializationService.ComponentSnapshot snapshot =
                     ComponentSerializationService.serializeComponents(containers);
             ComponentSerializationService.saveSnapshotWithHistory(snapshot);
-            System.out.println("✓ Component serialization completed");
+            System.out.println(" Component serialization completed");
         } else {
             System.err.println("Component validation failed");
             System.exit(1);
@@ -163,7 +149,7 @@ public class C4ModelGeneratorCI {
 
         if (ComponentChangeDetector.validateContainersHaveComponents(containers)) {
             ComponentChangeDetector.createBaselineSnapshot(containers);
-            System.out.println("✓ Baseline snapshot created");
+            System.out.println(" Baseline snapshot created");
         } else {
             System.err.println("Component validation failed");
             System.exit(1);
@@ -236,13 +222,12 @@ public class C4ModelGeneratorCI {
             Container container = containers.get(containerConfig.getName());
             if (container != null) {
                 containersForScanning.put(containerConfig.getName(), container);
-                System.out.println("- " + containerConfig.getName() + ": ✓");
+                System.out.println("- " + containerConfig.getName() + ": ");
             } else {
-                System.out.println("- " + containerConfig.getName() + ": ✗ (not found)");
+                System.out.println("- " + containerConfig.getName() + ":  (not found)");
             }
         }
 
-        // Scan containers using the same logic as main generator
         for (Map.Entry<String, Container> entry : containersForScanning.entrySet()) {
             String containerName = entry.getKey();
             Container container = entry.getValue();
@@ -255,11 +240,11 @@ public class C4ModelGeneratorCI {
                     " (config key: " + containerKey + ")");
 
             scanner.scanContainer(container, containerKey, componentMap);
-            System.out.println("✓ Completed scanning: " + container.getName() +
+            System.out.println(" Completed scanning: " + container.getName() +
                     " (" + container.getComponents().size() + " components)");
         }
 
-        System.out.println("✓ Quick component scan completed");
+        System.out.println(" Quick component scan completed");
         return containersForScanning;
     }
 
@@ -277,7 +262,7 @@ public class C4ModelGeneratorCI {
         // Strategy 1: Exact match (case-insensitive)
         for (String key : allContainers.keySet()) {
             if (key.toLowerCase().trim().equals(normalizedContainerName)) {
-                System.out.println("✓ Found exact match: " + containerName + " -> " + key);
+                System.out.println(" Found exact match: " + containerName + " -> " + key);
                 return key;
             }
         }
@@ -287,7 +272,7 @@ public class C4ModelGeneratorCI {
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
             if (cleanKey.equals(cleanContainerName)) {
-                System.out.println("✓ Found normalized match: " + containerName + " -> " + key);
+                System.out.println(" Found normalized match: " + containerName + " -> " + key);
                 return key;
             }
         }
@@ -296,7 +281,7 @@ public class C4ModelGeneratorCI {
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
             if (cleanKey.contains(cleanContainerName)) {
-                System.out.println("✓ Found key containing container name: " + containerName + " -> " + key);
+                System.out.println(" Found key containing container name: " + containerName + " -> " + key);
                 return key;
             }
         }
@@ -305,7 +290,7 @@ public class C4ModelGeneratorCI {
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
             if (cleanContainerName.contains(cleanKey)) {
-                System.out.println("✓ Found container name containing key: " + containerName + " -> " + key);
+                System.out.println(" Found container name containing key: " + containerName + " -> " + key);
                 return key;
             }
         }
@@ -319,7 +304,7 @@ public class C4ModelGeneratorCI {
             for (String containerWord : containerWords) {
                 for (String keyWord : keyWords) {
                     if (containerWord.equals(keyWord) && containerWord.length() > 2) { // Avoid matching very short words
-                        System.out.println("✓ Found word match: " + containerName + " -> " + key + " (matched word: " + containerWord + ")");
+                        System.out.println(" Found word match: " + containerName + " -> " + key + " (matched word: " + containerWord + ")");
                         return key;
                     }
                 }
@@ -330,12 +315,12 @@ public class C4ModelGeneratorCI {
         for (String key : allContainers.keySet()) {
             String cleanKey = key.toLowerCase().replaceAll("[\\s\\-_]", "");
             if (cleanKey.length() > 3 && (cleanContainerName.contains(cleanKey) || cleanKey.contains(cleanContainerName))) {
-                System.out.println("✓ Found fuzzy match: " + containerName + " -> " + key);
+                System.out.println(" Found fuzzy match: " + containerName + " -> " + key);
                 return key;
             }
         }
 
-        System.out.println("⚠ Warning: No configuration key found for container: " + containerName);
+        System.out.println(" Warning: No configuration key found for container: " + containerName);
         System.out.println("Available keys: " + allContainers.keySet());
         return null;
     }
