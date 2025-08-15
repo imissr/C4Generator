@@ -12,58 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Top-level configuration class for strategy-based component discovery.
- * 
- * <p>This class serves as the main entry point for the configurable C4 model generation
- * system. It loads and manages complete strategy configurations from JSON files,
- * enabling flexible, project-agnostic component discovery without requiring code changes.</p>
- * 
- * <p>The configuration system supports multiple discovery strategies that can be combined
- * and customized for different software architectures:</p>
- * <ul>
- *   <li><strong>Annotation-based discovery</strong> - Find components by Java annotations</li>
- *   <li><strong>Pattern-based discovery</strong> - Use regex patterns to match class names</li>
- *   <li><strong>Convention-based discovery</strong> - Match by naming suffixes/prefixes</li>
- *   <li><strong>Custom annotation discovery</strong> - Advanced annotation property matching</li>
- * </ul>
- * 
- * <p>Example JSON configuration structure:</p>
- * <pre>
- * {
- *   "strategies": [
- *     {
- *       "name": "Spring Services",
- *       "type": "ANNOTATION",
- *       "config": {"annotationType": "org.springframework.stereotype.Service"},
- *       "containerMapping": "applicationServices",
- *       "enabled": true
- *     }
- *   ],
- *   "globalConfig": {
- *     "excludeInnerClasses": true,
- *     "basePaths": {"applicationServices": "/path/to/project/src"}
- *   }
- * }
- * </pre>
- * 
- * <p>Key features include:</p>
- * <ul>
- *   <li>JSON-based configuration for version control and easy maintenance</li>
- *   <li>Project-agnostic design supporting any Java project structure</li>
- *   <li>Strategy validation and error reporting</li>
- *   <li>Flexible container mapping and path management</li>
- *   <li>Enable/disable strategies individually for testing</li>
- * </ul>
- * 
- * @see StrategyConfig for individual strategy configuration details
- * @see StrategyFactory for strategy implementation creation
- * @see ConfigurableComponentScanner for strategy execution
- * 
- * @author C4 Model Generator
- * @version 1.0
- * @since 2025-06-26
- */
+
 @Getter
 @Setter
 public class StrategyConfiguration {

@@ -6,39 +6,7 @@ import lombok.Setter;
 
 import java.util.Map;
 
-/**
- * Defines a component discovery strategy for the configurable C4 model generation system.
- * 
- * <p>This class represents a single, configurable strategy that defines how software
- * components should be automatically discovered and documented within specific containers.
- * Each strategy encapsulates the logic for finding components based on various criteria
- * such as annotations, naming patterns, or custom rules.</p>
- * 
- * <p>The strategy system supports multiple discovery approaches:</p>
- * <ul>
- *   <li><strong>ANNOTATION</strong> - Discovers components based on Java annotations</li>
- *   <li><strong>REGEX</strong> - Uses regular expressions to match class names</li>
- *   <li><strong>NAME_SUFFIX</strong> - Matches classes ending with specific suffixes</li>
- *   <li><strong>CUSTOM_ANNOTATION</strong> - Uses custom annotation-based discovery logic</li>
- * </ul>
- * 
- * <p>Example JSON configuration:</p>
- * <pre>
- * {
- *   "name": "Service Components",
- *   "type": "ANNOTATION",
- *   "config": {
- *     "annotationType": "org.springframework.stereotype.Service"
- *   },
- *   "containerMapping": "applicationServices",
- *   "enabled": true
- * }
- * </pre>
- * 
- * @author C4 Model Generator
- * @version 1.0
- * @since 2025-06-26
- */
+
 @Getter
 @Setter
 public class StrategyConfig {

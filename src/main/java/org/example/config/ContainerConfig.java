@@ -11,47 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Top-level configuration container for managing multiple software containers and their components.
- * 
- * This class represents the root configuration structure for the entire C4 model generation system.
- * It parses and manages a JSON configuration that defines multiple containers (such as "connectorModel",
- * "connectorImplementations", "connectorInfrastructure") and their associated component mappings.
- * 
- * The expected JSON structure:
- * <pre>
- * {
- *   "container": [
- *     {
- *       "connectorModel": {
- *         "objectMapper": [
- *           {
- *             "componentName": "...",
- *             "tags": "...",
- *             "technology": "...",
- *             "description": "...",
- *             "relations": [...]
- *           }
- *         ]
- *       }
- *     },
- *     {
- *       "connectorImplementations": {
- *         "objectMapper": [...]
- *       }
- *     }
- *   ]
- * }
- * </pre>
- * 
- * This class flattens the nested JSON structure into a convenient Map for easy lookup
- * of container configurations by name. It supports the automated C4 model generation
- * process by providing structured access to all container and component definitions.
- * 
- * @author Generated Documentation
- * @version 1.0
- * @since 2025-06-15
- */
+
 @Getter
 @ToString
 public class ContainerConfig {
