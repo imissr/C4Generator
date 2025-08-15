@@ -8,37 +8,7 @@ import org.example.model.ComponentDetail;
 import java.io.File;
 import java.util.Map;
 
-/**
- * Utility class for loading component configuration mappings from JSON files.
- * 
- * This class provides a static method to parse JSON configuration files and extract
- * component mapping information. It's designed to work with JSON files that have a
- * specific structure containing a "componentMapper" node that maps component
- * identifiers to their detailed configuration objects.
- * 
- * The expected JSON structure:
- * <pre>
- * {
- *   "componentMapper": {
- *     "componentId1": {
- *       "componentName": "...",
- *       "tags": "...",
- *       "technology": "...",
- *       "description": "...",
- *       "relations": [...]
- *     },
- *     "componentId2": { ... }
- *   }
- * }
- * </pre>
- * 
- * This loader is primarily used during the C4 model generation process to
- * provide rich metadata for discovered components.
- * 
- * @author Generated Documentation
- * @version 1.0
- * @since 2025-06-15
- */
+
 public class ComponentMapperLoader {
 
     /**

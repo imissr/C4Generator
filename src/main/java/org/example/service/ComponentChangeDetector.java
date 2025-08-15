@@ -5,40 +5,10 @@ import com.structurizr.model.Container;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Utility class for detecting component changes and managing component lifecycle
- * in CI/CD pipeline environments.
- * 
- * <p>This utility provides high-level operations for:</p>
- * <ul>
- *   <li>Detecting new components since last scan</li>
- *   <li>Managing component snapshots for version tracking</li>
- *   <li>Triggering actions based on component changes</li>
- *   <li>Supporting CI/CD automation workflows</li>
- * </ul>
- * 
- * @author C4 Model Generator Team
- * @version 1.0
- * @since 2025-07-11
- */
+
 public class ComponentChangeDetector {
     
-    /**
-     * Performs a complete component change detection workflow.
-     * 
-     * <p>This method:</p>
-     * <ol>
-     *   <li>Loads the previous component snapshot (if exists)</li>
-     *   <li>Serializes current components to create new snapshot</li>
-     *   <li>Compares old and new snapshots to detect changes</li>
-     *   <li>Saves the new snapshot with history tracking</li>
-     *   <li>Returns detailed change detection results</li>
-     * </ol>
-     * 
-     * @param containers Map of container names to Container objects containing current components
-     * @return ComponentSerializationService.ComponentComparisonResult with detailed change information
-     * @throws IOException if snapshot saving fails
-     */
+
     public static ComponentSerializationService.ComponentComparisonResult detectChanges(
             Map<String, Container> containers) throws Exception {
         
@@ -55,18 +25,18 @@ public class ComponentChangeDetector {
         if (oldSnapshot == null) {
             System.out.println("   No previous snapshot found - this will be the initial baseline");
         } else {
-            System.out.println("   ✓ Previous snapshot loaded from: " + oldSnapshot.timestamp);
+            System.out.println("   Previous snapshot loaded from: " + oldSnapshot.timestamp);
         }
         
         // Step 2: Create new snapshot from current components
         System.out.println("2. Creating new component snapshot...");
         ComponentSerializationService.ComponentSnapshot newSnapshot = 
                 ComponentSerializationService.serializeComponents(containers);
-        System.out.println("   ✓ New snapshot created with " + 
+        System.out.println("    New snapshot created with " +
                          getTotalComponentCount(newSnapshot) + " components");
 
         if( ComponentSerializationService.snapshotsAreEqual( oldSnapshot, newSnapshot)) {
-            System.out.println("✅ No changes detected – skipping full diff.");
+            System.out.println(" No changes detected – skipping full diff.");
             System.out.println("4. Saving new snapshot...");
             ComponentSerializationService.saveSnapshotWithHistory(newSnapshot);
             ComponentSerializationService.ComponentComparisonResult result =
@@ -91,21 +61,7 @@ public class ComponentChangeDetector {
         return result;
     }
     
-    /**
-     * Performs change detection and returns whether new components were found.
-     * 
-     * This is a convenience method for CI/CD pipelines that only need to know
-     * if new components exist without detailed change information.
-     * 
-     * @param containers Map of container names to Container objects
-     * @return true if new components were detected, false otherwise
-     * @throws IOException if snapshot operations fail
-     */
-    public static boolean hasNewComponents(Map<String, Container> containers) throws Exception {
-        ComponentSerializationService.ComponentComparisonResult result = detectChanges(containers);
-        return !result.newComponents.isEmpty();
-    }
-    
+
     /**
      * Performs change detection and returns whether any changes were found.
      * 
@@ -135,7 +91,7 @@ public class ComponentChangeDetector {
         
         ComponentSerializationService.saveSnapshotWithHistory(snapshot);
         
-        System.out.println("✓ Baseline snapshot created with " + 
+        System.out.println(" Baseline snapshot created with " +
                          getTotalComponentCount(snapshot) + " components");
     }
     
@@ -151,22 +107,22 @@ public class ComponentChangeDetector {
         }
         
         StringBuilder report = new StringBuilder();
-        report.append("🏗️ Component Architecture Changes Detected:\n\n");
+        report.append(" Component Architecture Changes Detected:\n\n");
         
         if (!result.newComponents.isEmpty()) {
-            report.append("📦 NEW COMPONENTS (").append(result.newComponents.size()).append("):\n");
+            report.append(" NEW COMPONENTS (").append(result.newComponents.size()).append("):\n");
             result.newComponents.forEach(comp -> report.append("  + ").append(comp).append("\n"));
             report.append("\n");
         }
         
         if (!result.removedComponents.isEmpty()) {
-            report.append("🗑️ REMOVED COMPONENTS (").append(result.removedComponents.size()).append("):\n");
+            report.append(" REMOVED COMPONENTS (").append(result.removedComponents.size()).append("):\n");
             result.removedComponents.forEach(comp -> report.append("  - ").append(comp).append("\n"));
             report.append("\n");
         }
         
         if (!result.modifiedComponents.isEmpty()) {
-            report.append("🔄 MODIFIED COMPONENTS (").append(result.modifiedComponents.size()).append("):\n");
+            report.append(" MODIFIED COMPONENTS (").append(result.modifiedComponents.size()).append("):\n");
             result.modifiedComponents.forEach(comp -> report.append("  ~ ").append(comp).append("\n"));
             report.append("\n");
         }
@@ -185,7 +141,7 @@ public class ComponentChangeDetector {
      */
     public static boolean validateContainersHaveComponents(Map<String, Container> containers) {
         if (containers == null || containers.isEmpty()) {
-            System.out.println("⚠ Warning: No containers provided for change detection");
+            System.out.println(" Warning: No containers provided for change detection");
             return false;
         }
         
@@ -195,11 +151,11 @@ public class ComponentChangeDetector {
         }
         
         if (totalComponents == 0) {
-            System.out.println("⚠ Warning: No components found in any container");
+            System.out.println(" Warning: No components found in any container");
             return false;
         }
         
-        System.out.println("✓ Validation passed: " + totalComponents + " components found across " + 
+        System.out.println(" Validation passed: " + totalComponents + " components found across " +
                          containers.size() + " containers");
         return true;
     }
