@@ -6,38 +6,7 @@ import lombok.*;
 
 import java.util.List;
 
-/**
- * Data Transfer Object (DTO) representing the complete metadata and configuration
- * details for a software component within the Avatar system architecture.
- *
- * This class encapsulates all essential information about a component including:
- * - Component identification and categorization
- * - Technology stack information
- * - Descriptive metadata
- * - Relationships to other components in the system
- *
- * The class is designed to be serialized/deserialized from JSON configuration
- * files that define the component mappings for the C4 model generation process.
- * It supports the automated discovery and documentation of system architecture
- * by providing rich metadata for each discovered component.
- *
- * Example JSON representation:
- * <pre>
- * {
- *   "componentName": "Connector API",
- *   "tags": "API,Interface",
- *   "technology": "Java/OSGi",
- *   "description": "Core connector interface defining the contract for implementations",
- *   "relations": [
- *     {"target": "Connector Model", "type": "uses"}
- *   ]
- * }
- * </pre>
- *
- * @author Generated Documentation
- * @version 1.0
- * @since 2025-06-15
- */
+
 @Getter
 @NoArgsConstructor
 @ToString

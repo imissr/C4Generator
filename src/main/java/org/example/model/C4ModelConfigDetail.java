@@ -11,60 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Enhanced C4 Model Configuration that includes workspace, persons, software systems, and containers.
- * 
- * This class represents the complete configuration structure for automated C4 model generation.
- * It extends the original container-focused configuration to include all C4 model elements:
- * - Workspace metadata (name, description)
- * - Persons/Users with their relationships
- * - Software Systems with their relationships
- * - Containers with their relationships and technology details
- * - Component mappings within each container
- * 
- * The expected JSON structure:
- * <pre>
- * {
- *   "workspace": {
- *     "name": "Avatar C4 Model",
- *     "description": "Component analysis for Avatar Connector System"
- *   },
- *   "persons": [
- *     {
- *       "name": "Client User",
- *       "description": "Uses the Avatar system to access healthcare data",
- *       "relations": [{"target": "Avatar System", "type": "Makes data requests through"}]
- *     }
- *   ],
- *   "softwareSystems": [
- *     {
- *       "name": "Avatar System",
- *       "description": "Connector-based system for healthcare data exchange",
- *       "relations": []
- *     }
- *   ],
- *   "containers": [
- *     {
- *       "name": "Connector API",
- *       "description": "Defines the core contract for connectors",
- *       "technology": "Java/OSGi",
- *       "relations": []
- *     }
- *   ],
- *   "container": [
- *     {
- *       "connectorModel": {
- *         "objectMapper": [...]
- *       }
- *     }
- *   ]
- * }
- * </pre>
- * 
- * @author Generated Documentation
- * @version 1.0
- * @since 2025-06-25
- */
+
 @Getter
 @ToString
 public class C4ModelConfigDetail {

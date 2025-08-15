@@ -7,46 +7,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-/**
- * Represents a container in the C4 architectural model.
- * 
- * <p>In the C4 model, containers represent runtime environments or deployable units
- * that host applications or data. They sit between software systems and components
- * in the abstraction hierarchy, providing a technology-focused view of how the
- * system is structured and deployed.</p>
- * 
- * <p>Containers typically represent:</p>
- * <ul>
- *   <li>Web applications (e.g., React SPA, Angular app)</li>
- *   <li>Backend services (e.g., REST API, microservice)</li>
- *   <li>Databases (e.g., PostgreSQL, MongoDB)</li>
- *   <li>Message brokers (e.g., RabbitMQ, Apache Kafka)</li>
- *   <li>File systems, CDNs, and other infrastructure components</li>
- * </ul>
- * 
- * <p>Example JSON configuration:</p>
- * <pre>
- * {
- *   "name": "Customer API",
- *   "description": "RESTful API providing customer data access and management operations",
- *   "technology": "Java/Spring Boot",
- *   "relations": [
- *     {
- *       "target": "Customer Database",
- *       "type": "reads from and writes to"
- *     },
- *     {
- *       "target": "Email Service",
- *       "type": "sends notifications via"
- *     }
- *   ]
- * }
- * </pre>
- * 
- * @author C4 Model Generator
- * @version 1.0
- * @since 2025-06-25
- */
+
 @Getter
 @ToString
 public class ContainerConfigDetail {

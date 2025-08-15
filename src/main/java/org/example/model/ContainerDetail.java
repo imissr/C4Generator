@@ -7,44 +7,7 @@ import lombok.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Represents the detailed configuration and component mappings for a single container
- * within the Avatar system architecture.
- *
- * This class manages the component mappings for a specific architectural container
- * (such as "connectorModel", "connectorImplementations", or "connectorInfrastructure").
- * It holds a list of ComponentDetail objects that represent all the components
- * within this container and provides utility methods for easy access and lookup.
- *
- * The class supports the updated JSON format where "objectMapper" is an array of
- * ComponentDetail objects rather than a map structure. This provides more flexibility
- * in component ordering and configuration.
- *
- * Example JSON snippet for a container:
- * <pre>
- * {
- *   "objectMapper": [
- *     {
- *       "componentName": "Connector Info",
- *       "tags": "Info",
- *       "technology": "EMF Model",
- *       "description": "Provides metadata about connectors",
- *       "relations": [...]
- *     },
- *     {
- *       "componentName": "Connector Endpoint",
- *       "tags": "Endpoint",
- *       "technology": "EMF Model",
- *       "description": "Defines connection endpoints"
- *     }
- *   ]
- * }
- * </pre>
- *
- * @author Generated Documentation
- * @version 1.0
- * @since 2025-06-15
- */
+
 @Getter
 @Setter
 @NoArgsConstructor
