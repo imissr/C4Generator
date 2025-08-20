@@ -20,13 +20,13 @@ jobs:
             REPO="${{ github.event.client_payload.source_repo }}"
             REF_FULL="${{ github.event.client_payload.ref }}"
             SHA="${{ github.event.client_payload.sha }}"
-            echo "➡️ Dispatch from $REPO @ $REF_FULL ($SHA)"
+            echo " Dispatch from $REPO @ $REF_FULL ($SHA)"
             BRANCH="${REF_FULL#refs/heads/}"
           else
             REPO="imissr/Spring_Kfz_Project"
             BRANCH="master"
             SHA="master"
-            echo "➡️ Fallback clone of $REPO @ $BRANCH"
+            echo "Fallback clone of $REPO @ $BRANCH"
           fi
 
           # slugify: substitute non-alphanumeric with underscores
@@ -204,6 +204,6 @@ jobs:
           git add "$REPO_SLUG/discovered-components"
           git add "$REPO_SLUG/avatar-c4-model.json" || true
           if ! git diff --cached --quiet; then
-            git commit -m "⬆️ Update C4 component snapshot & avatar model for $REPO_SLUG @ ${{ github.sha }}"
+            git commit -m " Update C4 component snapshot & avatar model for $REPO_SLUG @ ${{ github.sha }}"
             git push origin HEAD:snapshot
           fi
