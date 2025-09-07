@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2025-07-31T10:08:28.228598695",
+  "timestamp" : "2025-09-07T21:00:31.479926122",
   "generatedBy" : "C4ModelGenerator",
   "version" : "1.0",
   "containers" : {
@@ -26,7 +26,7 @@
       "containerName" : "Web Application",
       "containerDescription" : "Spring Boot REST API providing endpoints for workshop management",
       "containerTechnology" : "Spring Boot, Java 21",
-      "componentCount" : 51,
+      "componentCount" : 50,
       "components" : {
         "Admin Auth Controller" : {
           "name" : "Admin Auth Controller",
@@ -104,12 +104,12 @@
           "tags" : [ "Annotated", "Component", "Element", "Entity" ],
           "type" : "Component",
           "relationships" : [ {
-            "target" : "Time Slot DAO",
+            "target" : "Service Item DAO",
             "description" : "references",
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Service Item DAO",
+            "target" : "Time Slot DAO",
             "description" : "references",
             "type" : "uses",
             "properties" : { }
@@ -136,12 +136,12 @@
           "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
           "type" : "Component",
           "relationships" : [ {
-            "target" : "Appointment DTO",
+            "target" : "Appointment DAO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Appointment DAO",
+            "target" : "Appointment DTO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
@@ -173,17 +173,17 @@
           "tags" : [ "Annotated", "Component", "Element", "Service" ],
           "type" : "Component",
           "relationships" : [ {
+            "target" : "Appointment Mapper",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
             "target" : "Appointment Repository",
             "description" : "uses",
             "type" : "uses",
             "properties" : { }
           }, {
             "target" : "Time Slot Repository",
-            "description" : "uses",
-            "type" : "uses",
-            "properties" : { }
-          }, {
-            "target" : "Appointment Mapper",
             "description" : "uses",
             "type" : "uses",
             "properties" : { }
@@ -285,22 +285,22 @@
           "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
           "type" : "Component",
           "relationships" : [ {
-            "target" : "Car Card DTO",
-            "description" : "converts to/from",
-            "type" : "uses",
-            "properties" : { }
-          }, {
             "target" : "Car Card DAO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Car Spec DTO",
+            "target" : "Car Card DTO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           }, {
             "target" : "Car Spec DAO",
+            "description" : "converts to/from",
+            "type" : "uses",
+            "properties" : { }
+          }, {
+            "target" : "Car Spec DTO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
@@ -316,17 +316,17 @@
           "tags" : [ "Annotated", "Component", "Element", "Service" ],
           "type" : "Component",
           "relationships" : [ {
+            "target" : "Car Card Mapper",
+            "description" : "uses",
+            "type" : "uses",
+            "properties" : { }
+          }, {
             "target" : "Image Service",
             "description" : "",
             "type" : "uses",
             "properties" : { }
           }, {
             "target" : "Image Service",
-            "description" : "uses",
-            "type" : "uses",
-            "properties" : { }
-          }, {
-            "target" : "Car Card Mapper",
             "description" : "uses",
             "type" : "uses",
             "properties" : { }
@@ -591,39 +591,13 @@
             "component.type" : "org.example.project.services.serviceSite.model.ServiceSiteDTO"
           }
         },
-        "Service Site Mapper" : {
-          "name" : "Service Site Mapper",
-          "description" : "Maps between ServiceSiteDTO and ServiceSiteDAO entities",
-          "technology" : "Spring Component",
-          "tags" : [ "Component", "Element", "Mapper" ],
-          "type" : "Component",
-          "relationships" : [ {
-            "target" : "Service Site DTO",
-            "description" : "converts to/from",
-            "type" : "uses",
-            "properties" : { }
-          }, {
-            "target" : "Service Site DAO",
-            "description" : "converts to/from",
-            "type" : "uses",
-            "properties" : { }
-          } ],
-          "metadata" : {
-            "component.type" : "org.example.project.services.serviceSite.mapper.ServiceSiteMapper"
-          }
-        },
         "Service Site Service" : {
           "name" : "Service Site Service",
           "description" : "Manages service site content and information",
           "technology" : "Spring Service",
           "tags" : [ "Annotated", "Component", "Element", "Service" ],
           "type" : "Component",
-          "relationships" : [ {
-            "target" : "Service Site Mapper",
-            "description" : "uses",
-            "type" : "uses",
-            "properties" : { }
-          } ],
+          "relationships" : [ ],
           "metadata" : {
             "component.type" : "org.example.project.services.serviceSite.ServiceSiteService"
           }
@@ -668,12 +642,12 @@
           "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
           "type" : "Component",
           "relationships" : [ {
-            "target" : "Time Slot DTO",
+            "target" : "Time Slot DAO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Time Slot DAO",
+            "target" : "Time Slot DTO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
