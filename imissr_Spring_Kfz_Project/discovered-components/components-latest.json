@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2025-09-07T21:00:31.479926122",
+  "timestamp" : "2026-07-02T18:39:25.554953151",
   "generatedBy" : "C4ModelGenerator",
   "version" : "1.0",
   "containers" : {
@@ -26,7 +26,7 @@
       "containerName" : "Web Application",
       "containerDescription" : "Spring Boot REST API providing endpoints for workshop management",
       "containerTechnology" : "Spring Boot, Java 21",
-      "componentCount" : 50,
+      "componentCount" : 52,
       "components" : {
         "Admin Auth Controller" : {
           "name" : "Admin Auth Controller",
@@ -127,6 +127,28 @@
           "relationships" : [ ],
           "metadata" : {
             "component.type" : "org.example.project.services.appointment.model.AppointmentDTO"
+          }
+        },
+        "Appointment Hold DAO" : {
+          "name" : "Appointment Hold DAO",
+          "description" : "Component discovered by JPA Entities",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.appointment.model.AppointmentHoldDAO"
+          }
+        },
+        "Appointment Hold Repository" : {
+          "name" : "Appointment Hold Repository",
+          "description" : "Component discovered by Repository Interfaces",
+          "technology" : "Java",
+          "tags" : [ "Annotated", "Component", "Element" ],
+          "type" : "Component",
+          "relationships" : [ ],
+          "metadata" : {
+            "component.type" : "org.example.project.repositories.appointment.AppointmentHoldRepository"
           }
         },
         "Appointment Mapper" : {
