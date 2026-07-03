@@ -67,7 +67,7 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "28",
-            "id" : "77",
+            "id" : "72",
             "sourceId" : "18",
             "tags" : "Relationship"
           } ],
@@ -94,7 +94,7 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "29",
-            "id" : "78",
+            "id" : "73",
             "sourceId" : "20",
             "tags" : "Relationship"
           } ],
@@ -111,7 +111,7 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "30",
-            "id" : "79",
+            "id" : "74",
             "sourceId" : "21",
             "tags" : "Relationship"
           } ],
@@ -138,7 +138,7 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "37",
-            "id" : "80",
+            "id" : "75",
             "sourceId" : "23",
             "tags" : "Relationship"
           } ],
@@ -155,19 +155,19 @@
           "relationships" : [ {
             "description" : "uses",
             "destinationId" : "30",
-            "id" : "81",
+            "id" : "76",
             "sourceId" : "24",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
             "destinationId" : "37",
-            "id" : "82",
+            "id" : "77",
             "sourceId" : "24",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
             "destinationId" : "29",
-            "id" : "83",
+            "id" : "78",
             "sourceId" : "24",
             "tags" : "Relationship"
           } ],
@@ -203,14 +203,14 @@
           },
           "relationships" : [ {
             "description" : "converts to/from",
-            "destinationId" : "69",
-            "id" : "84",
+            "destinationId" : "64",
+            "id" : "79",
             "sourceId" : "27",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "56",
-            "id" : "85",
+            "destinationId" : "51",
+            "id" : "80",
             "sourceId" : "27",
             "tags" : "Relationship"
           } ],
@@ -246,20 +246,20 @@
           },
           "relationships" : [ {
             "description" : "uses",
-            "destinationId" : "54",
-            "id" : "86",
+            "destinationId" : "49",
+            "id" : "81",
             "sourceId" : "30",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
-            "destinationId" : "55",
-            "id" : "87",
+            "destinationId" : "50",
+            "id" : "82",
             "sourceId" : "30",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
             "destinationId" : "31",
-            "id" : "88",
+            "id" : "83",
             "sourceId" : "30",
             "tags" : "Relationship"
           } ],
@@ -275,14 +275,14 @@
           },
           "relationships" : [ {
             "description" : "converts to/from",
-            "destinationId" : "71",
-            "id" : "89",
+            "destinationId" : "66",
+            "id" : "84",
             "sourceId" : "31",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "61",
-            "id" : "90",
+            "destinationId" : "56",
+            "id" : "85",
             "sourceId" : "31",
             "tags" : "Relationship"
           } ],
@@ -328,7 +328,7 @@
           },
           "relationships" : [ {
             "destinationId" : "36",
-            "id" : "46",
+            "id" : "44",
             "sourceId" : "35",
             "tags" : "Relationship"
           } ],
@@ -344,14 +344,14 @@
           },
           "relationships" : [ {
             "description" : "converts from",
-            "destinationId" : "63",
-            "id" : "91",
+            "destinationId" : "58",
+            "id" : "86",
             "sourceId" : "36",
             "tags" : "Relationship"
           }, {
             "description" : "converts to",
-            "destinationId" : "76",
-            "id" : "92",
+            "destinationId" : "71",
+            "id" : "87",
             "sourceId" : "36",
             "tags" : "Relationship"
           } ],
@@ -366,20 +366,20 @@
             "component.type" : "org.example.project.services.carCardService.CarCardService"
           },
           "relationships" : [ {
-            "destinationId" : "41",
-            "id" : "47",
+            "destinationId" : "39",
+            "id" : "45",
             "sourceId" : "37",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
-            "destinationId" : "41",
-            "id" : "93",
+            "destinationId" : "39",
+            "id" : "88",
             "sourceId" : "37",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
             "destinationId" : "38",
-            "id" : "94",
+            "id" : "89",
             "sourceId" : "37",
             "tags" : "Relationship"
           } ],
@@ -394,91 +394,54 @@
             "component.type" : "org.example.project.services.carCardService.mapper.CarCardMapper"
           },
           "relationships" : [ {
-            "destinationId" : "41",
-            "id" : "48",
+            "description" : "converts to/from",
+            "destinationId" : "69",
+            "id" : "90",
             "sourceId" : "38",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "74",
-            "id" : "95",
+            "destinationId" : "53",
+            "id" : "91",
             "sourceId" : "38",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "58",
-            "id" : "96",
+            "destinationId" : "68",
+            "id" : "92",
             "sourceId" : "38",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "73",
-            "id" : "97",
-            "sourceId" : "38",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to/from",
-            "destinationId" : "57",
-            "id" : "98",
+            "destinationId" : "52",
+            "id" : "93",
             "sourceId" : "38",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Mapper",
           "technology" : "Spring Component"
         }, {
-          "description" : "Component discovered by Service Beans",
-          "documentation" : { },
-          "id" : "39",
-          "name" : "Migration Service",
-          "properties" : {
-            "component.type" : "org.example.project.services.Image.MigrationService"
-          },
-          "relationships" : [ {
-            "destinationId" : "40",
-            "id" : "49",
-            "sourceId" : "39",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
-          "description" : "Component discovered by Service Beans",
-          "documentation" : { },
-          "id" : "40",
-          "name" : "Minio Storage Service",
-          "properties" : {
-            "component.type" : "org.example.project.services.Image.MinioStorageService"
-          },
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
           "description" : "Processes, resizes, and manages image files for car cards",
           "documentation" : { },
-          "id" : "41",
+          "id" : "39",
           "name" : "Image Service",
           "properties" : {
             "component.type" : "org.example.project.services.Image.ImageService"
           },
-          "relationships" : [ {
-            "destinationId" : "40",
-            "id" : "50",
-            "sourceId" : "41",
-            "tags" : "Relationship"
-          } ],
           "tags" : "Element,Component,Annotated,Service",
           "technology" : "Spring Service"
         }, {
           "description" : "Implementation of User Details Service  interface",
           "documentation" : { },
-          "id" : "42",
+          "id" : "40",
           "name" : "User Details Service Impl",
           "properties" : {
             "component.type" : "org.example.project.services.userDetailService.UserDetailsServiceImpl"
           },
           "relationships" : [ {
             "destinationId" : "36",
-            "id" : "51",
-            "sourceId" : "42",
+            "id" : "46",
+            "sourceId" : "40",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Implementation",
@@ -486,22 +449,22 @@
         }, {
           "description" : "Maps between TimeSlotDTO and TimeSlotDAO entities",
           "documentation" : { },
-          "id" : "43",
+          "id" : "41",
           "name" : "Time Slot Mapper",
           "properties" : {
             "component.type" : "org.example.project.services.timeSlot.mapper.TimeSlotMapper"
           },
           "relationships" : [ {
             "description" : "converts to/from",
-            "destinationId" : "75",
-            "id" : "99",
-            "sourceId" : "43",
+            "destinationId" : "70",
+            "id" : "94",
+            "sourceId" : "41",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "65",
-            "id" : "100",
-            "sourceId" : "43",
+            "destinationId" : "60",
+            "id" : "95",
+            "sourceId" : "41",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Mapper",
@@ -509,7 +472,7 @@
         }, {
           "description" : "Implementation of Time Slot Service  interface",
           "documentation" : { },
-          "id" : "44",
+          "id" : "42",
           "name" : "Time Slot Service Impl",
           "properties" : {
             "component.type" : "org.example.project.services.timeSlot.TimeSlotServiceImpl"
@@ -519,7 +482,7 @@
         }, {
           "description" : "Implementation of Email Service  interface",
           "documentation" : { },
-          "id" : "45",
+          "id" : "43",
           "name" : "Email Service Impl",
           "properties" : {
             "component.type" : "org.example.project.services.Email.EmailServiceImpl"
@@ -529,16 +492,16 @@
         }, {
           "description" : "Data access layer for service items with popularity filtering",
           "documentation" : { },
-          "id" : "52",
+          "id" : "47",
           "name" : "Service Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.service.ServiceRepository"
           },
           "relationships" : [ {
             "description" : "manages",
-            "destinationId" : "56",
-            "id" : "101",
-            "sourceId" : "52",
+            "destinationId" : "51",
+            "id" : "96",
+            "sourceId" : "47",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Repository",
@@ -546,7 +509,7 @@
         }, {
           "description" : "Component discovered by Repository Interfaces",
           "documentation" : { },
-          "id" : "53",
+          "id" : "48",
           "name" : "Appointment Hold Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.AppointmentHoldRepository"
@@ -556,16 +519,16 @@
         }, {
           "description" : "Data access layer for appointment entities with custom queries",
           "documentation" : { },
-          "id" : "54",
+          "id" : "49",
           "name" : "Appointment Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.AppointmentRepository"
           },
           "relationships" : [ {
             "description" : "manages",
-            "destinationId" : "61",
-            "id" : "102",
-            "sourceId" : "54",
+            "destinationId" : "56",
+            "id" : "97",
+            "sourceId" : "49",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Repository",
@@ -573,16 +536,16 @@
         }, {
           "description" : "Data access layer for time slot entities with availability queries",
           "documentation" : { },
-          "id" : "55",
+          "id" : "50",
           "name" : "Time Slot Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.timeSlot.TimeSlotRepository"
           },
           "relationships" : [ {
             "description" : "manages",
-            "destinationId" : "65",
-            "id" : "103",
-            "sourceId" : "55",
+            "destinationId" : "60",
+            "id" : "98",
+            "sourceId" : "50",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Repository",
@@ -590,16 +553,16 @@
         }, {
           "description" : "Entity representing workshop services with popularity flags",
           "documentation" : { },
-          "id" : "56",
+          "id" : "51",
           "name" : "Service Item DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.service.model.ServiceItemDAO"
           },
           "relationships" : [ {
             "description" : "referenced by",
-            "destinationId" : "61",
-            "id" : "104",
-            "sourceId" : "56",
+            "destinationId" : "56",
+            "id" : "99",
+            "sourceId" : "51",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
@@ -607,7 +570,7 @@
         }, {
           "description" : "Entity representing detailed car specifications including engine, transmission, fuel type",
           "documentation" : { },
-          "id" : "57",
+          "id" : "52",
           "name" : "Car Spec DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.carcards.model.CarSpecDAO"
@@ -617,16 +580,16 @@
         }, {
           "description" : "Entity representing cars for sale with specifications and images",
           "documentation" : { },
-          "id" : "58",
+          "id" : "53",
           "name" : "Car Card DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.carcards.model.CarCardDAO"
           },
           "relationships" : [ {
             "description" : "contains",
-            "destinationId" : "57",
-            "id" : "105",
-            "sourceId" : "58",
+            "destinationId" : "52",
+            "id" : "100",
+            "sourceId" : "53",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
@@ -634,7 +597,7 @@
         }, {
           "description" : "Entity representing service site content and descriptions",
           "documentation" : { },
-          "id" : "59",
+          "id" : "54",
           "name" : "Service Site DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.serviceSite.model.ServiceSiteDAO"
@@ -644,7 +607,7 @@
         }, {
           "description" : "Component discovered by JPA Entities",
           "documentation" : { },
-          "id" : "60",
+          "id" : "55",
           "name" : "Appointment Hold DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.model.AppointmentHoldDAO"
@@ -654,22 +617,22 @@
         }, {
           "description" : "Entity representing customer appointments with time slots and service details",
           "documentation" : { },
-          "id" : "61",
+          "id" : "56",
           "name" : "Appointment DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.model.AppointmentDAO"
           },
           "relationships" : [ {
             "description" : "references",
-            "destinationId" : "65",
-            "id" : "106",
-            "sourceId" : "61",
+            "destinationId" : "60",
+            "id" : "101",
+            "sourceId" : "56",
             "tags" : "Relationship"
           }, {
             "description" : "references",
-            "destinationId" : "56",
-            "id" : "107",
-            "sourceId" : "61",
+            "destinationId" : "51",
+            "id" : "102",
+            "sourceId" : "56",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
@@ -677,7 +640,7 @@
         }, {
           "description" : "Entity representing user roles for authorization (ADMIN, USER)",
           "documentation" : { },
-          "id" : "62",
+          "id" : "57",
           "name" : "Role DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.user.model.RoleDAO"
@@ -687,16 +650,16 @@
         }, {
           "description" : "Entity representing system users with authentication details",
           "documentation" : { },
-          "id" : "63",
+          "id" : "58",
           "name" : "User DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.user.model.UserDAO"
           },
           "relationships" : [ {
             "description" : "has many",
-            "destinationId" : "62",
-            "id" : "108",
-            "sourceId" : "63",
+            "destinationId" : "57",
+            "id" : "103",
+            "sourceId" : "58",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
@@ -704,7 +667,7 @@
         }, {
           "description" : "Component discovered by JPA Entities",
           "documentation" : { },
-          "id" : "64",
+          "id" : "59",
           "name" : "Opinion DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.csopinion.model.OpinionDAO"
@@ -714,7 +677,7 @@
         }, {
           "description" : "Entity representing available appointment time slots with date and time information",
           "documentation" : { },
-          "id" : "65",
+          "id" : "60",
           "name" : "Time Slot DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.timeSlot.model.TimeSlotDAO"
@@ -722,9 +685,19 @@
           "tags" : "Element,Component,Annotated,Entity",
           "technology" : "JPA Entity"
         }, {
+          "description" : "Configures file upload handling for car images with size limits",
+          "documentation" : { },
+          "id" : "61",
+          "name" : "Multipart Config",
+          "properties" : {
+            "component.type" : "org.example.project.config.MultipartConfig"
+          },
+          "tags" : "Element,Component,Annotated,Configuration",
+          "technology" : "Spring Boot"
+        }, {
           "description" : "Configures web resources, static file serving, and CORS mappings",
           "documentation" : { },
-          "id" : "66",
+          "id" : "62",
           "name" : "Web Config",
           "properties" : {
             "component.type" : "org.example.project.config.WebConfig"
@@ -734,7 +707,7 @@
         }, {
           "description" : "Component discovered by Web Configuration",
           "documentation" : { },
-          "id" : "67",
+          "id" : "63",
           "name" : "Security Config",
           "properties" : {
             "component.type" : "org.example.project.config.SecurityConfig"
@@ -742,19 +715,9 @@
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
-          "description" : "Component discovered by Web Configuration",
-          "documentation" : { },
-          "id" : "68",
-          "name" : "Minio Config",
-          "properties" : {
-            "component.type" : "org.example.project.config.MinioConfig"
-          },
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
           "description" : "Data transfer object for service item information between layers",
           "documentation" : { },
-          "id" : "69",
+          "id" : "64",
           "name" : "Service DTO",
           "properties" : {
             "component.type" : "org.example.project.services.service.model.ServiceDTO"
@@ -764,7 +727,7 @@
         }, {
           "description" : "Data transfer object for service site content between layers",
           "documentation" : { },
-          "id" : "70",
+          "id" : "65",
           "name" : "Service Site DTO",
           "properties" : {
             "component.type" : "org.example.project.services.serviceSite.model.ServiceSiteDTO"
@@ -774,7 +737,7 @@
         }, {
           "description" : "Data transfer object for appointment information between layers",
           "documentation" : { },
-          "id" : "71",
+          "id" : "66",
           "name" : "Appointment DTO",
           "properties" : {
             "component.type" : "org.example.project.services.appointment.model.AppointmentDTO"
@@ -784,7 +747,7 @@
         }, {
           "description" : "Component discovered by DTO Classes",
           "documentation" : { },
-          "id" : "72",
+          "id" : "67",
           "name" : "Opinion DTO",
           "properties" : {
             "component.type" : "org.example.project.services.opinion.model.OpinionDTO"
@@ -794,7 +757,7 @@
         }, {
           "description" : "Data transfer object for car specification information between layers",
           "documentation" : { },
-          "id" : "73",
+          "id" : "68",
           "name" : "Car Spec DTO",
           "properties" : {
             "component.type" : "org.example.project.services.carCardService.model.CarSpecDTO"
@@ -804,7 +767,7 @@
         }, {
           "description" : "Data transfer object for car card information between layers",
           "documentation" : { },
-          "id" : "74",
+          "id" : "69",
           "name" : "Car Card DTO",
           "properties" : {
             "component.type" : "org.example.project.services.carCardService.model.CarCardDTO"
@@ -814,7 +777,7 @@
         }, {
           "description" : "Data transfer object for time slot information between layers",
           "documentation" : { },
-          "id" : "75",
+          "id" : "70",
           "name" : "Time Slot DTO",
           "properties" : {
             "component.type" : "org.example.project.services.timeSlot.model.TimeSlotDTO"
@@ -824,7 +787,7 @@
         }, {
           "description" : "Data transfer object for user authentication information",
           "documentation" : { },
-          "id" : "76",
+          "id" : "71",
           "name" : "User Information DTO",
           "properties" : {
             "component.type" : "org.example.project.controller.auth.model.UserInformationDTO"
@@ -842,7 +805,7 @@
         "components" : [ {
           "description" : "Configures authentication, authorization, CORS, password encoders, and security filters",
           "documentation" : { },
-          "id" : "109",
+          "id" : "104",
           "name" : "Security Config",
           "properties" : {
             "component.type" : "org.example.project.config.SecurityConfig"
@@ -1026,11 +989,23 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "44",
+        "id" : "47",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "45",
+        "id" : "48",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "49",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "50",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "51",
         "x" : 0,
         "y" : 0
       }, {
@@ -1113,26 +1088,6 @@
         "id" : "71",
         "x" : 0,
         "y" : 0
-      }, {
-        "id" : "72",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "73",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "74",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "75",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "76",
-        "x" : 0,
-        "y" : 0
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "web-application-containers",
@@ -1146,27 +1101,21 @@
       }, {
         "id" : "103"
       }, {
-        "id" : "104"
+        "id" : "44"
       }, {
-        "id" : "105"
-      }, {
-        "id" : "106"
-      }, {
-        "id" : "107"
-      }, {
-        "id" : "108"
+        "id" : "45"
       }, {
         "id" : "46"
       }, {
-        "id" : "47"
+        "id" : "72"
       }, {
-        "id" : "48"
+        "id" : "73"
       }, {
-        "id" : "49"
+        "id" : "74"
       }, {
-        "id" : "50"
+        "id" : "75"
       }, {
-        "id" : "51"
+        "id" : "76"
       }, {
         "id" : "77"
       }, {
@@ -1218,7 +1167,7 @@
       "containerId" : "9",
       "description" : "Security Layer Components",
       "elements" : [ {
-        "id" : "109",
+        "id" : "104",
         "x" : 0,
         "y" : 0
       } ],

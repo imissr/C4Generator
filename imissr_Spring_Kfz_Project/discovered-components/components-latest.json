@@ -1,5 +1,5 @@
 {
-  "timestamp" : "2026-07-03T10:34:27.873770999",
+  "timestamp" : "2026-07-03T13:39:12.26126118",
   "generatedBy" : "C4ModelGenerator",
   "version" : "1.0",
   "containers" : {
@@ -26,7 +26,7 @@
       "containerName" : "Web Application",
       "containerDescription" : "Spring Boot REST API providing endpoints for workshop management",
       "containerTechnology" : "Spring Boot, Java 21",
-      "componentCount" : 54,
+      "componentCount" : 52,
       "components" : {
         "Admin Auth Controller" : {
           "name" : "Admin Auth Controller",
@@ -307,17 +307,12 @@
           "tags" : [ "Annotated", "Component", "Element", "Mapper" ],
           "type" : "Component",
           "relationships" : [ {
-            "target" : "Car Card DAO",
-            "description" : "converts to/from",
-            "type" : "uses",
-            "properties" : { }
-          }, {
             "target" : "Car Card DTO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Car Spec DAO",
+            "target" : "Car Card DAO",
             "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
@@ -327,8 +322,8 @@
             "type" : "uses",
             "properties" : { }
           }, {
-            "target" : "Image Service",
-            "description" : "",
+            "target" : "Car Spec DAO",
+            "description" : "converts to/from",
             "type" : "uses",
             "properties" : { }
           } ],
@@ -401,52 +396,20 @@
           "technology" : "Spring Service",
           "tags" : [ "Annotated", "Component", "Element", "Service" ],
           "type" : "Component",
-          "relationships" : [ {
-            "target" : "Minio Storage Service",
-            "description" : "",
-            "type" : "uses",
-            "properties" : { }
-          } ],
+          "relationships" : [ ],
           "metadata" : {
             "component.type" : "org.example.project.services.Image.ImageService"
           }
         },
-        "Migration Service" : {
-          "name" : "Migration Service",
-          "description" : "Component discovered by Service Beans",
-          "technology" : "Java",
-          "tags" : [ "Annotated", "Component", "Element" ],
-          "type" : "Component",
-          "relationships" : [ {
-            "target" : "Minio Storage Service",
-            "description" : "",
-            "type" : "uses",
-            "properties" : { }
-          } ],
-          "metadata" : {
-            "component.type" : "org.example.project.services.Image.MigrationService"
-          }
-        },
-        "Minio Config" : {
-          "name" : "Minio Config",
-          "description" : "Component discovered by Web Configuration",
-          "technology" : "Java",
-          "tags" : [ "Annotated", "Component", "Element" ],
+        "Multipart Config" : {
+          "name" : "Multipart Config",
+          "description" : "Configures file upload handling for car images with size limits",
+          "technology" : "Spring Boot",
+          "tags" : [ "Annotated", "Component", "Configuration", "Element" ],
           "type" : "Component",
           "relationships" : [ ],
           "metadata" : {
-            "component.type" : "org.example.project.config.MinioConfig"
-          }
-        },
-        "Minio Storage Service" : {
-          "name" : "Minio Storage Service",
-          "description" : "Component discovered by Service Beans",
-          "technology" : "Java",
-          "tags" : [ "Annotated", "Component", "Element" ],
-          "type" : "Component",
-          "relationships" : [ ],
-          "metadata" : {
-            "component.type" : "org.example.project.services.Image.MinioStorageService"
+            "component.type" : "org.example.project.config.MultipartConfig"
           }
         },
         "Opinion Controller" : {
