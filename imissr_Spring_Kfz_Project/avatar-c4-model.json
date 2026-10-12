@@ -47,15 +47,15 @@
     "softwareSystems" : [ {
       "containers" : [ {
         "components" : [ {
-          "description" : "Provides endpoints for available workshop services",
+          "description" : "Component discovered by Spring MVC Controllers",
           "documentation" : { },
           "id" : "17",
-          "name" : "Service Controller",
+          "name" : "Opinion Controller",
           "properties" : {
-            "component.type" : "org.example.project.controller.service.ServiceController"
+            "component.type" : "org.example.project.controller.opinion.OpinionController"
           },
-          "tags" : "Element,Component,Annotated,Controller",
-          "technology" : "Spring MVC"
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
         }, {
           "description" : "Handles admin-specific authentication and credential management",
           "documentation" : { },
@@ -66,17 +66,44 @@
           },
           "relationships" : [ {
             "description" : "uses",
-            "destinationId" : "28",
-            "id" : "77",
+            "destinationId" : "32",
+            "id" : "84",
             "sourceId" : "18",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Controller",
           "technology" : "Spring MVC"
         }, {
-          "description" : "Handles user authentication, login, logout, and session management",
+          "description" : "Manages service site content and descriptions",
           "documentation" : { },
           "id" : "19",
+          "name" : "Service Site Controller",
+          "properties" : {
+            "component.type" : "org.example.project.controller.serviceSite.ServiceSiteController"
+          },
+          "relationships" : [ {
+            "description" : "uses",
+            "destinationId" : "33",
+            "id" : "85",
+            "sourceId" : "19",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Controller",
+          "technology" : "Spring MVC"
+        }, {
+          "description" : "Manages available appointment time slots",
+          "documentation" : { },
+          "id" : "20",
+          "name" : "Time Slot Controller",
+          "properties" : {
+            "component.type" : "org.example.project.controller.timeSlot.TimeSlotController"
+          },
+          "tags" : "Element,Component,Annotated,Controller",
+          "technology" : "Spring MVC"
+        }, {
+          "description" : "Handles user authentication, login, logout, and session management",
+          "documentation" : { },
+          "id" : "21",
           "name" : "Authentication Controller",
           "properties" : {
             "component.type" : "org.example.project.controller.auth.AuthenticationController"
@@ -84,66 +111,25 @@
           "tags" : "Element,Component,Annotated,Controller",
           "technology" : "Spring MVC"
         }, {
-          "description" : "Manages service site content and descriptions",
-          "documentation" : { },
-          "id" : "20",
-          "name" : "Service Site Controller",
-          "properties" : {
-            "component.type" : "org.example.project.controller.serviceSite.ServiceSiteController"
-          },
-          "relationships" : [ {
-            "description" : "uses",
-            "destinationId" : "29",
-            "id" : "78",
-            "sourceId" : "20",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Controller",
-          "technology" : "Spring MVC"
-        }, {
-          "description" : "Manages customer appointment booking and status updates",
-          "documentation" : { },
-          "id" : "21",
-          "name" : "Appointment Controller",
-          "properties" : {
-            "component.type" : "org.example.project.controller.appointment.AppointmentController"
-          },
-          "relationships" : [ {
-            "description" : "uses",
-            "destinationId" : "30",
-            "id" : "79",
-            "sourceId" : "21",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Controller",
-          "technology" : "Spring MVC"
-        }, {
           "description" : "Component discovered by Spring MVC Controllers",
           "documentation" : { },
           "id" : "22",
-          "name" : "Opinion Controller",
+          "name" : "Admin Promotion Controller",
           "properties" : {
-            "component.type" : "org.example.project.controller.opinion.OpinionController"
+            "component.type" : "org.example.project.controller.promotion.AdminPromotionController"
           },
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
-          "description" : "Displays available cars for sale with specifications and images",
+          "description" : "Component discovered by Spring MVC Controllers",
           "documentation" : { },
           "id" : "23",
-          "name" : "Car Card Controller",
+          "name" : "Promotion Controller",
           "properties" : {
-            "component.type" : "org.example.project.controller.carCard.CarCardController"
+            "component.type" : "org.example.project.controller.promotion.PromotionController"
           },
-          "relationships" : [ {
-            "description" : "uses",
-            "destinationId" : "37",
-            "id" : "80",
-            "sourceId" : "23",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Controller",
-          "technology" : "Spring MVC"
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
         }, {
           "description" : "Handles admin-specific operations for appointments, services, time slots, and car cards",
           "documentation" : { },
@@ -154,154 +140,73 @@
           },
           "relationships" : [ {
             "description" : "uses",
+            "destinationId" : "46",
+            "id" : "86",
+            "sourceId" : "24",
+            "tags" : "Relationship"
+          }, {
+            "description" : "uses",
             "destinationId" : "30",
-            "id" : "81",
+            "id" : "87",
             "sourceId" : "24",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
-            "destinationId" : "37",
-            "id" : "82",
-            "sourceId" : "24",
-            "tags" : "Relationship"
-          }, {
-            "description" : "uses",
-            "destinationId" : "29",
-            "id" : "83",
+            "destinationId" : "33",
+            "id" : "88",
             "sourceId" : "24",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Controller",
           "technology" : "Spring MVC"
         }, {
-          "description" : "Manages available appointment time slots",
+          "description" : "Provides endpoints for available workshop services",
           "documentation" : { },
           "id" : "25",
-          "name" : "Time Slot Controller",
+          "name" : "Service Controller",
           "properties" : {
-            "component.type" : "org.example.project.controller.timeSlot.TimeSlotController"
+            "component.type" : "org.example.project.controller.service.ServiceController"
           },
           "tags" : "Element,Component,Annotated,Controller",
           "technology" : "Spring MVC"
         }, {
-          "description" : "Implementation of Service Service  interface",
+          "description" : "Displays available cars for sale with specifications and images",
           "documentation" : { },
           "id" : "26",
-          "name" : "Service Service Impl",
+          "name" : "Car Card Controller",
           "properties" : {
-            "component.type" : "org.example.project.services.service.ServiceServiceImpl"
+            "component.type" : "org.example.project.controller.carCard.CarCardController"
           },
-          "tags" : "Element,Component,Annotated,Implementation",
-          "technology" : "Java"
+          "relationships" : [ {
+            "description" : "uses",
+            "destinationId" : "30",
+            "id" : "89",
+            "sourceId" : "26",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Controller",
+          "technology" : "Spring MVC"
         }, {
-          "description" : "Maps between ServiceDTO and ServiceItemDAO entities",
+          "description" : "Manages customer appointment booking and status updates",
           "documentation" : { },
           "id" : "27",
-          "name" : "Service Mapper",
+          "name" : "Appointment Controller",
           "properties" : {
-            "component.type" : "org.example.project.services.service.mapper.ServiceMapper"
-          },
-          "relationships" : [ {
-            "description" : "converts to/from",
-            "destinationId" : "69",
-            "id" : "84",
-            "sourceId" : "27",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to/from",
-            "destinationId" : "56",
-            "id" : "85",
-            "sourceId" : "27",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Mapper",
-          "technology" : "Spring Component"
-        }, {
-          "description" : "Manages admin credential updates and password changes",
-          "documentation" : { },
-          "id" : "28",
-          "name" : "Admin Credential Service",
-          "properties" : {
-            "component.type" : "org.example.project.services.adminAuth.AdminCredentialService"
-          },
-          "tags" : "Element,Component,Annotated,Service",
-          "technology" : "Spring Service"
-        }, {
-          "description" : "Manages service site content and information",
-          "documentation" : { },
-          "id" : "29",
-          "name" : "Service Site Service",
-          "properties" : {
-            "component.type" : "org.example.project.services.serviceSite.ServiceSiteService"
-          },
-          "tags" : "Element,Component,Annotated,Service",
-          "technology" : "Spring Service"
-        }, {
-          "description" : "Business logic for appointment management, validation, and status updates",
-          "documentation" : { },
-          "id" : "30",
-          "name" : "Appointment Service",
-          "properties" : {
-            "component.type" : "org.example.project.services.appointment.AppointmentService"
+            "component.type" : "org.example.project.controller.appointment.AppointmentController"
           },
           "relationships" : [ {
             "description" : "uses",
-            "destinationId" : "54",
-            "id" : "86",
-            "sourceId" : "30",
-            "tags" : "Relationship"
-          }, {
-            "description" : "uses",
-            "destinationId" : "55",
-            "id" : "87",
-            "sourceId" : "30",
-            "tags" : "Relationship"
-          }, {
-            "description" : "uses",
-            "destinationId" : "31",
-            "id" : "88",
-            "sourceId" : "30",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Service",
-          "technology" : "Spring Service"
-        }, {
-          "description" : "Maps between AppointmentDTO and AppointmentDAO entities",
-          "documentation" : { },
-          "id" : "31",
-          "name" : "Appointment Mapper",
-          "properties" : {
-            "component.type" : "org.example.project.services.appointment.mapper.AppointmentMapper"
-          },
-          "relationships" : [ {
-            "description" : "converts to/from",
-            "destinationId" : "71",
-            "id" : "89",
-            "sourceId" : "31",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to/from",
-            "destinationId" : "61",
+            "destinationId" : "46",
             "id" : "90",
-            "sourceId" : "31",
+            "sourceId" : "27",
             "tags" : "Relationship"
           } ],
-          "tags" : "Element,Component,Annotated,Mapper",
-          "technology" : "Spring Component"
-        }, {
-          "description" : "Implementation of Appointment Service  interface",
-          "documentation" : { },
-          "id" : "32",
-          "name" : "Appointment Service Impl",
-          "properties" : {
-            "component.type" : "org.example.project.services.appointment.AppointmentServiceImpl"
-          },
-          "tags" : "Element,Component,Annotated,Implementation",
-          "technology" : "Java"
+          "tags" : "Element,Component,Annotated,Controller",
+          "technology" : "Spring MVC"
         }, {
           "description" : "Implementation of Opinion Service  interface",
           "documentation" : { },
-          "id" : "33",
+          "id" : "28",
           "name" : "Opinion Service Impl",
           "properties" : {
             "component.type" : "org.example.project.services.opinion.OpinionServiceImpl"
@@ -311,7 +216,7 @@
         }, {
           "description" : "Component discovered by Service Beans",
           "documentation" : { },
-          "id" : "34",
+          "id" : "29",
           "name" : "Opinion Mapper",
           "properties" : {
             "component.type" : "org.example.project.services.opinion.mapper.OpinionMapper"
@@ -319,68 +224,29 @@
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
-          "description" : "Implementation of User Service  interface",
-          "documentation" : { },
-          "id" : "35",
-          "name" : "User Service Impl",
-          "properties" : {
-            "component.type" : "org.example.project.services.user.UserServiceImpl"
-          },
-          "relationships" : [ {
-            "destinationId" : "36",
-            "id" : "46",
-            "sourceId" : "35",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Implementation",
-          "technology" : "Java"
-        }, {
-          "description" : "Maps between UserDAO entities and Spring Security UserDetails",
-          "documentation" : { },
-          "id" : "36",
-          "name" : "Authentication Mapper",
-          "properties" : {
-            "component.type" : "org.example.project.services.user.mapper.AuthenticationMapper"
-          },
-          "relationships" : [ {
-            "description" : "converts from",
-            "destinationId" : "63",
-            "id" : "91",
-            "sourceId" : "36",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to",
-            "destinationId" : "76",
-            "id" : "92",
-            "sourceId" : "36",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Mapper",
-          "technology" : "Spring Component"
-        }, {
           "description" : "Manages car listings with image processing and storage",
           "documentation" : { },
-          "id" : "37",
+          "id" : "30",
           "name" : "Car Card Service",
           "properties" : {
             "component.type" : "org.example.project.services.carCardService.CarCardService"
           },
           "relationships" : [ {
-            "destinationId" : "41",
-            "id" : "47",
-            "sourceId" : "37",
+            "destinationId" : "35",
+            "id" : "49",
+            "sourceId" : "30",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
-            "destinationId" : "41",
-            "id" : "93",
-            "sourceId" : "37",
+            "destinationId" : "35",
+            "id" : "91",
+            "sourceId" : "30",
             "tags" : "Relationship"
           }, {
             "description" : "uses",
-            "destinationId" : "38",
-            "id" : "94",
-            "sourceId" : "37",
+            "destinationId" : "31",
+            "id" : "92",
+            "sourceId" : "30",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Service",
@@ -388,63 +254,99 @@
         }, {
           "description" : "Maps between CarCardDTO and CarCardDAO entities",
           "documentation" : { },
-          "id" : "38",
+          "id" : "31",
           "name" : "Car Card Mapper",
           "properties" : {
             "component.type" : "org.example.project.services.carCardService.mapper.CarCardMapper"
           },
           "relationships" : [ {
-            "destinationId" : "41",
-            "id" : "48",
-            "sourceId" : "38",
+            "destinationId" : "35",
+            "id" : "50",
+            "sourceId" : "31",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "74",
+            "destinationId" : "76",
+            "id" : "93",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "converts to/from",
+            "destinationId" : "62",
+            "id" : "94",
+            "sourceId" : "31",
+            "tags" : "Relationship"
+          }, {
+            "description" : "converts to/from",
+            "destinationId" : "77",
             "id" : "95",
-            "sourceId" : "38",
+            "sourceId" : "31",
             "tags" : "Relationship"
           }, {
             "description" : "converts to/from",
-            "destinationId" : "58",
+            "destinationId" : "63",
             "id" : "96",
-            "sourceId" : "38",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to/from",
-            "destinationId" : "73",
-            "id" : "97",
-            "sourceId" : "38",
-            "tags" : "Relationship"
-          }, {
-            "description" : "converts to/from",
-            "destinationId" : "57",
-            "id" : "98",
-            "sourceId" : "38",
+            "sourceId" : "31",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Mapper",
           "technology" : "Spring Component"
         }, {
+          "description" : "Manages admin credential updates and password changes",
+          "documentation" : { },
+          "id" : "32",
+          "name" : "Admin Credential Service",
+          "properties" : {
+            "component.type" : "org.example.project.services.adminAuth.AdminCredentialService"
+          },
+          "tags" : "Element,Component,Annotated,Service",
+          "technology" : "Spring Service"
+        }, {
+          "description" : "Manages service site content and information",
+          "documentation" : { },
+          "id" : "33",
+          "name" : "Service Site Service",
+          "properties" : {
+            "component.type" : "org.example.project.services.serviceSite.ServiceSiteService"
+          },
+          "tags" : "Element,Component,Annotated,Service",
+          "technology" : "Spring Service"
+        }, {
           "description" : "Component discovered by Service Beans",
           "documentation" : { },
-          "id" : "39",
+          "id" : "34",
           "name" : "Migration Service",
           "properties" : {
             "component.type" : "org.example.project.services.Image.MigrationService"
           },
           "relationships" : [ {
-            "destinationId" : "40",
-            "id" : "49",
-            "sourceId" : "39",
+            "destinationId" : "36",
+            "id" : "51",
+            "sourceId" : "34",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
+          "description" : "Processes, resizes, and manages image files for car cards",
+          "documentation" : { },
+          "id" : "35",
+          "name" : "Image Service",
+          "properties" : {
+            "component.type" : "org.example.project.services.Image.ImageService"
+          },
+          "relationships" : [ {
+            "destinationId" : "36",
+            "id" : "52",
+            "sourceId" : "35",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Service",
+          "technology" : "Spring Service"
+        }, {
           "description" : "Component discovered by Service Beans",
           "documentation" : { },
-          "id" : "40",
+          "id" : "36",
           "name" : "Minio Storage Service",
           "properties" : {
             "component.type" : "org.example.project.services.Image.MinioStorageService"
@@ -452,56 +354,40 @@
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
-          "description" : "Processes, resizes, and manages image files for car cards",
+          "description" : "Implementation of User Service  interface",
           "documentation" : { },
-          "id" : "41",
-          "name" : "Image Service",
+          "id" : "37",
+          "name" : "User Service Impl",
           "properties" : {
-            "component.type" : "org.example.project.services.Image.ImageService"
+            "component.type" : "org.example.project.services.user.UserServiceImpl"
           },
           "relationships" : [ {
-            "destinationId" : "40",
-            "id" : "50",
-            "sourceId" : "41",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Service",
-          "technology" : "Spring Service"
-        }, {
-          "description" : "Implementation of User Details Service  interface",
-          "documentation" : { },
-          "id" : "42",
-          "name" : "User Details Service Impl",
-          "properties" : {
-            "component.type" : "org.example.project.services.userDetailService.UserDetailsServiceImpl"
-          },
-          "relationships" : [ {
-            "destinationId" : "36",
-            "id" : "51",
-            "sourceId" : "42",
+            "destinationId" : "38",
+            "id" : "53",
+            "sourceId" : "37",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Implementation",
           "technology" : "Java"
         }, {
-          "description" : "Maps between TimeSlotDTO and TimeSlotDAO entities",
+          "description" : "Maps between UserDAO entities and Spring Security UserDetails",
           "documentation" : { },
-          "id" : "43",
-          "name" : "Time Slot Mapper",
+          "id" : "38",
+          "name" : "Authentication Mapper",
           "properties" : {
-            "component.type" : "org.example.project.services.timeSlot.mapper.TimeSlotMapper"
+            "component.type" : "org.example.project.services.user.mapper.AuthenticationMapper"
           },
           "relationships" : [ {
-            "description" : "converts to/from",
-            "destinationId" : "75",
-            "id" : "99",
-            "sourceId" : "43",
+            "description" : "converts from",
+            "destinationId" : "65",
+            "id" : "97",
+            "sourceId" : "38",
             "tags" : "Relationship"
           }, {
-            "description" : "converts to/from",
-            "destinationId" : "65",
-            "id" : "100",
-            "sourceId" : "43",
+            "description" : "converts to",
+            "destinationId" : "83",
+            "id" : "98",
+            "sourceId" : "38",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Mapper",
@@ -509,13 +395,101 @@
         }, {
           "description" : "Implementation of Time Slot Service  interface",
           "documentation" : { },
-          "id" : "44",
+          "id" : "39",
           "name" : "Time Slot Service Impl",
           "properties" : {
             "component.type" : "org.example.project.services.timeSlot.TimeSlotServiceImpl"
           },
           "tags" : "Element,Component,Annotated,Implementation",
           "technology" : "Java"
+        }, {
+          "description" : "Maps between TimeSlotDTO and TimeSlotDAO entities",
+          "documentation" : { },
+          "id" : "40",
+          "name" : "Time Slot Mapper",
+          "properties" : {
+            "component.type" : "org.example.project.services.timeSlot.mapper.TimeSlotMapper"
+          },
+          "relationships" : [ {
+            "description" : "converts to/from",
+            "destinationId" : "79",
+            "id" : "99",
+            "sourceId" : "40",
+            "tags" : "Relationship"
+          }, {
+            "description" : "converts to/from",
+            "destinationId" : "66",
+            "id" : "100",
+            "sourceId" : "40",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Mapper",
+          "technology" : "Spring Component"
+        }, {
+          "description" : "Implementation of User Details Service  interface",
+          "documentation" : { },
+          "id" : "41",
+          "name" : "User Details Service Impl",
+          "properties" : {
+            "component.type" : "org.example.project.services.userDetailService.UserDetailsServiceImpl"
+          },
+          "relationships" : [ {
+            "destinationId" : "38",
+            "id" : "54",
+            "sourceId" : "41",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Implementation",
+          "technology" : "Java"
+        }, {
+          "description" : "Component discovered by Service Beans",
+          "documentation" : { },
+          "id" : "42",
+          "name" : "Promotion Service",
+          "properties" : {
+            "component.type" : "org.example.project.services.promotion.PromotionService"
+          },
+          "relationships" : [ {
+            "destinationId" : "36",
+            "id" : "55",
+            "sourceId" : "42",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
+          "description" : "Implementation of Service Service  interface",
+          "documentation" : { },
+          "id" : "43",
+          "name" : "Service Service Impl",
+          "properties" : {
+            "component.type" : "org.example.project.services.service.ServiceServiceImpl"
+          },
+          "tags" : "Element,Component,Annotated,Implementation",
+          "technology" : "Java"
+        }, {
+          "description" : "Maps between ServiceDTO and ServiceItemDAO entities",
+          "documentation" : { },
+          "id" : "44",
+          "name" : "Service Mapper",
+          "properties" : {
+            "component.type" : "org.example.project.services.service.mapper.ServiceMapper"
+          },
+          "relationships" : [ {
+            "description" : "converts to/from",
+            "destinationId" : "81",
+            "id" : "101",
+            "sourceId" : "44",
+            "tags" : "Relationship"
+          }, {
+            "description" : "converts to/from",
+            "destinationId" : "68",
+            "id" : "102",
+            "sourceId" : "44",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Mapper",
+          "technology" : "Spring Component"
         }, {
           "description" : "Implementation of Email Service  interface",
           "documentation" : { },
@@ -527,18 +501,80 @@
           "tags" : "Element,Component,Annotated,Implementation",
           "technology" : "Java"
         }, {
-          "description" : "Data access layer for service items with popularity filtering",
+          "description" : "Business logic for appointment management, validation, and status updates",
           "documentation" : { },
-          "id" : "52",
-          "name" : "Service Repository",
+          "id" : "46",
+          "name" : "Appointment Service",
           "properties" : {
-            "component.type" : "org.example.project.repositories.service.ServiceRepository"
+            "component.type" : "org.example.project.services.appointment.AppointmentService"
+          },
+          "relationships" : [ {
+            "description" : "uses",
+            "destinationId" : "60",
+            "id" : "103",
+            "sourceId" : "46",
+            "tags" : "Relationship"
+          }, {
+            "description" : "uses",
+            "destinationId" : "56",
+            "id" : "104",
+            "sourceId" : "46",
+            "tags" : "Relationship"
+          }, {
+            "description" : "uses",
+            "destinationId" : "48",
+            "id" : "105",
+            "sourceId" : "46",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Service",
+          "technology" : "Spring Service"
+        }, {
+          "description" : "Implementation of Appointment Service  interface",
+          "documentation" : { },
+          "id" : "47",
+          "name" : "Appointment Service Impl",
+          "properties" : {
+            "component.type" : "org.example.project.services.appointment.AppointmentServiceImpl"
+          },
+          "tags" : "Element,Component,Annotated,Implementation",
+          "technology" : "Java"
+        }, {
+          "description" : "Maps between AppointmentDTO and AppointmentDAO entities",
+          "documentation" : { },
+          "id" : "48",
+          "name" : "Appointment Mapper",
+          "properties" : {
+            "component.type" : "org.example.project.services.appointment.mapper.AppointmentMapper"
+          },
+          "relationships" : [ {
+            "description" : "converts to/from",
+            "destinationId" : "82",
+            "id" : "106",
+            "sourceId" : "48",
+            "tags" : "Relationship"
+          }, {
+            "description" : "converts to/from",
+            "destinationId" : "70",
+            "id" : "107",
+            "sourceId" : "48",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Mapper",
+          "technology" : "Spring Component"
+        }, {
+          "description" : "Data access layer for time slot entities with availability queries",
+          "documentation" : { },
+          "id" : "56",
+          "name" : "Time Slot Repository",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.timeSlot.TimeSlotRepository"
           },
           "relationships" : [ {
             "description" : "manages",
-            "destinationId" : "56",
-            "id" : "101",
-            "sourceId" : "52",
+            "destinationId" : "66",
+            "id" : "108",
+            "sourceId" : "56",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Repository",
@@ -546,7 +582,34 @@
         }, {
           "description" : "Component discovered by Repository Interfaces",
           "documentation" : { },
-          "id" : "53",
+          "id" : "57",
+          "name" : "Promotion Repository",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.promotion.PromotionRepository"
+          },
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
+          "description" : "Data access layer for service items with popularity filtering",
+          "documentation" : { },
+          "id" : "58",
+          "name" : "Service Repository",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.service.ServiceRepository"
+          },
+          "relationships" : [ {
+            "description" : "manages",
+            "destinationId" : "68",
+            "id" : "109",
+            "sourceId" : "58",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Repository",
+          "technology" : "Spring Data JPA"
+        }, {
+          "description" : "Component discovered by Repository Interfaces",
+          "documentation" : { },
+          "id" : "59",
           "name" : "Appointment Hold Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.AppointmentHoldRepository"
@@ -556,85 +619,24 @@
         }, {
           "description" : "Data access layer for appointment entities with custom queries",
           "documentation" : { },
-          "id" : "54",
+          "id" : "60",
           "name" : "Appointment Repository",
           "properties" : {
             "component.type" : "org.example.project.repositories.appointment.AppointmentRepository"
           },
           "relationships" : [ {
             "description" : "manages",
-            "destinationId" : "61",
-            "id" : "102",
-            "sourceId" : "54",
+            "destinationId" : "70",
+            "id" : "110",
+            "sourceId" : "60",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Repository",
           "technology" : "Spring Data JPA"
-        }, {
-          "description" : "Data access layer for time slot entities with availability queries",
-          "documentation" : { },
-          "id" : "55",
-          "name" : "Time Slot Repository",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.timeSlot.TimeSlotRepository"
-          },
-          "relationships" : [ {
-            "description" : "manages",
-            "destinationId" : "65",
-            "id" : "103",
-            "sourceId" : "55",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Repository",
-          "technology" : "Spring Data JPA"
-        }, {
-          "description" : "Entity representing workshop services with popularity flags",
-          "documentation" : { },
-          "id" : "56",
-          "name" : "Service Item DAO",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.service.model.ServiceItemDAO"
-          },
-          "relationships" : [ {
-            "description" : "referenced by",
-            "destinationId" : "61",
-            "id" : "104",
-            "sourceId" : "56",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Entity",
-          "technology" : "JPA Entity"
-        }, {
-          "description" : "Entity representing detailed car specifications including engine, transmission, fuel type",
-          "documentation" : { },
-          "id" : "57",
-          "name" : "Car Spec DAO",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.carcards.model.CarSpecDAO"
-          },
-          "tags" : "Element,Component,Annotated,Entity",
-          "technology" : "JPA Entity"
-        }, {
-          "description" : "Entity representing cars for sale with specifications and images",
-          "documentation" : { },
-          "id" : "58",
-          "name" : "Car Card DAO",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.carcards.model.CarCardDAO"
-          },
-          "relationships" : [ {
-            "description" : "contains",
-            "destinationId" : "57",
-            "id" : "105",
-            "sourceId" : "58",
-            "tags" : "Relationship"
-          } ],
-          "tags" : "Element,Component,Annotated,Entity",
-          "technology" : "JPA Entity"
         }, {
           "description" : "Entity representing service site content and descriptions",
           "documentation" : { },
-          "id" : "59",
+          "id" : "61",
           "name" : "Service Site DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.serviceSite.model.ServiceSiteDAO"
@@ -642,42 +644,36 @@
           "tags" : "Element,Component,Annotated,Entity",
           "technology" : "JPA Entity"
         }, {
-          "description" : "Component discovered by JPA Entities",
+          "description" : "Entity representing cars for sale with specifications and images",
           "documentation" : { },
-          "id" : "60",
-          "name" : "Appointment Hold DAO",
+          "id" : "62",
+          "name" : "Car Card DAO",
           "properties" : {
-            "component.type" : "org.example.project.repositories.appointment.model.AppointmentHoldDAO"
-          },
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
-          "description" : "Entity representing customer appointments with time slots and service details",
-          "documentation" : { },
-          "id" : "61",
-          "name" : "Appointment DAO",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.appointment.model.AppointmentDAO"
+            "component.type" : "org.example.project.repositories.carcards.model.CarCardDAO"
           },
           "relationships" : [ {
-            "description" : "references",
-            "destinationId" : "65",
-            "id" : "106",
-            "sourceId" : "61",
-            "tags" : "Relationship"
-          }, {
-            "description" : "references",
-            "destinationId" : "56",
-            "id" : "107",
-            "sourceId" : "61",
+            "description" : "contains",
+            "destinationId" : "63",
+            "id" : "111",
+            "sourceId" : "62",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
           "technology" : "JPA Entity"
         }, {
+          "description" : "Entity representing detailed car specifications including engine, transmission, fuel type",
+          "documentation" : { },
+          "id" : "63",
+          "name" : "Car Spec DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.carcards.model.CarSpecDAO"
+          },
+          "tags" : "Element,Component,Annotated,Entity",
+          "technology" : "JPA Entity"
+        }, {
           "description" : "Entity representing user roles for authorization (ADMIN, USER)",
           "documentation" : { },
-          "id" : "62",
+          "id" : "64",
           "name" : "Role DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.user.model.RoleDAO"
@@ -687,34 +683,24 @@
         }, {
           "description" : "Entity representing system users with authentication details",
           "documentation" : { },
-          "id" : "63",
+          "id" : "65",
           "name" : "User DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.user.model.UserDAO"
           },
           "relationships" : [ {
             "description" : "has many",
-            "destinationId" : "62",
-            "id" : "108",
-            "sourceId" : "63",
+            "destinationId" : "64",
+            "id" : "112",
+            "sourceId" : "65",
             "tags" : "Relationship"
           } ],
           "tags" : "Element,Component,Annotated,Entity",
           "technology" : "JPA Entity"
         }, {
-          "description" : "Component discovered by JPA Entities",
-          "documentation" : { },
-          "id" : "64",
-          "name" : "Opinion DAO",
-          "properties" : {
-            "component.type" : "org.example.project.repositories.csopinion.model.OpinionDAO"
-          },
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
           "description" : "Entity representing available appointment time slots with date and time information",
           "documentation" : { },
-          "id" : "65",
+          "id" : "66",
           "name" : "Time Slot DAO",
           "properties" : {
             "component.type" : "org.example.project.repositories.timeSlot.model.TimeSlotDAO"
@@ -722,9 +708,89 @@
           "tags" : "Element,Component,Annotated,Entity",
           "technology" : "JPA Entity"
         }, {
+          "description" : "Component discovered by JPA Entities",
+          "documentation" : { },
+          "id" : "67",
+          "name" : "Promotion DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.promotion.model.PromotionDAO"
+          },
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
+          "description" : "Entity representing workshop services with popularity flags",
+          "documentation" : { },
+          "id" : "68",
+          "name" : "Service Item DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.service.model.ServiceItemDAO"
+          },
+          "relationships" : [ {
+            "description" : "referenced by",
+            "destinationId" : "70",
+            "id" : "113",
+            "sourceId" : "68",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Entity",
+          "technology" : "JPA Entity"
+        }, {
+          "description" : "Component discovered by JPA Entities",
+          "documentation" : { },
+          "id" : "69",
+          "name" : "Appointment Hold DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.appointment.model.AppointmentHoldDAO"
+          },
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
+          "description" : "Entity representing customer appointments with time slots and service details",
+          "documentation" : { },
+          "id" : "70",
+          "name" : "Appointment DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.appointment.model.AppointmentDAO"
+          },
+          "relationships" : [ {
+            "description" : "references",
+            "destinationId" : "66",
+            "id" : "114",
+            "sourceId" : "70",
+            "tags" : "Relationship"
+          }, {
+            "description" : "references",
+            "destinationId" : "68",
+            "id" : "115",
+            "sourceId" : "70",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component,Annotated,Entity",
+          "technology" : "JPA Entity"
+        }, {
+          "description" : "Component discovered by JPA Entities",
+          "documentation" : { },
+          "id" : "71",
+          "name" : "Opinion DAO",
+          "properties" : {
+            "component.type" : "org.example.project.repositories.csopinion.model.OpinionDAO"
+          },
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
+          "description" : "Component discovered by Web Configuration",
+          "documentation" : { },
+          "id" : "72",
+          "name" : "Security Config",
+          "properties" : {
+            "component.type" : "org.example.project.config.SecurityConfig"
+          },
+          "tags" : "Element,Component,Annotated",
+          "technology" : "Java"
+        }, {
           "description" : "Configures web resources, static file serving, and CORS mappings",
           "documentation" : { },
-          "id" : "66",
+          "id" : "73",
           "name" : "Web Config",
           "properties" : {
             "component.type" : "org.example.project.config.WebConfig"
@@ -734,17 +800,7 @@
         }, {
           "description" : "Component discovered by Web Configuration",
           "documentation" : { },
-          "id" : "67",
-          "name" : "Security Config",
-          "properties" : {
-            "component.type" : "org.example.project.config.SecurityConfig"
-          },
-          "tags" : "Element,Component,Annotated",
-          "technology" : "Java"
-        }, {
-          "description" : "Component discovered by Web Configuration",
-          "documentation" : { },
-          "id" : "68",
+          "id" : "74",
           "name" : "Minio Config",
           "properties" : {
             "component.type" : "org.example.project.config.MinioConfig"
@@ -752,39 +808,9 @@
           "tags" : "Element,Component,Annotated",
           "technology" : "Java"
         }, {
-          "description" : "Data transfer object for service item information between layers",
-          "documentation" : { },
-          "id" : "69",
-          "name" : "Service DTO",
-          "properties" : {
-            "component.type" : "org.example.project.services.service.model.ServiceDTO"
-          },
-          "tags" : "Element,Component,Pattern-Matched,DTO",
-          "technology" : "Java POJO"
-        }, {
-          "description" : "Data transfer object for service site content between layers",
-          "documentation" : { },
-          "id" : "70",
-          "name" : "Service Site DTO",
-          "properties" : {
-            "component.type" : "org.example.project.services.serviceSite.model.ServiceSiteDTO"
-          },
-          "tags" : "Element,Component,Pattern-Matched,DTO",
-          "technology" : "Java POJO"
-        }, {
-          "description" : "Data transfer object for appointment information between layers",
-          "documentation" : { },
-          "id" : "71",
-          "name" : "Appointment DTO",
-          "properties" : {
-            "component.type" : "org.example.project.services.appointment.model.AppointmentDTO"
-          },
-          "tags" : "Element,Component,Pattern-Matched,DTO",
-          "technology" : "Java POJO"
-        }, {
           "description" : "Component discovered by DTO Classes",
           "documentation" : { },
-          "id" : "72",
+          "id" : "75",
           "name" : "Opinion DTO",
           "properties" : {
             "component.type" : "org.example.project.services.opinion.model.OpinionDTO"
@@ -792,19 +818,9 @@
           "tags" : "Element,Component,Pattern-Matched",
           "technology" : "Java"
         }, {
-          "description" : "Data transfer object for car specification information between layers",
-          "documentation" : { },
-          "id" : "73",
-          "name" : "Car Spec DTO",
-          "properties" : {
-            "component.type" : "org.example.project.services.carCardService.model.CarSpecDTO"
-          },
-          "tags" : "Element,Component,Pattern-Matched,DTO",
-          "technology" : "Java POJO"
-        }, {
           "description" : "Data transfer object for car card information between layers",
           "documentation" : { },
-          "id" : "74",
+          "id" : "76",
           "name" : "Car Card DTO",
           "properties" : {
             "component.type" : "org.example.project.services.carCardService.model.CarCardDTO"
@@ -812,9 +828,29 @@
           "tags" : "Element,Component,Pattern-Matched,DTO",
           "technology" : "Java POJO"
         }, {
+          "description" : "Data transfer object for car specification information between layers",
+          "documentation" : { },
+          "id" : "77",
+          "name" : "Car Spec DTO",
+          "properties" : {
+            "component.type" : "org.example.project.services.carCardService.model.CarSpecDTO"
+          },
+          "tags" : "Element,Component,Pattern-Matched,DTO",
+          "technology" : "Java POJO"
+        }, {
+          "description" : "Data transfer object for service site content between layers",
+          "documentation" : { },
+          "id" : "78",
+          "name" : "Service Site DTO",
+          "properties" : {
+            "component.type" : "org.example.project.services.serviceSite.model.ServiceSiteDTO"
+          },
+          "tags" : "Element,Component,Pattern-Matched,DTO",
+          "technology" : "Java POJO"
+        }, {
           "description" : "Data transfer object for time slot information between layers",
           "documentation" : { },
-          "id" : "75",
+          "id" : "79",
           "name" : "Time Slot DTO",
           "properties" : {
             "component.type" : "org.example.project.services.timeSlot.model.TimeSlotDTO"
@@ -822,9 +858,39 @@
           "tags" : "Element,Component,Pattern-Matched,DTO",
           "technology" : "Java POJO"
         }, {
+          "description" : "Component discovered by DTO Classes",
+          "documentation" : { },
+          "id" : "80",
+          "name" : "Promotion DTO",
+          "properties" : {
+            "component.type" : "org.example.project.services.promotion.model.PromotionDTO"
+          },
+          "tags" : "Element,Component,Pattern-Matched",
+          "technology" : "Java"
+        }, {
+          "description" : "Data transfer object for service item information between layers",
+          "documentation" : { },
+          "id" : "81",
+          "name" : "Service DTO",
+          "properties" : {
+            "component.type" : "org.example.project.services.service.model.ServiceDTO"
+          },
+          "tags" : "Element,Component,Pattern-Matched,DTO",
+          "technology" : "Java POJO"
+        }, {
+          "description" : "Data transfer object for appointment information between layers",
+          "documentation" : { },
+          "id" : "82",
+          "name" : "Appointment DTO",
+          "properties" : {
+            "component.type" : "org.example.project.services.appointment.model.AppointmentDTO"
+          },
+          "tags" : "Element,Component,Pattern-Matched,DTO",
+          "technology" : "Java POJO"
+        }, {
           "description" : "Data transfer object for user authentication information",
           "documentation" : { },
-          "id" : "76",
+          "id" : "83",
           "name" : "User Information DTO",
           "properties" : {
             "component.type" : "org.example.project.controller.auth.model.UserInformationDTO"
@@ -842,7 +908,7 @@
         "components" : [ {
           "description" : "Configures authentication, authorization, CORS, password encoders, and security filters",
           "documentation" : { },
-          "id" : "109",
+          "id" : "116",
           "name" : "Security Config",
           "properties" : {
             "component.type" : "org.example.project.config.SecurityConfig"
@@ -1034,19 +1100,15 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "52",
+        "id" : "46",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "53",
+        "id" : "47",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "54",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "55",
+        "id" : "48",
         "x" : 0,
         "y" : 0
       }, {
@@ -1133,6 +1195,34 @@
         "id" : "76",
         "x" : 0,
         "y" : 0
+      }, {
+        "id" : "77",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "78",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "79",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "80",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "81",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "82",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "83",
+        "x" : 0,
+        "y" : 0
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "web-application-containers",
@@ -1156,11 +1246,19 @@
       }, {
         "id" : "108"
       }, {
-        "id" : "46"
+        "id" : "109"
       }, {
-        "id" : "47"
+        "id" : "110"
       }, {
-        "id" : "48"
+        "id" : "111"
+      }, {
+        "id" : "112"
+      }, {
+        "id" : "113"
+      }, {
+        "id" : "114"
+      }, {
+        "id" : "115"
       }, {
         "id" : "49"
       }, {
@@ -1168,19 +1266,13 @@
       }, {
         "id" : "51"
       }, {
-        "id" : "77"
+        "id" : "52"
       }, {
-        "id" : "78"
+        "id" : "53"
       }, {
-        "id" : "79"
+        "id" : "54"
       }, {
-        "id" : "80"
-      }, {
-        "id" : "81"
-      }, {
-        "id" : "82"
-      }, {
-        "id" : "83"
+        "id" : "55"
       }, {
         "id" : "84"
       }, {
@@ -1218,7 +1310,7 @@
       "containerId" : "9",
       "description" : "Security Layer Components",
       "elements" : [ {
-        "id" : "109",
+        "id" : "116",
         "x" : 0,
         "y" : 0
       } ],
